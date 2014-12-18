@@ -8,12 +8,14 @@ from glob import glob
 import json
 import yaml
 
+import boto
 from fabric.api import local, settings, task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
 
 import app_config
 import copytext
+import flat
 import public_app
 
 @task(default=True)
@@ -53,10 +55,28 @@ def run_reports():
     for project in public_app.Project.query.all():
         with open('/tmp/clan.yaml', 'w') as f:
             y = project.build_clan_yaml()
-
-            f.write(project.build_clan_yaml())
+            f.write(y)
 
         local('clan report /tmp/clan.yaml /tmp/clan.html')
+        slug = project.url_prefix.split('/')[1]
+        if not slug:
+            slug = project.domain
+
+        s3 = boto.connect_s3()
+
+        # fake deployment target
+        if not app_config.DEPLOYMENT_TARGET:
+            app_config.configure_targets('staging')
+
+        flat.deploy_file(
+            s3,
+            '/tmp/clan.html',
+            '%s/%s/index.html' % (app_config.PROJECT_SLUG, slug),
+            app_config.DEFAULT_MAX_AGE
+        )
+
+        # reset targets
+        app_config.configure_targets(app_config.DEPLOYMENT_TARGET)
 
 @task
 def update_featured_social():
