@@ -4,6 +4,7 @@ import argparse
 import datetime
 import logging
 import json
+import re
 import yaml
 
 from flask import Flask, make_response, render_template
@@ -58,6 +59,21 @@ app.config['SQLALCHEMY_DATABASE_URI'] = build_connection_string()
 
 db = SQLAlchemy(app)
 
+def slugify(bits):
+    """
+    Generate a slug.
+    """
+    slug_bits = []
+    for bit in bits:
+        if bit:
+            bit = unicode(bit)
+            bit = bit.lower()
+            bit = re.sub(r"[^\w\s]", '', bit)
+            bit = re.sub(r"\s+", '-', bit)
+            slug_bits.append(bit)
+
+    return '-'.join(slug_bits)
+
 class Query(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -74,6 +90,7 @@ project_query_table = db.Table('project_query', db.Model.metadata,
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    slug = db.Column(db.String, unique=True)
     ga_property_id = db.Column(db.String)
     domain = db.Column(db.String)
     url_prefix = db.Column(db.String)
@@ -109,6 +126,7 @@ class Project(db.Model):
 
 class ProjectAdmin(ModelView):
     column_filters = ['ga_property_id', 'domain']
+    form_excluded_columns = ['slug']
 
     column_sortable_list = ('name', 'ga_property_id', 'domain', 'url_prefix', 'launch_date')
 
@@ -116,6 +134,10 @@ class ProjectAdmin(ModelView):
         ga_property_id = dict(default = '53470309'),
         domain = dict(default = 'apps.npr.org')
     )
+
+    def update_model(self, form, model):
+        model.slug = slugify([form.data['name']])
+        super(ProjectAdmin, self).update_model(form, model)
 
 class QueryAdmin(ModelView):
     column_list = ['name']

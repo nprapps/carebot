@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Carebot: Clan Reports</title>
+    </head>
+    <body>
+        <ul>
+            {% for project in projects %}
+            <li><a href="{{ project.slug }}/">{{ project.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
