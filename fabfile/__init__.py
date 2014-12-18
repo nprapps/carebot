@@ -93,14 +93,14 @@ def app(port='8000'):
     """
     Serve app.py.
     """
-    local('gunicorn -b 0.0.0.0:%s --debug --reload app:wsgi_app' % port)
+    local('gunicorn -b 0.0.0.0:%s --debug --reload --error-logfile - app:wsgi_app' % port)
 
 @task
 def public_app(port='8000'):
     """
     Serve public_app.py.
     """
-    local('gunicorn -b 0.0.0.0:%s --debug --reload public_app:wsgi_app' % port)
+    local('gunicorn -b 0.0.0.0:%s --debug --reload --error-logfile - public_app:wsgi_app' % port)
 
 @task
 def tests():
@@ -192,7 +192,7 @@ def shiva_the_destroyer():
     )
 
     with settings(warn_only=True):
-        flat.delete_folder(app_config.PROJECT_SLUG) 
+        flat.delete_folder(app_config.PROJECT_SLUG)
 
         if app_config.DEPLOY_TO_SERVERS:
             servers.delete_project()

@@ -1,0 +1,7 @@
+name: "Sessions by device category"
+metrics:
+  - "ga:sessions"
+dimensions:
+  - "ga:deviceCategory"
+sort:
+  - "-ga:sessions"

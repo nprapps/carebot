@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 
+import argparse
 import datetime
 import logging
 import json
 
 from flask import Flask, make_response, render_template
+from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.admin import Admin
+from flask.ext.admin.contrib.sqla import ModelView
 from werkzeug.debug import DebuggedApplication
 
 import app_config
@@ -24,28 +28,76 @@ app.register_blueprint(static.static, url_prefix='/%s' % app_config.PROJECT_SLUG
 app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
 
-# Example application views
-@app.route('/%s/test/' % app_config.PROJECT_SLUG, methods=['GET'])
-def _test_app():
-    """
-    Test route for verifying the application is running.
-    """
-    app.logger.info('Test URL requested.')
+app.config['SECRET_KEY'] = '530980429'
 
-    return make_response(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+secrets = app_config.get_secrets()
 
-# Example of rendering index.html with public_app 
-@app.route ('/%s/' % app_config.PROJECT_SLUG, methods=['GET'])
-def index():
+def build_connection_string():
     """
-    Example view rendering a simple page.
+    Build a string to pass to the Flask app for connecting to DB
     """
-    context = make_context(asset_depth=1)
+    DATABASE = {
+        'name': app_config.PROJECT_SLUG,
+        'user': secrets.get('POSTGRES_USER') or app_config.PROJECT_SLUG,
+        'password': secrets.get('POSTGRES_PASSWORD') or None,
+        'host': secrets.get('POSTGRES_HOST') or 'localhost',
+        'port': secrets.get('POSTGRES_PORT') or 5432
+    }
 
-    with open('data/featured.json') as f:
-        context['featured'] = json.load(f)
+    s = 'postgresql://'
+    if DATABASE['user']:
+        s += DATABASE['user']
+    if DATABASE['password']:
+        s += ':%s' % DATABASE['password']
+    s += '@%(host)s:%(port)i/%(name)s' % DATABASE
 
-    return make_response(render_template('index.html', **context))
+    return s
+
+app.config['SQLALCHEMY_DATABASE_URI'] = build_connection_string()
+
+db = SQLAlchemy(app)
+
+class Query(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    clan_yaml = db.Column(db.String)
+
+    def __unicode__(self):
+       return self.name
+
+project_query_table = db.Table('project_query', db.Model.metadata,
+    db.Column('query_id', db.Integer, db.ForeignKey('query.id')),
+    db.Column('project_id', db.Integer, db.ForeignKey('project.id'))
+)
+
+class Project(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    ga_property_id = db.Column(db.String)
+    domain = db.Column(db.String)
+    url_prefix = db.Column(db.String)
+    launch_date = db.Column(db.String)
+    queries = db.relationship(Query, secondary=project_query_table)
+
+    def __unicode__(self):
+        return u'%s Carebot Project' % self.name
+
+class ProjectAdmin(ModelView):
+    column_filters = ['ga_property_id', 'domain']
+
+    column_sortable_list = ('name', 'ga_property_id', 'domain', 'url_prefix', 'launch_date')
+
+    form_args = dict(
+        ga_property_id = dict(default = '53470309'),
+        domain = dict(default = 'apps.npr.org')
+    )
+
+class QueryAdmin(ModelView):
+    column_list = ['name']
+
+admin = Admin(app, name='Carebot')
+admin.add_view(ProjectAdmin(Project, db.session))
+admin.add_view(QueryAdmin(Query, db.session))
 
 # Enable Werkzeug debug pages
 if app_config.DEBUG:

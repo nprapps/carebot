@@ -4,14 +4,17 @@
 Commands that update or process the application data.
 """
 from datetime import datetime
+from glob import glob
 import json
+import yaml
 
-from fabric.api import task
+from fabric.api import local, settings, task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
 
 import app_config
 import copytext
+import public_app
 
 @task(default=True)
 def update():
@@ -19,6 +22,31 @@ def update():
     Stub function for updating app-specific data.
     """
     #update_featured_social()
+
+@task
+def local_reset_db():
+    secrets = app_config.get_secrets()
+
+    with settings(warn_only=True):
+        local('dropdb %s' % app_config.PROJECT_SLUG)
+        local('echo "CREATE USER %s WITH PASSWORD \'%s\';" | psql' % (app_config.PROJECT_SLUG, secrets['POSTGRES_PASSWORD']))
+
+    local('createdb -O %s %s' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
+
+    public_app.db.create_all()
+
+@task
+def bootstrap_db():
+    for file in glob('data/queries/*.yaml'):
+        with open(file, 'r') as f:
+            data = yaml.load(f)
+
+            query = public_app.Query()
+            query.name = data['name']
+            query.clan_yaml = yaml.dump(data, indent=4)
+
+            public_app.db.session.add(query)
+            public_app.db.session.commit()
 
 @task
 def update_featured_social():
