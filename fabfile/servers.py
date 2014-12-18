@@ -53,7 +53,7 @@ def create_virtualenv():
     """
     require('settings', provided_by=['production', 'staging'])
 
-    run('virtualenv -p %(SERVER_PYTHON)s --no-site-packages %(SERVER_VIRTUALENV_PATH)s' % app_config.__dict__)
+    run('virtualenv -p %(SERVER_PYTHON)s %(SERVER_VIRTUALENV_PATH)s' % app_config.__dict__)
     run('source %(SERVER_VIRTUALENV_PATH)s/bin/activate' % app_config.__dict__)
 
 def clone_repo():
@@ -86,7 +86,7 @@ def install_requirements():
     require('settings', provided_by=['production', 'staging'])
 
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
-    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__) 
+    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__)
 
 @task
 def setup_logs():
@@ -96,7 +96,7 @@ def setup_logs():
     require('settings', provided_by=['production', 'staging'])
 
     sudo('mkdir %(SERVER_LOG_PATH)s' % app_config.__dict__)
-    sudo('chown ubuntu:ubuntu %(SERVER_LOG_PATH)s' % app_confing.__dict__)
+    sudo('chown ubuntu:ubuntu %(SERVER_LOG_PATH)s' % app_config.__dict__)
 
 @task
 def install_crontab():
