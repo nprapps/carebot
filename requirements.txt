@@ -1,7 +1,7 @@
 Fabric==1.4.3
 Flask==0.9
 Flask-Admin==1.0.9
-Flask_SQLAlchemy=2.0
+Flask_SQLAlchemy==2.0
 Jinja2==2.7.3
 MarkupSafe==0.23
 SQLAlchemy==0.9.8
