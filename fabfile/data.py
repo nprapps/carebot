@@ -49,6 +49,17 @@ def bootstrap_db():
             public_app.db.session.commit()
 
 @task
+def run_reports():
+    for project in public_app.Project.query.all():
+        with open('tmp/clan.yaml', 'w') as f:
+            y = project.build_clan_yaml()
+            print y
+
+            f.write(project.build_clan_yaml())
+
+        local('clan report tmp/clan.yaml tmp/clan.html')
+
+@task
 def update_featured_social():
     """
     Update featured tweets

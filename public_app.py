@@ -4,6 +4,7 @@ import argparse
 import datetime
 import logging
 import json
+import yaml
 
 from flask import Flask, make_response, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -81,6 +82,30 @@ class Project(db.Model):
 
     def __unicode__(self):
         return u'%s Carebot Project' % self.name
+
+    def build_clan_yaml(self):
+        data = { }
+
+        if self.name:
+            data['title'] = self.name
+        if self.ga_property_id:
+            data['property-id'] = self.ga_property_id
+        if self.domain:
+            data['domain'] = self.domain
+        if self.url_prefix:
+            data['prefix'] = self.url_prefix
+        if self.launch_date:
+            data['start-date'] = self.launch_date
+        if self.queries:
+            data['queries'] = []
+
+        for query in self.queries:
+            y = yaml.load(query.clan_yaml)
+
+            data['queries'].append(y)
+
+        # snowman
+        return yaml.safe_dump(data, encoding='utf-8', allow_unicode=True)
 
 class ProjectAdmin(ModelView):
     column_filters = ['ga_property_id', 'domain']
