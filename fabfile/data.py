@@ -57,10 +57,10 @@ def local_reset_db():
 
     local('createdb -O %s %s' % (app_config.PROJECT_SLUG, app_config.PROJECT_SLUG))
 
-    public_app.db.create_all()
-
 @task
 def bootstrap_db():
+    public_app.db.create_all()
+
     for file in glob('data/queries/*.yaml'):
         with open(file, 'r') as f:
             data = yaml.load(f)
