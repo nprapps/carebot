@@ -41,7 +41,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': app_config.PROJECT_SLUG,
         'USER': secrets.get('POSTGRES_USER') or app_config.PROJECT_SLUG,
-        'PASSWORD': secrets.get('POSTGRES_PASSWORD'),
+        'PASSWORD': secrets.get('POSTGRES_PASSWORD') or None,
         'HOST': secrets.get('POSTGRES_HOST') or 'localhost',
         'PORT': secrets.get('POSTGRES_PORT') or '5432'
     }
