@@ -34,16 +34,12 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'carebot.urls'
 WSGI_APPLICATION = 'carebot.wsgi.application'
 
-secrets = app_config.get_secrets()
-
-print secrets.get('POSTGRES_PASSWORD')
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': app_config.PROJECT_SLUG,
         'USER': secrets.get('POSTGRES_USER') or app_config.PROJECT_SLUG,
-        'PASSWORD': secrets.get('POSTGRES_PASSWORD') or None,
+        'PASSWORD': secrets.get('POSTGRES_PASSWORD'),
         'HOST': secrets.get('postgres_host') or 'localhost',
         'PORT': secrets.get('POSTGRES_PORT') or '5432'
     }
