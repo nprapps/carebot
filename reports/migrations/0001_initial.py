@@ -26,6 +26,17 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='ProjectQuery',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.IntegerField()),
+                ('project', models.ForeignKey(to='reports.Project')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Query',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -38,9 +49,15 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.AddField(
+            model_name='projectquery',
+            name='query',
+            field=models.ForeignKey(to='reports.Query'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='project',
             name='queries',
-            field=models.ManyToManyField(to='reports.Query'),
+            field=models.ManyToManyField(to='reports.Query', through='reports.ProjectQuery'),
             preserve_default=True,
         ),
     ]

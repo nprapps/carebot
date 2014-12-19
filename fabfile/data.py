@@ -15,7 +15,7 @@ from jinja2 import Template
 import app_config
 import flat
 import servers
-from reports.models import Project, Query
+from reports.models import Project, Query, ProjectQuery
 
 SERVER_POSTGRES_CMD = 'export PGPASSWORD=$carebot_POSTGRES_PASSWORD && %s --username=$carebot_POSTGRES_USER --host=$carebot_POSTGRES_HOST --port=$carebot_POSTGRES_PORT'
 
@@ -59,15 +59,13 @@ def bootstrap_db():
         with open(yaml_path, 'r') as f:
             data = yaml.load(f)
 
-            query = Query(
+            Query.objects.create(
                 name=data['name'],
                 slug=slug,
                 clan_yaml=yaml.dump(data, indent=4)
             )
 
-            query.save()
-
-    project = Project(
+    project = Project.objects.create(
         title='Best Songs 2014',
         slug=slugify(u'Best Songs 2014'),
         property_id='53470309',
@@ -76,10 +74,12 @@ def bootstrap_db():
         start_date='2014-2-10'
     )
 
-    project.save()
-
-    for query_slug in app_config.DEFAULT_QUERIES:
-        project.queries.add(Query.objects.get(slug=query_slug))
+    for i, query_slug in enumerate(app_config.DEFAULT_QUERIES):
+        ProjectQuery.objects.create(
+            project=project,
+            query=Query.objects.get(slug=query_slug),
+            order=i
+        )
 
 @task
 def run_reports():
