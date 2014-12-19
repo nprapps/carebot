@@ -34,6 +34,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'carebot.urls'
 WSGI_APPLICATION = 'carebot.wsgi.application'
 
+secrets = app_config.get_secrets()
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
