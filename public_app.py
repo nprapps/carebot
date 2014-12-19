@@ -142,7 +142,7 @@ class ProjectAdmin(ModelView):
 class QueryAdmin(ModelView):
     column_list = ['name']
 
-admin = Admin(app, name='Carebot')
+admin = Admin(app, name='Carebot', url='/%s/admin' % app_config.PROJECT_SLUG)
 admin.add_view(ProjectAdmin(Project, db.session))
 admin.add_view(QueryAdmin(Query, db.session))
 
