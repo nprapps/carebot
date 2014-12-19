@@ -125,6 +125,22 @@ GOOGLE_ANALYTICS = {
 DISQUS_API_KEY = 'tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW'
 DISQUS_UUID = 'f26f1c38-856a-11e4-950b-14109fed4b76'
 
+
+DEFAULT_QUERIES = [
+    'totals',
+    'sessions-by-device-category',
+    'sessions-by-browser',
+    'sessions-by-referring-domain',
+    'sessions-by-referring-social-network',
+    'performance',
+    'time-spent-on-page-by-device-category',
+    'share-discuss-panel-opened',
+    'tweet-link-clicked',
+    'facebook-share-link-clicked',
+    'email-link-clicked',
+    'summary-copied'
+]
+
 """
 Utilities
 """

@@ -3,32 +3,22 @@
 """
 Commands that update or process the application data.
 """
-from datetime import datetime
 from glob import glob
-import json
 import os
 import yaml
 
 import boto
+from django.utils.text import slugify
 from fabric.api import local, settings, run, sudo, task
-from facebook import GraphAPI
 from jinja2 import Template
-from twitter import Twitter, OAuth
 
 import app_config
-import copytext
 import flat
-import public_app
+from reports import models
+
 import servers
 
 SERVER_POSTGRES_CMD = 'export PGPASSWORD=$carebot_POSTGRES_PASSWORD && %s --username=$carebot_POSTGRES_USER --host=$carebot_POSTGRES_HOST --port=$carebot_POSTGRES_PORT'
-
-@task(default=True)
-def update():
-    """
-    Stub function for updating app-specific data.
-    """
-    #update_featured_social()
 
 @task
 def server_reset_db():
@@ -60,7 +50,7 @@ def local_reset_db():
 
 @task
 def bootstrap_db():
-    public_app.db.create_all()
+    local('python manage.py migrate')
 
     for yaml_path in glob('data/queries/*.yaml'):
         path, filename = os.path.split(yaml_path)
@@ -68,28 +58,27 @@ def bootstrap_db():
         with open(yaml_path, 'r') as f:
             data = yaml.load(f)
 
-            query = public_app.Query()
-            query.name = data['name']
-            query.slug = slug
-            query.clan_yaml = yaml.dump(data, indent=4)
+            query = models.Query(
+                name=data['name'],
+                slug=slug,
+                clan_yaml=yaml.dump(data, indent=4)
+            )
 
-            public_app.db.session.add(query)
-            public_app.db.session.commit()
+            query.save()
 
-    project = public_app.Project()
-    project.title = 'Best Songs 2014'
-    project.slug = public_app.slugify([project.title])
-    project.property_id = '53470309'
-    project.domain = 'apps.npr.org'
-    project.prefix = '/best-songs-2014/'
-    project.start_date = '2014-12-10'
-    for query in public_app.DEFAULT_QUERIES:
-        project.queries.append(public_app.Query.query.filter_by(slug=query).first())
+    project = models.Project(
+        title='Best Songs 2014',
+        slug=slugify(u'Best Songs 2014'),
+        property_id='53470309',
+        domain='apps.npr.org',
+        prefix='/best-songs-2014/',
+        start_date='2014-2-10'
+    )
 
-    public_app.db.session.add(project)
-    public_app.db.session.commit()
+    project.save()
 
-
+    for query_slug in app_config.DEFAULT_QUERIES:
+        project.queries.add(models.Query.objects.get(slug=query_slug))
 
 @task
 def run_reports():
@@ -135,143 +124,3 @@ def run_reports():
             app_config.DEFAULT_MAX_AGE
         )
 
-@task
-def update_featured_social():
-    """
-    Update featured tweets
-    """
-    COPY = copytext.Copy(app_config.COPY_PATH)
-    secrets = app_config.get_secrets()
-
-    # Twitter
-    print 'Fetching tweets...'
-
-    twitter_api = Twitter(
-        auth=OAuth(
-            secrets['TWITTER_API_OAUTH_TOKEN'],
-            secrets['TWITTER_API_OAUTH_SECRET'],
-            secrets['TWITTER_API_CONSUMER_KEY'],
-            secrets['TWITTER_API_CONSUMER_SECRET']
-        )
-    )
-
-    tweets = []
-
-    for i in range(1, 4):
-        tweet_url = COPY['share']['featured_tweet%i' % i]
-
-        if isinstance(tweet_url, copytext.Error) or unicode(tweet_url).strip() == '':
-            continue
-
-        tweet_id = unicode(tweet_url).split('/')[-1]
-
-        tweet = twitter_api.statuses.show(id=tweet_id)
-
-        creation_date = datetime.strptime(tweet['created_at'],'%a %b %d %H:%M:%S +0000 %Y')
-        creation_date = '%s %i' % (creation_date.strftime('%b'), creation_date.day)
-
-        tweet_url = 'http://twitter.com/%s/status/%s' % (tweet['user']['screen_name'], tweet['id'])
-
-        photo = None
-        html = tweet['text']
-        subs = {}
-
-        for media in tweet['entities'].get('media', []):
-            original = tweet['text'][media['indices'][0]:media['indices'][1]]
-            replacement = '<a href="%s" target="_blank" onclick="_gaq.push([\'_trackEvent\', \'%s\', \'featured-tweet-action\', \'link\', 0, \'%s\']);">%s</a>' % (media['url'], app_config.PROJECT_SLUG, tweet_url, media['display_url'])
-
-            subs[original] = replacement
-
-            if media['type'] == 'photo' and not photo:
-                photo = {
-                    'url': media['media_url']
-                }
-
-        for url in tweet['entities'].get('urls', []):
-            original = tweet['text'][url['indices'][0]:url['indices'][1]]
-            replacement = '<a href="%s" target="_blank" onclick="_gaq.push([\'_trackEvent\', \'%s\', \'featured-tweet-action\', \'link\', 0, \'%s\']);">%s</a>' % (url['url'], app_config.PROJECT_SLUG, tweet_url, url['display_url'])
-
-            subs[original] = replacement
-
-        for hashtag in tweet['entities'].get('hashtags', []):
-            original = tweet['text'][hashtag['indices'][0]:hashtag['indices'][1]]
-            replacement = '<a href="https://twitter.com/hashtag/%s" target="_blank" onclick="_gaq.push([\'_trackEvent\', \'%s\', \'featured-tweet-action\', \'hashtag\', 0, \'%s\']);">%s</a>' % (hashtag['text'], app_config.PROJECT_SLUG, tweet_url, '#%s' % hashtag['text'])
-
-            subs[original] = replacement
-
-        for original, replacement in subs.items():
-            html =  html.replace(original, replacement)
-
-        # https://dev.twitter.com/docs/api/1.1/get/statuses/show/%3Aid
-        tweets.append({
-            'id': tweet['id'],
-            'url': tweet_url,
-            'html': html,
-            'favorite_count': tweet['favorite_count'],
-            'retweet_count': tweet['retweet_count'],
-            'user': {
-                'id': tweet['user']['id'],
-                'name': tweet['user']['name'],
-                'screen_name': tweet['user']['screen_name'],
-                'profile_image_url': tweet['user']['profile_image_url'],
-                'url': tweet['user']['url'],
-            },
-            'creation_date': creation_date,
-            'photo': photo
-        })
-
-    # Facebook
-    print 'Fetching Facebook posts...'
-
-    fb_api = GraphAPI(secrets['FACEBOOK_API_APP_TOKEN'])
-
-    facebook_posts = []
-
-    for i in range(1, 4):
-        fb_url = COPY['share']['featured_facebook%i' % i]
-
-        if isinstance(fb_url, copytext.Error) or unicode(fb_url).strip() == '':
-            continue
-
-        fb_id = unicode(fb_url).split('/')[-1]
-
-        post = fb_api.get_object(fb_id)
-        user  = fb_api.get_object(post['from']['id'])
-        user_picture = fb_api.get_object('%s/picture' % post['from']['id'])
-        likes = fb_api.get_object('%s/likes' % fb_id, summary='true')
-        comments = fb_api.get_object('%s/comments' % fb_id, summary='true')
-        #shares = fb_api.get_object('%s/sharedposts' % fb_id)
-
-        creation_date = datetime.strptime(post['created_time'],'%Y-%m-%dT%H:%M:%S+0000')
-        creation_date = '%s %i' % (creation_date.strftime('%b'), creation_date.day)
-
-        # https://developers.facebook.com/docs/graph-api/reference/v2.0/post
-        facebook_posts.append({
-            'id': post['id'],
-            'message': post['message'],
-            'link': {
-                'url': post['link'],
-                'name': post['name'],
-                'caption': (post['caption'] if 'caption' in post else None),
-                'description': post['description'],
-                'picture': post['picture']
-            },
-            'from': {
-                'name': user['name'],
-                'link': user['link'],
-                'picture': user_picture['url']
-            },
-            'likes': likes['summary']['total_count'],
-            'comments': comments['summary']['total_count'],
-            #'shares': shares['summary']['total_count'],
-            'creation_date': creation_date
-        })
-
-    # Render to JSON
-    output = {
-        'tweets': tweets,
-        'facebook_posts': facebook_posts
-    }
-
-    with open('data/featured.json', 'w') as f:
-        json.dump(output, f)

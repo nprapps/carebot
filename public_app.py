@@ -32,8 +32,6 @@ app.add_template_filter(urlencode_filter, name='urlencode')
 
 app.config['SECRET_KEY'] = '530980429'
 
-DEFAULT_QUERIES = ['totals', 'sessions-by-device-category', 'sessions-by-browser', 'sessions-by-referring-domain', 'sessions-by-referring-social-network', 'performance', 'time-spent-on-page-by-device-category', 'share-discuss-panel-opened', 'tweet-link-clicked', 'facebook-share-link-clicked', 'email-link-clicked', 'summary-copied']
-
 secrets = app_config.get_secrets()
 
 
