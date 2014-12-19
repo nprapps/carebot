@@ -14,9 +14,8 @@ from jinja2 import Template
 
 import app_config
 import flat
-from reports import models
-
 import servers
+from reports.models import Project, Query
 
 SERVER_POSTGRES_CMD = 'export PGPASSWORD=$carebot_POSTGRES_PASSWORD && %s --username=$carebot_POSTGRES_USER --host=$carebot_POSTGRES_HOST --port=$carebot_POSTGRES_PORT'
 
@@ -51,14 +50,16 @@ def local_reset_db():
 @task
 def bootstrap_db():
     local('python manage.py migrate')
+    local('python manage.py loaddata data/test_user.json')
 
     for yaml_path in glob('data/queries/*.yaml'):
         path, filename = os.path.split(yaml_path)
         slug, ext = os.path.splitext(filename)
+
         with open(yaml_path, 'r') as f:
             data = yaml.load(f)
 
-            query = models.Query(
+            query = Query(
                 name=data['name'],
                 slug=slug,
                 clan_yaml=yaml.dump(data, indent=4)
@@ -66,7 +67,7 @@ def bootstrap_db():
 
             query.save()
 
-    project = models.Project(
+    project = Project(
         title='Best Songs 2014',
         slug=slugify(u'Best Songs 2014'),
         property_id='53470309',
@@ -78,7 +79,7 @@ def bootstrap_db():
     project.save()
 
     for query_slug in app_config.DEFAULT_QUERIES:
-        project.queries.add(models.Query.objects.get(slug=query_slug))
+        project.queries.add(Query.objects.get(slug=query_slug))
 
 @task
 def run_reports():

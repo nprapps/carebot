@@ -2,10 +2,13 @@
 
 from fabric.api import local, require, settings, task
 from fabric.state import env
-import os
 from termcolor import colored
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "carebot.settings")
+from fabric.contrib import django
+django.project('carebot')
+
+import django
+django.setup()
 
 import app_config
 
@@ -27,6 +30,7 @@ if app_config.DEPLOY_CRONTAB:
 # Bootstrap can only be run once, then it's disabled
 if app_config.PROJECT_SLUG == '$NEW_PROJECT_SLUG':
     import bootstrap
+
 
 """
 Base configuration
