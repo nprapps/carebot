@@ -7,8 +7,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = '=_1*x-_9+d_5xn#$cx%yap+@y-#13%1=1$lay5@c#^f%-u2nj-'
-DEBUG = app_config.DEBUG 
-TEMPLATE_DEBUG = app_config.DEBUG 
+DEBUG = app_config.DEBUG
+TEMPLATE_DEBUG = app_config.DEBUG
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
@@ -35,6 +35,8 @@ ROOT_URLCONF = 'carebot.urls'
 WSGI_APPLICATION = 'carebot.wsgi.application'
 
 secrets = app_config.get_secrets()
+
+print secrets.get('POSTGRES_PASSWORD')
 
 DATABASES = {
     'default': {
