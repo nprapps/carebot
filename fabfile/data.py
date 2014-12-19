@@ -9,7 +9,7 @@ import json
 import yaml
 
 import boto
-from fabric.api import local, settings, task
+from fabric.api import local, settings, run, sudo, task
 from facebook import GraphAPI
 from jinja2 import Template
 from twitter import Twitter, OAuth
@@ -18,6 +18,9 @@ import app_config
 import copytext
 import flat
 import public_app
+import servers
+
+SERVER_POSTGRES_CMD = 'export PGPASSWORD=$carebot_POSTGRES_PASSWORD && %s --username=$carebot_POSTGRES_USER --host=$carebot_POSTGRES_HOST --port=$carebot_POSTGRES_PORT'
 
 @task(default=True)
 def update():
@@ -25,6 +28,24 @@ def update():
     Stub function for updating app-specific data.
     """
     #update_featured_social()
+
+@task
+def server_reset_db():
+    """
+    Reset the database on a server.
+    """
+    with settings(warn_only=True):
+        services = ['uwsgi']
+        for service in services:
+            service_name = servers._get_installed_service_name(service)
+            sudo('service %s stop' % service_name)
+
+        run(SERVER_POSTGRES_CMD % ('dropdb %s' % app_config.PROJECT_SLUG))
+        run(SERVER_POSTGRES_CMD % ('createdb %s' % app_config.PROJECT_SLUG))
+
+        for service in services:
+            service_name = servers._get_installed_service_name(service)
+            sudo('service %s start' % service_name)
 
 @task
 def local_reset_db():
@@ -50,6 +71,7 @@ def bootstrap_db():
 
             public_app.db.session.add(query)
             public_app.db.session.commit()
+
 
 @task
 def run_reports():
@@ -77,7 +99,7 @@ def run_reports():
     flat.deploy_file(
         s3,
         '/tmp/clan-index.html',
-        '%s/index.html' % (app_config.PROJECT_SLUG),
+        '%s/reports/index.html' % (app_config.PROJECT_SLUG),
         app_config.DEFAULT_MAX_AGE
     )
 
@@ -91,7 +113,7 @@ def run_reports():
         flat.deploy_file(
             s3,
             '/tmp/clan.html',
-            '%s/%s/index.html' % (app_config.PROJECT_SLUG, project.slug),
+            '%s/reports/%s/index.html' % (app_config.PROJECT_SLUG, project.slug),
             app_config.DEFAULT_MAX_AGE
         )
 

@@ -43,7 +43,7 @@ def build_connection_string():
         'user': secrets.get('POSTGRES_USER') or app_config.PROJECT_SLUG,
         'password': secrets.get('POSTGRES_PASSWORD') or None,
         'host': secrets.get('POSTGRES_HOST') or 'localhost',
-        'port': secrets.get('POSTGRES_PORT') or 5432
+        'port': secrets.get('POSTGRES_PORT') or '5432'
     }
 
     s = 'postgresql://'
@@ -51,7 +51,7 @@ def build_connection_string():
         s += DATABASE['user']
     if DATABASE['password']:
         s += ':%s' % DATABASE['password']
-    s += '@%(host)s:%(port)i/%(name)s' % DATABASE
+    s += '@%(host)s:%(port)s/%(name)s' % DATABASE
 
     return s
 
