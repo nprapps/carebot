@@ -42,7 +42,7 @@ DATABASES = {
         'NAME': app_config.PROJECT_SLUG,
         'USER': secrets.get('POSTGRES_USER') or app_config.PROJECT_SLUG,
         'PASSWORD': secrets.get('POSTGRES_PASSWORD'),
-        'HOST': secrets.get('postgres_host') or 'localhost',
+        'HOST': secrets.get('POSTGRES_HOST') or 'localhost',
         'PORT': secrets.get('POSTGRES_PORT') or '5432'
     }
 }
