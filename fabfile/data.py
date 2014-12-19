@@ -83,7 +83,7 @@ def bootstrap_db():
 
 @task
 def run_reports():
-    projects = public_app.Project.query.all()
+    projects = Project.objects.all()
 
     index_filename = 'clan_index.html'
     payload = {
