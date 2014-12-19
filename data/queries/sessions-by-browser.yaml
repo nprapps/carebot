@@ -1,0 +1,7 @@
+name: "Sessions by browser"
+metrics:
+    - "ga:sessions"
+dimensions:
+    - "ga:browser"
+sort:
+    - "-ga:sessions"

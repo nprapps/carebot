@@ -1,0 +1,4 @@
+name: "Email link clicked"
+metrics:
+    - "ga:totalEvents"
+filter: "ga:eventAction==email"

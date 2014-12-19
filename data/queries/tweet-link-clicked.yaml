@@ -1,0 +1,4 @@
+name: "Tweet link clicked"
+metrics:
+    - "ga:totalEvents"
+filter: "ga:eventAction==tweet"

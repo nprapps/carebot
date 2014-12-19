@@ -6,6 +6,7 @@ Commands that update or process the application data.
 from datetime import datetime
 from glob import glob
 import json
+import os
 import yaml
 
 import boto
@@ -61,16 +62,33 @@ def local_reset_db():
 def bootstrap_db():
     public_app.db.create_all()
 
-    for file in glob('data/queries/*.yaml'):
-        with open(file, 'r') as f:
+    for yaml_path in glob('data/queries/*.yaml'):
+        path, filename = os.path.split(yaml_path)
+        slug, ext = os.path.splitext(filename)
+        with open(yaml_path, 'r') as f:
             data = yaml.load(f)
 
             query = public_app.Query()
             query.name = data['name']
+            query.slug = slug
             query.clan_yaml = yaml.dump(data, indent=4)
 
             public_app.db.session.add(query)
             public_app.db.session.commit()
+
+    project = public_app.Project()
+    project.title = 'Best Songs 2014'
+    project.slug = public_app.slugify([project.title])
+    project.property_id = '53470309'
+    project.domain = 'apps.npr.org'
+    project.prefix = '/best-songs-2014/'
+    project.start_date = '2014-12-10'
+    for query in public_app.DEFAULT_QUERIES:
+        project.queries.append(public_app.Query.query.filter_by(slug=query).first())
+
+    public_app.db.session.add(project)
+    public_app.db.session.commit()
+
 
 
 @task

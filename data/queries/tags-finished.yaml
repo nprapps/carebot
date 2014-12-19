@@ -1,0 +1,10 @@
+name: "Tags finished"
+description: "Sorted by tags finished most often."
+metrics:
+    - "ga:totalEvents"
+dimensions:
+    - "ga:eventLabel"
+filter: "ga:eventAction==tag-finish"
+sort:
+    - "-ga:totalEvents"
+max-results: 20

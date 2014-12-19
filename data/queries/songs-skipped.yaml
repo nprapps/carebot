@@ -1,0 +1,10 @@
+name: "Songs skipped"
+description: "Sorted by songs skipped most often."
+metrics:
+    - "ga:totalEvents"
+dimensions:
+    - "ga:eventLabel"
+filter: "ga:eventAction==song-skip"
+sort:
+  - "-ga:totalEvents"
+max-results: 20

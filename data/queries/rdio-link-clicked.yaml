@@ -1,0 +1,4 @@
+name: "Rdio link clicked"
+metrics:
+    - "ga:totalEvents"
+filter: "ga:eventAction==rdio-click"

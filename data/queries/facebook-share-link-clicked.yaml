@@ -1,0 +1,4 @@
+name: "Facebook share link clicked"
+metrics:
+    - "ga:totalEvents"
+filter: "ga:eventAction==facebook"

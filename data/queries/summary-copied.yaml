@@ -1,0 +1,4 @@
+name: "Summary Copied"
+metrics:
+    - "ga:totalEvents"
+filter: "ga:eventAction==summary-copied"

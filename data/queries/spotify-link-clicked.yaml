@@ -1,0 +1,4 @@
+name: "Spotify link clicked"
+metrics:
+    - "ga:totalEvents"
+filter: "ga:eventAction==spotify-click"

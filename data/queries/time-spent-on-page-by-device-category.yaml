@@ -1,0 +1,8 @@
+name: "Time spent on page by device category"
+description: "Note: Time on page is an unreliable metric and not reliable except for comparison to other projects."
+metrics:
+    - "ga:avgTimeOnPage"
+dimensions:
+    - "ga:deviceCategory"
+sort:
+    - "-ga:avgTimeOnPage"

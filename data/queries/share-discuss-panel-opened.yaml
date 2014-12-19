@@ -1,0 +1,4 @@
+name: "Share/Discuss panel opened"
+metrics:
+    - "ga:totalEvents"
+filter: "ga:eventAction==open-share-discuss"

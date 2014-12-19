@@ -1,0 +1,7 @@
+name: "Sessions by referring social network"
+metrics:
+    - "ga:sessions"
+dimensions:
+    - "ga:socialNetwork"
+sort:
+    - "-ga:sessions"

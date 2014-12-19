@@ -1,0 +1,7 @@
+name: "Sessions by referring domain"
+metrics:
+    - "ga:sessions"
+dimensions:
+    - "ga:source"
+sort:
+    - "-ga:sessions"

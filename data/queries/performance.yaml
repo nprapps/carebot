@@ -1,0 +1,6 @@
+name: "Performance"
+metrics:
+    - "ga:avgPageLoadTime"
+    - "ga:avgPageDownloadTime"
+    - "ga:avgDomInteractiveTime"
+    - "ga:avgDomContentLoadedTime"

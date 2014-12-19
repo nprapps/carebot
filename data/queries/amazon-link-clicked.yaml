@@ -1,0 +1,4 @@
+name: "Amazon link clicked"
+metrics:
+    - "ga:totalEvents"
+filter: "ga:eventAction==amazon-click"

@@ -1,0 +1,7 @@
+name: "Totals"
+description: "Note: Sessions is the most important number for comparison."
+metrics:
+  - "ga:pageviews"
+  - "ga:uniquePageviews"
+  - "ga:users"
+  - "ga:sessions"

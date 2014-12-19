@@ -1,0 +1,4 @@
+name: "iTunes link clicked"
+metrics:
+    - "ga:totalEvents"
+filter: "ga:eventAction==itunes-click"

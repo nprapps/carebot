@@ -1,0 +1,10 @@
+name: "Tags selected"
+description: "Sorted by tags selected most often."
+metrics:
+    - "ga:totalEvents"
+dimensions:
+    - "ga:eventLabel"
+filter: "ga:eventAction==switch-tag"
+sort:
+    - "-ga:totalEvents"
+max-results: 20
