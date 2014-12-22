@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from django import forms
 from django.contrib import admin
 from grappelli.forms import GrappelliSortableHiddenMixin
 
@@ -11,7 +10,16 @@ class QueryAdmin(admin.ModelAdmin):
     """
     Admin for the Query model.
     """
-    fields = ('name', 'slug', 'clan_yaml')
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug')
+        }),
+        (None, {
+            'fields': ('clan_yaml',),
+            'classes': ('monospace',)
+        })
+    )
+
     prepopulated_fields = { 'slug': ('name',) }
 
 class ProjectQueryInline(GrappelliSortableHiddenMixin, admin.TabularInline):
