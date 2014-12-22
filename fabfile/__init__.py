@@ -11,11 +11,11 @@ import django
 django.setup()
 
 import app_config
+import flat
 
 # Other fabfiles
 import assets
 import data
-import flat
 import issues
 import text
 import utils
@@ -159,7 +159,6 @@ def deploy(remote='origin'):
             servers.deploy_confs()
 
     update()
-    render.render_all()
 
     # Clear files that should never be deployed
     local('rm -rf www/live-data')

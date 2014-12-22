@@ -112,16 +112,5 @@ def run_reports():
     )
 
     for project in projects:
-        with open('/tmp/clan.yaml', 'w') as f:
-            y = project.build_clan_yaml()
-            f.write(y)
-
-        local('clan report /tmp/clan.yaml /tmp/clan.html')
-
-        flat.deploy_file(
-            s3,
-            '/tmp/clan.html',
-            '%s/reports/%s/index.html' % (app_config.PROJECT_SLUG, project.slug),
-            app_config.DEFAULT_MAX_AGE
-        )
+        project.run_report(s3=s3)
 

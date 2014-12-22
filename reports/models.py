@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
 from datetime import datetime
-import yaml
+import subprocess
 
 from django.db import models
+import yaml
+
+import app_config
+import flat
 
 class Query(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
@@ -54,8 +58,26 @@ class Project(models.Model):
 
             data['queries'].append(y)
 
-        # snowman
         return yaml.safe_dump(data, encoding='utf-8', allow_unicode=True)
+
+    def run_report(self, s3=None):
+        with open('/tmp/clan.yaml', 'w') as f:
+            y = self.build_clan_yaml()
+            f.write(y)
+
+        subprocess.call(['clan', 'report', '/tmp/clan.yaml', '/tmp/clan.html'])
+
+        if not s3:
+            import boto
+
+            s3 = boto.connect_s3()
+
+        flat.deploy_file(
+            s3,
+            '/tmp/clan.html',
+            '%s/reports/%s/index.html' % (app_config.PROJECT_SLUG, self.slug),
+            app_config.DEFAULT_MAX_AGE
+        )
 
 class ProjectQuery(models.Model):
     project = models.ForeignKey(Project)
