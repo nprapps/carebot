@@ -30,7 +30,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'property_id', 'domain', 'prefix', 'start_date')
     list_display_links = ('title',)
     list_filter = ('property_id', 'domain')
-    search_fields = ('title')
+    search_fields = ('title',)
 
 admin.site.register(Query, QueryAdmin)
 admin.site.register(Project, ProjectAdmin)
