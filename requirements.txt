@@ -1,6 +1,5 @@
 Django==1.7.1
 Fabric==1.4.3
-Jinja2==2.7.3
 MarkupSafe==0.23
 PyYAML==3.11
 bcdoc==0.12.0
@@ -8,7 +7,6 @@ boto==2.34.0
 botocore==0.31.0
 clan==0.2.3
 colorama==0.2.5
-copytext==0.1.4
 cssmin==0.1.4
 django-grappelli==2.6.3
 django-sortedm2m==0.8.1

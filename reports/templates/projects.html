@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Carebot: Clan Reports</title>
+        <title>Projects :: carebot</title>
     </head>
     <body>
+        <h1>Projects</h1>
         <ul>
             {% for project in projects %}
-            <li><a href="{{ project.slug }}/">{{ project.name }}</a></li>
+            <li><a href="{{ project.url }}">{{ project.title }}</a></li>
             {% endfor %}
         </ul>
     </body>

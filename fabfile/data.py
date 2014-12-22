@@ -10,10 +10,8 @@ import yaml
 import boto
 from django.utils.text import slugify
 from fabric.api import local, settings, run, sudo, task
-from jinja2 import Template
 
 import app_config
-import flat
 import servers
 from reports.models import Project, Query, ProjectQuery
 
@@ -71,7 +69,7 @@ def bootstrap_db():
         property_id='53470309',
         domain='apps.npr.org',
         prefix='/best-songs-2014/',
-        start_date='2014-2-10'
+        start_date='2014-12-10'
     )
 
     for i, query_slug in enumerate(app_config.DEFAULT_QUERIES):
@@ -80,37 +78,4 @@ def bootstrap_db():
             query=Query.objects.get(slug=query_slug),
             order=i
         )
-
-@task
-def run_reports():
-    projects = Project.objects.all()
-
-    index_filename = 'clan_index.html'
-    payload = {
-        'projects': projects
-    }
-
-    with open('templates/%s' % index_filename) as f:
-        template = Template(f.read())
-
-    with open('/tmp/clan-index.html', 'w') as w:
-        rendered = template.render(**payload)
-
-        w.write(rendered)
-
-    s3 = boto.connect_s3()
-
-    # fake deployment target
-    if not app_config.DEPLOYMENT_TARGET:
-        app_config.configure_targets('staging')
-
-    flat.deploy_file(
-        s3,
-        '/tmp/clan-index.html',
-        '%s/reports/index.html' % (app_config.PROJECT_SLUG),
-        app_config.DEFAULT_MAX_AGE
-    )
-
-    for project in projects:
-        project.run_report(s3=s3)
 

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ project.title }} :: carebot</title>
+    </head>
+    <body>
+        <h1>{{ project.title }}</h1>
+        <ul>
+            {% for report in reports %}
+            <li><a href="{{ report.url }}">{{ report.ndays }}-days</a></li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

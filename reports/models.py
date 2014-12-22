@@ -3,8 +3,11 @@
 from datetime import date, datetime, timedelta
 import subprocess
 
+import boto
 from django.db import models
 from django.dispatch import receiver 
+from django.template import loader, Context
+from django.utils import timezone
 import yaml
 
 import app_config
@@ -33,13 +36,61 @@ class Project(models.Model):
     def __unicode__(self):
         return self.title
 
-    def run_reports(self, overwrite=False):
+    @property
+    def url(self):
+        return '/%s/%s/index.html' % (app_config.PROJECT_SLUG, self.slug)
+
+    @classmethod
+    def update_projects_index(cls, s3=None):
+        """
+        Render an index for all projects.
+        """
+        t = loader.get_template('projects.html')
+        c = Context({ 'projects': cls.objects.all() })
+
+        with open('/tmp/projects.html', 'w') as f:
+            f.write(t.render(c))
+
+        if not s3:
+            s3 = boto.connect_s3()
+
+        flat.deploy_file(
+            s3,
+            '/tmp/projects.html',
+            '/%s/index.html' % app_config.PROJECT_SLUG,
+            app_config.DEFAULT_MAX_AGE
+        )
+
+    def update_index(self, s3=None):
+        """
+        Render and deploy an index to this project's reports.
+        """
+        t = loader.get_template('project.html')
+        c = Context({
+            'project': self,
+            'reports': self.reports.exclude(last_run__isnull=True)
+        })
+
+        with open('/tmp/project.html', 'w') as f:
+            f.write(t.render(c))
+
+        if not s3:
+            s3 = boto.connect_s3()
+
+        flat.deploy_file(
+            s3,
+            '/tmp/project.html',
+            self.url,
+            app_config.DEFAULT_MAX_AGE
+        )
+
+    def run_reports(self, s3=None, overwrite=False):
         """
         Runs all reports, optionally overwriting existing results.
         """
         for report in self.reports.all():
             if overwrite or not report.last_run:
-                report.run()
+                report.run(s3=s3)
 
 @receiver(models.signals.post_save, sender=Project)
 def on_project_post_save(sender, instance, created, *args, **kwargs):
@@ -63,6 +114,10 @@ class Report(models.Model):
     ndays = models.PositiveIntegerField()
     results_json = models.TextField()
     last_run = models.DateTimeField(null=True)
+
+    @property
+    def url(self):
+        return '/%s/%s/%i-days/index.html' % (app_config.PROJECT_SLUG, self.project.slug, self.ndays)
 
     def is_timely(self):
         """
@@ -109,20 +164,18 @@ class Report(models.Model):
 
         with open('/tmp/clan.json') as f:
             self.results_json = f.read() 
-            self.last_run = datetime.now()
+            self.last_run = timezone.now()
             self.save()
 
         subprocess.call(['clan', 'report', '/tmp/clan.json', '/tmp/clan.html'])
 
         if not s3:
-            import boto
-
             s3 = boto.connect_s3()
 
         flat.deploy_file(
             s3,
             '/tmp/clan.html',
-            '%s/reports/%s/%i-days/index.html' % (app_config.PROJECT_SLUG, self.project.slug, self.ndays),
+            self.url,
             app_config.DEFAULT_MAX_AGE
         )
 
