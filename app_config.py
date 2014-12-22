@@ -141,6 +141,12 @@ DEFAULT_QUERIES = [
     'summary-copied'
 ]
 
+DEFAULT_REPORT_NDAYS = [
+    1,
+    7,
+    30
+]
+
 """
 Utilities
 """

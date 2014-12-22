@@ -6,6 +6,8 @@ Cron jobs
 
 from fabric.api import local, require, task
 
+from reports.models import Project
+
 @task
 def test():
     """
@@ -15,4 +17,12 @@ def test():
     require('settings', provided_by=['production', 'staging'])
 
     local('echo $DEPLOYMENT_TARGET > /tmp/cron_test.txt')
+
+@task
+def run_reports():
+    """
+    Run project reports.
+    """
+    for project in Project.objects.all():
+        project.run_reports()
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-from datetime import datetime
+from datetime import date, datetime, timedelta
 import subprocess
 
 from django.db import models
+from django.dispatch import receiver 
 import yaml
 
 import app_config
@@ -32,40 +33,86 @@ class Project(models.Model):
     def __unicode__(self):
         return self.title
 
+    def run_reports(self, overwrite=False):
+        """
+        Runs all reports, optionally overwriting existing results.
+        """
+        for report in self.reports.all():
+            if overwrite or not report.last_run:
+                report.run()
+
+@receiver(models.signals.post_save, sender=Project)
+def on_project_post_save(sender, instance, created, *args, **kwargs):
+    if created:
+        for ndays in app_config.DEFAULT_REPORT_NDAYS:
+            Report.objects.create(
+                project=instance,
+                ndays=ndays
+            )
+
+class ProjectQuery(models.Model):
+    project = models.ForeignKey(Project)
+    query = models.ForeignKey(Query)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ('order',)
+
+class Report(models.Model):
+    project = models.ForeignKey(Project, related_name='reports')
+    ndays = models.PositiveIntegerField()
+    results_json = models.TextField()
+    last_run = models.DateTimeField(null=True)
+
+    def is_timely(self):
+        """
+        Checks if it has been long enough to have data for this report.
+        """
+        return date.today() >= self.project.start_date + timedelta(days=self.ndays)
+
     def build_clan_yaml(self):
-        data = { }
+        """
+        Build YAML configuration for this report.
+        """
+        data = {}
 
-        if self.title:
-            data['title'] = self.title
+        data['title'] = self.project.title
+        data['property-id'] = self.project.property_id
+        data['domain'] = self.project.domain
+        data['prefix'] = self.project.prefix
+        data['start-date'] = datetime.strftime(self.project.start_date, '%Y-%m-%d')
+        data['ndays'] = self.ndays
+        data['queries'] = []
 
-        if self.property_id:
-            data['property-id'] = self.property_id
-        
-        if self.domain:
-            data['domain'] = self.domain
-        
-        if self.prefix:
-            data['prefix'] = self.prefix
-        
-        if self.start_date:
-            data['start-date'] = datetime.strftime(self.start_date, '%Y-%m-%d')
-        
-        if self.queries:
-            data['queries'] = []
-
-        for query in self.queries.all():
-            y = yaml.load(query.clan_yaml)
+        for project_query in ProjectQuery.objects.filter(project=self.project):
+            y = yaml.load(project_query.query.clan_yaml)
 
             data['queries'].append(y)
 
         return yaml.safe_dump(data, encoding='utf-8', allow_unicode=True)
 
-    def run_report(self, s3=None):
+    def run(self, s3=None):
+        """
+        Run this report, stash it's results and render it out to S3.
+        """
+        if not self.is_timely():
+            print 'Skipping %i-day report for %s (not timely).' % (self.ndays, self.project.title)
+            return
+            
+        print 'Running %i-day report for %s' % (self.ndays, self.project.title)
+
         with open('/tmp/clan.yaml', 'w') as f:
             y = self.build_clan_yaml()
             f.write(y)
 
-        subprocess.call(['clan', 'report', '/tmp/clan.yaml', '/tmp/clan.html'])
+        subprocess.call(['clan', 'report', '/tmp/clan.yaml', '/tmp/clan.json'])
+
+        with open('/tmp/clan.json') as f:
+            self.results_json = f.read() 
+            self.last_run = datetime.now()
+            self.save()
+
+        subprocess.call(['clan', 'report', '/tmp/clan.json', '/tmp/clan.html'])
 
         if not s3:
             import boto
@@ -75,14 +122,8 @@ class Project(models.Model):
         flat.deploy_file(
             s3,
             '/tmp/clan.html',
-            '%s/reports/%s/index.html' % (app_config.PROJECT_SLUG, self.slug),
+            '%s/reports/%s/%i-days/index.html' % (app_config.PROJECT_SLUG, self.project.slug, self.ndays),
             app_config.DEFAULT_MAX_AGE
         )
 
-class ProjectQuery(models.Model):
-    project = models.ForeignKey(Project)
-    query = models.ForeignKey(Query)
-    order = models.PositiveIntegerField()
 
-    class Meta:
-        ordering = ('order',)

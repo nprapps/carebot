@@ -4,7 +4,7 @@ from django.contrib import admin
 from grappelli.forms import GrappelliSortableHiddenMixin
 
 import app_config
-from reports.models import Query, Project, ProjectQuery
+from reports.models import Query, Project, ProjectQuery, Report
 
 class QueryAdmin(admin.ModelAdmin):
     """
@@ -96,6 +96,12 @@ class ProjectAdmin(admin.ModelAdmin):
     view_reports.allow_tags = True
     view_reports.short_description = 'Reports'
 
+class ReportAdmin(admin.ModelAdmin):
+    readonly_fields = ('results_json', 'last_run')
+    list_display = ('project', 'ndays', 'last_run')
+    list_display_links = ('ndays',)
+
 admin.site.register(Query, QueryAdmin)
 admin.site.register(Project, ProjectAdmin)
+admin.site.register(Report, ReportAdmin)
 
