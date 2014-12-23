@@ -4,6 +4,7 @@
 Cron jobs
 """
 import boto
+import boto.ses
 from fabric.api import local, require, task
 
 import app_config
