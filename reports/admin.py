@@ -30,19 +30,6 @@ class ProjectQueryInline(GrappelliSortableHiddenMixin, admin.TabularInline):
     extra = 3 
     sortable_field_name = 'order'
     
-def run_reports(model_admin, request, queryset):
-    """
-    Run reports for selected projects.
-    """
-    import boto
-
-    s3 = boto.connect_s3()
-
-    for model in queryset:
-        model.run_report(s3=s3)
-
-run_reports.short_description = 'Run reports'
-
 class ProjectAdmin(admin.ModelAdmin):
     """
     Admin for the Project model.
@@ -54,7 +41,6 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display_links = ('title',)
     list_filter = ('property_id', 'domain')
     search_fields = ('title',)
-    actions = (run_reports,)
 
     def change_view(self, *args, **kwargs):
         """
