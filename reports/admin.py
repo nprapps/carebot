@@ -4,7 +4,7 @@ from django.contrib import admin
 from grappelli.forms import GrappelliSortableHiddenMixin
 
 import app_config
-from reports.models import Query, Project, ProjectQuery, Report
+from reports.models import Query, Project, ProjectQuery, Social, Report
 
 class QueryAdmin(admin.ModelAdmin):
     """
@@ -37,7 +37,7 @@ class ProjectAdmin(admin.ModelAdmin):
     fields = ('title', 'slug', 'property_id', 'domain', 'prefix', 'start_date')
     prepopulated_fields = { 'slug': ('title',) }
 
-    list_display = ('title', 'property_id', 'domain', 'prefix', 'start_date', 'view_reports')
+    list_display = ('title', 'property_id', 'domain', 'prefix', 'start_date', 'social', 'view_reports')
     list_display_links = ('title',)
     list_filter = ('property_id', 'domain')
     search_fields = ('title',)
@@ -94,7 +94,12 @@ class ReportAdmin(admin.ModelAdmin):
     view_report.allow_tags = True
     view_report.short_description = 'View'
 
+class SocialAdmin(admin.ModelAdmin):
+    list_display = ('project', 'facebook_likes', 'facebook_shares', 'facebook_comments', 'twitter', 'google')
+    list_display_links = ('project',)
+
 admin.site.register(Query, QueryAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Report, ReportAdmin)
+admin.site.register(Social, SocialAdmin)
 

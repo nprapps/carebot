@@ -33,6 +33,8 @@ def run_reports(overwrite='false'):
     for project in Project.objects.all():
         print 'Running reports for %s' % project.title
         updated_reports.extend(project.run_reports(overwrite=overwrite))
+        print 'Updating social counts'
+        project.social.refresh()
 
     if updated_reports:
         print 'Sending notification email'

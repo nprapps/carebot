@@ -5,6 +5,49 @@
     </head>
     <body>
         <h1>{{ project.title }}</h1>
+        
+        <table>
+            <tr>
+                <td>Facebook likes</td>
+                <td>{{ project.social.facebook_likes }}</td>
+            </tr>
+
+            <tr>
+                <td>Facebook shares</td>
+                <td>{{ project.social.facebook_shares }}</td>
+            </tr>
+
+            <tr>
+                <td>Facebook comments</td>
+                <td>{{ project.social.facebook_comments }}</td>
+            </tr>
+
+            <tr>
+                <td>Twitter</td>
+                <td>{{ project.social.twitter }}</td>
+            </tr>
+
+            <tr>
+                <td>Google+</td>
+                <td>{{ project.social.google }}</td>
+            </tr>
+            
+            <tr>
+                <td>Pinterest</td>
+                <td>{{ project.social.pinterest }}</td>
+            </tr>
+            
+            <tr>
+                <td>LinkedIn</td>
+                <td>{{ project.social.linkedin }}</td>
+            </tr>
+            
+            <tr>
+                <td>StumbleUpon</td>
+                <td>{{ project.social.stumbleupon }}</td>
+            </tr>
+        </table>
+
         <ul>
             {% for report in reports %}
             <li><a href="{{ report.get_absolute_url }}">{{ report.ndays }}-day{{ report.ndays|pluralize }}</a></li>

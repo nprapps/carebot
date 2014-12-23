@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver 
 from django.utils import timezone
+import requests
 import yaml
 
 import app_config
@@ -63,6 +64,8 @@ def on_project_post_save(sender, instance, created, *args, **kwargs):
                 ndays=ndays
             )
 
+        Social.objects.create(project=instance)
+
 class ProjectQuery(models.Model):
     project = models.ForeignKey(Project)
     query = models.ForeignKey(Query)
@@ -79,7 +82,7 @@ class Report(models.Model):
     last_run = models.DateTimeField(null=True)
 
     class Meta:
-        ordering = ('project__title', 'ndays',)
+        ordering = ('project__start_date', 'ndays',)
 
     def get_absolute_url(self):
         return reverse('reports.views.report', args=[self.project.slug, unicode(self.ndays)])
@@ -140,3 +143,43 @@ class Report(models.Model):
 
         return True
 
+class Social(models.Model):
+    project = models.OneToOneField(Project, primary_key=True)
+
+    facebook_likes = models.PositiveIntegerField(default=0)
+    facebook_shares = models.PositiveIntegerField(default=0)
+    facebook_comments = models.PositiveIntegerField(default=0)
+    twitter = models.PositiveIntegerField(default=0)
+    google = models.PositiveIntegerField(default=0)
+    pinterest = models.PositiveIntegerField(default=0)
+    linkedin = models.PositiveIntegerField(default=0)
+    stumbleupon = models.PositiveIntegerField(default=0)
+
+    last_update = models.DateTimeField(null=True)
+
+    class Meta:
+        ordering = ('project__start_date',)
+
+    def __unicode__(self):
+        return 'Social counts for %s' % self.project.title
+
+    def refresh(self):
+        secrets = app_config.get_secrets()
+
+        url = 'http://%s%s' % (self.project.domain, self.project.prefix)
+        response = requests.get('https://free.sharedcount.com/url?apikey=%s&url=%s' % (secrets['SHAREDCOUNT_API_KEY'], url))
+
+        data = response.json()
+
+        self.facebook_likes = data['Facebook']['like_count']
+        self.facebook_shares = data['Facebook']['share_count']
+        self.facebook_comments = data['Facebook']['comment_count']
+        self.twitter = data['Twitter']
+        self.google = data['GooglePlusOne']
+        self.pinterest = data['Pinterest']
+        self.linkedin = data['LinkedIn']
+        self.stumbleupon = data['StumbleUpon']
+
+        self.last_update = timezone.now()
+
+        self.save()
