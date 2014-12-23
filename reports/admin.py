@@ -75,7 +75,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 )
 
     def view_reports(self, model):
-        url = '%s/reports/%s/' % (app_config.S3_BASE_URL, model.slug)
+        url = '%s/%s' % (app_config.S3_BASE_URL, model.url)
 
         return '<a href="%s">View</a>' % url
 
@@ -84,8 +84,19 @@ class ProjectAdmin(admin.ModelAdmin):
 
 class ReportAdmin(admin.ModelAdmin):
     readonly_fields = ('results_json', 'last_run')
-    list_display = ('project', 'ndays', 'last_run')
+    list_display = ('project', 'ndays', 'last_run', 'view_report')
     list_display_links = ('ndays',)
+
+    def view_report(self, model):
+        if not model.last_run:
+            return None
+        else:
+            url = '%s/%s' % (app_config.S3_BASE_URL, model.url)
+            
+            return '<a href="%s">View</a>' % url
+
+    view_report.allow_tags = True
+    view_report.short_description = 'View'
 
 admin.site.register(Query, QueryAdmin)
 admin.site.register(Project, ProjectAdmin)
