@@ -2,3 +2,5 @@ New reports:
 
 {% for report in reports %}
 * {{ report.project.title }} ({{ report.ndays }}-days): {{ app_config.S3_BASE_URL }}/{{ report.url }} {% endfor %}
+
+Carebot index: {{ app_config.S3_BASE_URL }}/index.html
