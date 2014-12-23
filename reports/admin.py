@@ -75,9 +75,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 )
 
     def view_reports(self, model):
-        url = '%s/%s' % (app_config.S3_BASE_URL, model.url)
-
-        return '<a href="%s">View</a>' % url
+        return '<a href="%s">View</a>' % model.get_absolute_url()
 
     view_reports.allow_tags = True
     view_reports.short_description = 'Reports'
@@ -91,9 +89,7 @@ class ReportAdmin(admin.ModelAdmin):
         if not model.last_run:
             return None
         else:
-            url = '%s/%s' % (app_config.S3_BASE_URL, model.url)
-            
-            return '<a href="%s">View</a>' % url
+            return '<a href="%s">View</a>' % model.get_absolute_url() 
 
     view_report.allow_tags = True
     view_report.short_description = 'View'

@@ -51,7 +51,7 @@ ASSETS_S3_BUCKET = {
 DEFAULT_MAX_AGE = 20
 
 PRODUCTION_SERVERS = ['cron.nprapps.org']
-STAGING_SERVERS = ['50.112.92.131']
+STAGING_SERVERS = ['cron-staging.nprapps.org']
 
 # Should code be deployed to the web/cron servers?
 DEPLOY_TO_SERVERS = True

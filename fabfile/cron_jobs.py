@@ -28,19 +28,11 @@ def run_reports(overwrite='false'):
     """
     overwrite = (overwrite == 'true') 
 
-    if app_config.DEPLOYMENT_TARGET:
-        s3 = boto.connect_s3()
-    else:
-        s3 = None
-
     updated_reports = []
 
     for project in Project.objects.all():
         print 'Running reports for %s' % project.title
-        updated_reports.extend(project.run_reports(s3=s3, overwrite=overwrite))
-        project.update_index(s3=s3)
-
-    Project.update_projects_index(s3=s3)
+        updated_reports.extend(project.run_reports(overwrite=overwrite))
 
     if updated_reports:
         print 'Sending notification email'

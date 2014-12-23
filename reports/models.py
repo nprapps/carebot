@@ -3,14 +3,13 @@
 from datetime import date, datetime, timedelta
 import subprocess
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver 
 from django.utils import timezone
 import yaml
 
 import app_config
-import flat
-from render_utils import render_to_file
 
 class Query(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
@@ -35,53 +34,10 @@ class Project(models.Model):
     def __unicode__(self):
         return self.title
 
-    @property
-    def url(self):
-        return '%s/index.html' % self.slug
+    def get_absolute_url(self):
+        return reverse('reports.views.project', args=[self.slug])
 
-    @classmethod
-    def update_projects_index(cls, s3=None):
-        """
-        Render an index for all projects.
-        """
-        render_to_file(
-            'projects.html',
-            {
-                'projects': cls.objects.all()
-            },
-            '/tmp/projects.html'
-        )
-
-        if s3:
-            flat.deploy_file(
-                s3,
-                '/tmp/projects.html',
-                '/%s/index.html' % app_config.PROJECT_SLUG,
-                app_config.DEFAULT_MAX_AGE
-            )
-
-    def update_index(self, s3=None):
-        """
-        Render and deploy an index to this project's reports.
-        """
-        render_to_file(
-            'project.html',
-            {
-                'project': self,
-                'reports': self.reports.exclude(last_run__isnull=True)
-            },
-            '/tmp/project.html'
-        )
-
-        if s3:
-            flat.deploy_file(
-                s3,
-                '/tmp/project.html',
-                '%s/%s' % (app_config.PROJECT_SLUG, self.url),
-                app_config.DEFAULT_MAX_AGE
-            )
-
-    def run_reports(self, s3=None, overwrite=False):
+    def run_reports(self, overwrite=False):
         """
         Runs all reports, optionally overwriting existing results.
         """
@@ -89,10 +45,12 @@ class Project(models.Model):
 
         for report in self.reports.all():
             if overwrite or not report.last_run:
-                updated = report.run(s3=s3)
+                updated = report.run()
 
                 if updated:
                     updated_reports.append(report)
+            else:
+                print 'Skipping %i-day report for %s (already run).' % (report.ndays, self.title)
 
         return updated_reports
 
@@ -117,14 +75,14 @@ class Report(models.Model):
     project = models.ForeignKey(Project, related_name='reports')
     ndays = models.PositiveIntegerField()
     results_json = models.TextField()
+    results_html = models.TextField()
     last_run = models.DateTimeField(null=True)
 
-    @property
-    def url(self):
-        if self.ndays == 1:
-            return '%s/%i-day/index.html' % (self.project.slug, self.ndays)
-        else:    
-            return '%s/%i-days/index.html' % (self.project.slug, self.ndays)
+    class Meta:
+        ordering = ('project__title', 'ndays',)
+
+    def get_absolute_url(self):
+        return reverse('reports.views.report', args=[self.project.slug, unicode(self.ndays)])
 
     def is_timely(self):
         """
@@ -153,7 +111,7 @@ class Report(models.Model):
 
         return yaml.safe_dump(data, encoding='utf-8', allow_unicode=True)
 
-    def run(self, s3=None):
+    def run(self):
         """
         Run this report, stash it's results and render it out to S3.
         """
@@ -172,17 +130,11 @@ class Report(models.Model):
         with open('/tmp/clan.json') as f:
             self.results_json = f.read() 
             self.last_run = timezone.now()
-            self.save()
 
         subprocess.call(['clan', 'report', '/tmp/clan.json', '/tmp/clan.html'])
 
-        if s3:
-            flat.deploy_file(
-                s3,
-                '/tmp/clan.html',
-                '%s/%s' % (app_config.PROJECT_SLUG, self.url),
-                app_config.DEFAULT_MAX_AGE
-            )
+        with open('/tmp/clan.html') as f:
+            self.results_html = f.read()
 
-        return True
+        self.save()
 
