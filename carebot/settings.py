@@ -59,9 +59,5 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-if app_config.DEPLOYMENT_TARGET == 'development':
-    STATIC_URL = '/static/'
-else:
-    STATIC_URL = '/carebot/static/'
-
+STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
