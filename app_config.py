@@ -49,7 +49,6 @@ ASSETS_S3_BUCKET = {
 }
 
 DEFAULT_MAX_AGE = 20
-ASSETS_MAX_AGE = 86400
 
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['50.112.92.131']
@@ -90,41 +89,6 @@ SERVERS = []
 SERVER_BASE_URL = None
 SERVER_LOG_PATH = None
 DEBUG = True
-
-"""
-COPY EDITING
-"""
-COPY_GOOGLE_DOC_URL = 'https://docs.google.com/spreadsheet/ccc?key=0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc&usp=drive_web#gid=1'
-COPY_PATH = 'data/copy.xlsx'
-
-"""
-SHARING
-"""
-SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET['bucket_name'], PROJECT_SLUG)
-
-"""
-ADS
-"""
-
-NPR_DFP = {
-    'STORY_ID': '1002',
-    'TARGET': 'homepage',
-    'ENVIRONMENT': 'NPRTEST',
-    'TESTSERVER': 'false'
-}
-
-"""
-SERVICES
-"""
-GOOGLE_ANALYTICS = {
-    'ACCOUNT_ID': 'UA-5828686-4',
-    'DOMAIN': PRODUCTION_S3_BUCKET['bucket_name'],
-    'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
-}
-
-DISQUS_API_KEY = 'tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW'
-DISQUS_UUID = 'f26f1c38-856a-11e4-950b-14109fed4b76'
-
 
 DEFAULT_QUERIES = [
     'totals',
@@ -194,7 +158,6 @@ def configure_targets(deployment_target):
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
-        DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
@@ -203,7 +166,6 @@ def configure_targets(deployment_target):
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
-        DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
     else:
         S3_BUCKET = None
@@ -212,7 +174,6 @@ def configure_targets(deployment_target):
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
         SERVER_LOG_PATH = '/tmp'
-        DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
 
     DEPLOYMENT_TARGET = deployment_target
