@@ -26,13 +26,13 @@ def run_reports(overwrite='false'):
     """
     overwrite = (overwrite == 'true') 
 
-    s3 = boto.connect_s3()
-
-    # fake deployment target
-    if not app_config.DEPLOYMENT_TARGET:
-        app_config.configure_targets('staging')
+    if app_config.DEPLOYMENT_TARGET:
+        s3 = boto.connect_s3()
+    else:
+        s3 = None
 
     for project in Project.objects.all():
+        print 'Running reports for %s' % project.title
         project.run_reports(s3=s3, overwrite=overwrite)
         project.update_index(s3=s3)
 

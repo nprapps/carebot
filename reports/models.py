@@ -3,7 +3,6 @@
 from datetime import date, datetime, timedelta
 import subprocess
 
-import boto
 from django.db import models
 from django.dispatch import receiver 
 from django.template import loader, Context
@@ -51,15 +50,13 @@ class Project(models.Model):
         with open('/tmp/projects.html', 'w') as f:
             f.write(t.render(c))
 
-        if not s3:
-            s3 = boto.connect_s3()
-
-        flat.deploy_file(
-            s3,
-            '/tmp/projects.html',
-            '/%s/index.html' % app_config.PROJECT_SLUG,
-            app_config.DEFAULT_MAX_AGE
-        )
+        if s3:
+            flat.deploy_file(
+                s3,
+                '/tmp/projects.html',
+                '/%s/index.html' % app_config.PROJECT_SLUG,
+                app_config.DEFAULT_MAX_AGE
+            )
 
     def update_index(self, s3=None):
         """
@@ -74,15 +71,13 @@ class Project(models.Model):
         with open('/tmp/project.html', 'w') as f:
             f.write(t.render(c))
 
-        if not s3:
-            s3 = boto.connect_s3()
-
-        flat.deploy_file(
-            s3,
-            '/tmp/project.html',
-            self.url,
-            app_config.DEFAULT_MAX_AGE
-        )
+        if s3:
+            flat.deploy_file(
+                s3,
+                '/tmp/project.html',
+                self.url,
+                app_config.DEFAULT_MAX_AGE
+            )
 
     def run_reports(self, s3=None, overwrite=False):
         """
@@ -169,14 +164,12 @@ class Report(models.Model):
 
         subprocess.call(['clan', 'report', '/tmp/clan.json', '/tmp/clan.html'])
 
-        if not s3:
-            s3 = boto.connect_s3()
-
-        flat.deploy_file(
-            s3,
-            '/tmp/clan.html',
-            self.url,
-            app_config.DEFAULT_MAX_AGE
-        )
+        if s3:
+            flat.deploy_file(
+                s3,
+                '/tmp/clan.html',
+                self.url,
+                app_config.DEFAULT_MAX_AGE
+            )
 
 
