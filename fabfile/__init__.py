@@ -11,13 +11,9 @@ import django
 django.setup()
 
 import app_config
-import flat
 
 # Other fabfiles
-import assets
 import data
-import issues
-import text
 import utils
 
 if app_config.DEPLOY_TO_SERVERS:
@@ -25,11 +21,6 @@ if app_config.DEPLOY_TO_SERVERS:
 
 if app_config.DEPLOY_CRONTAB:
     import cron_jobs
-
-# Bootstrap can only be run once, then it's disabled
-if app_config.PROJECT_SLUG == '$NEW_PROJECT_SLUG':
-    import bootstrap
-
 
 """
 Base configuration
@@ -123,15 +114,6 @@ has two primary functions: Pushing flat files to S3 and deploying
 code to a remote server if required.
 """
 @task
-def update():
-    """
-    Update all application data not in repository (copy, assets, etc).
-    """
-    text.update()
-    assets.sync()
-    data.update()
-
-@task
 def deploy(remote='origin'):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
@@ -148,34 +130,11 @@ def deploy(remote='origin'):
 
         servers.checkout_latest(remote)
 
-        # servers.fabcast('text.update')
-        # servers.fabcast('assets.sync')
-        # servers.fabcast('data.update')
-
         if app_config.DEPLOY_CRONTAB:
             servers.install_crontab()
 
         if app_config.DEPLOY_SERVICES:
             servers.deploy_confs()
-
-    update()
-
-    # Clear files that should never be deployed
-    local('rm -rf www/live-data')
-
-    flat.deploy_folder(
-        'www',
-        app_config.PROJECT_SLUG,
-        max_age=app_config.DEFAULT_MAX_AGE,
-        ignore=['www/assets/*']
-    )
-
-    flat.deploy_folder(
-        'www/assets',
-        '%s/assets' % app_config.PROJECT_SLUG,
-        max_age=app_config.ASSETS_MAX_AGE
-    )
-
 
 """
 Destruction
@@ -197,8 +156,6 @@ def shiva_the_destroyer():
     )
 
     with settings(warn_only=True):
-        flat.delete_folder(app_config.PROJECT_SLUG)
-
         if app_config.DEPLOY_TO_SERVERS:
             servers.delete_project()
 
