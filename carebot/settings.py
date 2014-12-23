@@ -61,3 +61,5 @@ USE_TZ = True
 
 STATIC_URL = '/%s/static/' % app_config.PROJECT_SLUG
 STATIC_ROOT = 'static'
+
+GRAPPELLI_ADMIN_TITLE = 'carebot'

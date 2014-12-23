@@ -138,3 +138,5 @@ class Report(models.Model):
 
         self.save()
 
+        return True
+
