@@ -86,7 +86,6 @@ def install_requirements():
     require('settings', provided_by=['production', 'staging'])
 
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
-    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__)
 
 @task
 def setup_logs():
@@ -232,6 +231,16 @@ def nuke_confs():
                 sudo('initctl reload-configuration')
             elif service == 'app':
                 sudo('rm %s' % app_config.UWSGI_SOCKET_PATH)
+
+"""
+Django
+"""
+
+@task
+def collectstatic():
+    require('settings', provided_by=['production', 'staging'])
+
+    run('%(SERVER_VIRTUALENV_PATH)s/bin/python %(SERVER_REPOSITORY_PATH)s/manage.py collectstatic --noinput' % app_config.__dict__)
 
 """
 Fabcasting
