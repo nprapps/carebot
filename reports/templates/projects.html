@@ -7,7 +7,7 @@
         <h1>Projects</h1>
         <ul>
             {% for project in projects %}
-            <li><a href="{{ project.url }}">{{ project.title }}</a></li>
+            <li><a href="{{ app_config.S3_BASE_URL }}/{{ project.url }}">{{ project.title }}</a></li>
             {% endfor %}
         </ul>
     </body>

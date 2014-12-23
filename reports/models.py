@@ -37,7 +37,7 @@ class Project(models.Model):
 
     @property
     def url(self):
-        return '/%s/%s/index.html' % (app_config.PROJECT_SLUG, self.slug)
+        return '%s/index.html' % self.slug
 
     @classmethod
     def update_projects_index(cls, s3=None):
@@ -77,7 +77,7 @@ class Project(models.Model):
             flat.deploy_file(
                 s3,
                 '/tmp/project.html',
-                self.url,
+                '%s/%s' % (app_config.PROJECT_SLUG, self.url),
                 app_config.DEFAULT_MAX_AGE
             )
 
@@ -121,7 +121,7 @@ class Report(models.Model):
 
     @property
     def url(self):
-        return '/%s/%s/%i-days/index.html' % (app_config.PROJECT_SLUG, self.project.slug, self.ndays)
+        return '%s/%i-days/index.html' % (self.project.slug, self.ndays)
 
     def is_timely(self):
         """
@@ -177,7 +177,7 @@ class Report(models.Model):
             flat.deploy_file(
                 s3,
                 '/tmp/clan.html',
-                self.url,
+                '%s/%s' % (app_config.PROJECT_SLUG, self.url),
                 app_config.DEFAULT_MAX_AGE
             )
 
