@@ -8,6 +8,7 @@ from fabric.api import local, require, task
 
 import app_config
 from reports.models import Project
+from render_utils import render_to_string
 
 @task
 def test():
@@ -31,10 +32,33 @@ def run_reports(overwrite='false'):
     else:
         s3 = None
 
+    updated_reports = []
+
     for project in Project.objects.all():
         print 'Running reports for %s' % project.title
-        project.run_reports(s3=s3, overwrite=overwrite)
+        updated_reports.extend(project.run_reports(s3=s3, overwrite=overwrite))
         project.update_index(s3=s3)
 
     Project.update_projects_index(s3=s3)
+
+    if updated_reports:
+        email_body = render_to_string(
+            'email.txt',
+            {
+                'reports': updated_reports 
+            },
+            '/tmp/email.txt'
+        )
+
+        if app_config.DEPLOYMENT_TARGET:
+            ses = boto.ses.connect_to_region(
+                app_config.S3_BUCKET['region']
+            )
+
+            ses.send_email(
+                app_config.EMAIL_SEND_ADDRESS,
+                'Carebot cares!',
+                email_body,
+                [app_config.EMAIL_NOTIFY_ADDRESS]
+            )
 

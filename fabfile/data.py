@@ -7,7 +7,6 @@ from glob import glob
 import os
 import yaml
 
-import boto
 from django.utils.text import slugify
 from fabric.api import local, settings, run, sudo, task
 

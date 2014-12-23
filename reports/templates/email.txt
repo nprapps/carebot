@@ -1,0 +1,5 @@
+New reports:
+
+{% for report in reports %}
+* {{ report.project.title }} ({{ report.ndays }}): {{ report.url }} 
+{% endfor %}

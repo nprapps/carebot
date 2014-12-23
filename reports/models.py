@@ -5,12 +5,12 @@ import subprocess
 
 from django.db import models
 from django.dispatch import receiver 
-from django.template import loader, Context
 from django.utils import timezone
 import yaml
 
 import app_config
 import flat
+from render_utils import render_to_file
 
 class Query(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
@@ -44,11 +44,13 @@ class Project(models.Model):
         """
         Render an index for all projects.
         """
-        t = loader.get_template('projects.html')
-        c = Context({ 'projects': cls.objects.all() })
-
-        with open('/tmp/projects.html', 'w') as f:
-            f.write(t.render(c))
+        render_to_file(
+            'projects.html',
+            {
+                'projects': cls.objects.all()
+            },
+            '/tmp/projects.html'
+        )
 
         if s3:
             flat.deploy_file(
@@ -62,14 +64,14 @@ class Project(models.Model):
         """
         Render and deploy an index to this project's reports.
         """
-        t = loader.get_template('project.html')
-        c = Context({
-            'project': self,
-            'reports': self.reports.exclude(last_run__isnull=True)
-        })
-
-        with open('/tmp/project.html', 'w') as f:
-            f.write(t.render(c))
+        render_to_file(
+            'project.html',
+            {
+                'project': self,
+                'reports': self.reports.exclude(last_run__isnull=True)
+            },
+            '/tmp/project.html'
+        )
 
         if s3:
             flat.deploy_file(
@@ -83,9 +85,16 @@ class Project(models.Model):
         """
         Runs all reports, optionally overwriting existing results.
         """
+        updated_reports = []
+
         for report in self.reports.all():
             if overwrite or not report.last_run:
-                report.run(s3=s3)
+                updated = report.run(s3=s3)
+
+                if updated:
+                    updated_reports.append(report)
+
+        return updated_reports
 
 @receiver(models.signals.post_save, sender=Project)
 def on_project_post_save(sender, instance, created, *args, **kwargs):
@@ -147,7 +156,7 @@ class Report(models.Model):
         """
         if not self.is_timely():
             print 'Skipping %i-day report for %s (not timely).' % (self.ndays, self.project.title)
-            return
+            return False
             
         print 'Running %i-day report for %s' % (self.ndays, self.project.title)
 
@@ -172,4 +181,5 @@ class Report(models.Model):
                 app_config.DEFAULT_MAX_AGE
             )
 
+        return True
 

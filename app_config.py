@@ -147,6 +147,9 @@ DEFAULT_REPORT_NDAYS = [
     30
 ]
 
+EMAIL_SEND_ADDRESS = 'nprapps@npr.org'
+EMAIL_NOTIFY_ADDRESS = 'nprapps@npr.org'
+
 """
 Utilities
 """
