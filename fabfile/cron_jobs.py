@@ -43,6 +43,8 @@ def run_reports(overwrite='false'):
     Project.update_projects_index(s3=s3)
 
     if updated_reports:
+        print 'Sending notification email'
+
         email_body = render_to_string(
             'email.txt',
             {
