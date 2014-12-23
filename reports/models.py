@@ -121,7 +121,10 @@ class Report(models.Model):
 
     @property
     def url(self):
-        return '%s/%i-days/index.html' % (self.project.slug, self.ndays)
+        if self.ndays == 1:
+            return '%s/%i-day/index.html' % (self.project.slug, self.ndays)
+        else:    
+            return '%s/%i-days/index.html' % (self.project.slug, self.ndays)
 
     def is_timely(self):
         """

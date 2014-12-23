@@ -7,7 +7,7 @@
         <h1>{{ project.title }}</h1>
         <ul>
             {% for report in reports %}
-            <li><a href="{{ app_config.S3_BASE_URL }}/{{ report.url }}">{{ report.ndays }}-days</a></li>
+            <li><a href="{{ app_config.S3_BASE_URL }}/{{ report.url }}">{{ report.ndays }}-day{{ report.ndays|pluralize }}</a></li>
             {% endfor %}
         </ul>
     </body>
