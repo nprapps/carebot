@@ -70,10 +70,29 @@ def compare(request, slug, ndays):
         report__ndays=ndays
     )
 
+    projects = []
+    results = OrderedDict()
+
+    # Build comparison table
+    for qr in query_results:
+        project = qr.report.project
+        projects.append(project)
+
+        for metric in qr.metrics.all():
+            if metric.name not in results:
+                results[metric.name] = OrderedDict()
+
+            for dimension in metric.dimensions.all():
+                if dimension.name not in results[metric.name]:
+                    results[metric.name][dimension.name] = []
+
+                results[metric.name][dimension.name].append(dimension)
+
     context = {
         'query': query,
         'ndays': ndays,
-        'query_results': query_results
+        'projects': projects,
+        'results': results
     }
 
-    return render(request, 'query.html', context)
+    return render(request, 'compare.html', context)

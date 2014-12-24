@@ -279,8 +279,8 @@ class Metric(models.Model):
         return self.name
 
     @property
-    def definition(self):
-        return FIELD_DEFINITIONS[self.name]
+    def display_name(self):
+        return FIELD_DEFINITIONS[self.name]['uiName']
 
 class Dimension(models.Model):
     """
