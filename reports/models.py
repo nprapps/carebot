@@ -142,7 +142,7 @@ class Report(models.Model):
             self.last_run = timezone.now()
 
         # Delete existing results
-        self.metrics.all().delete()
+        self.query_results.all().delete()
 
         data = json.loads(self.results_json)
         i = 0
@@ -155,8 +155,14 @@ class Report(models.Model):
             qr = QueryResult(
                 report=self,
                 query=query,
-                order=i
+                order=i,
+                sampled=result['sampled']
             )
+
+            if result['sampled']:
+                qr.sample_size = result['sampleSize']
+                qr.sample_space = result['sampleSpace']
+                qr.sample_percent = result['sampleSize'] / result['sampleSpace'] * 100
 
             qr.save()
 
@@ -205,6 +211,11 @@ class QueryResult(models.Model):
     report = models.ForeignKey(Report, related_name='query_results')
     query = models.ForeignKey(Query, related_name='query_results')
     order = models.PositiveIntegerField()
+
+    sampled = models.BooleanField(default=False)
+    sample_size = models.PositiveIntegerField(default=0)
+    sample_space = models.PositiveIntegerField(default=0)
+    sample_percent = models.FloatField(default=100)
 
     class Meta:
         ordering = ('report', 'order')

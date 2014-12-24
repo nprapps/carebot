@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('order', models.PositiveIntegerField()),
-                ('dimension', models.CharField(max_length=128)),
+                ('name', models.CharField(max_length=128)),
                 ('_value', models.CharField(max_length=128)),
                 ('percent_of_total', models.FloatField(null=True)),
             ],
@@ -81,7 +81,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('order', models.PositiveIntegerField()),
-                ('query', models.ForeignKey(related_name='metrics', to='reports.Query')),
+                ('sampled', models.BooleanField()),
+                ('sample_size', models.PositiveIntegerField(default=0)),
+                ('sample_space', models.PositiveIntegerField(default=0)),
+                ('sample_percent', models.FloatField(default=100)),
+                ('query', models.ForeignKey(related_name='query_results', to='reports.Query')),
             ],
             options={
                 'ordering': ('report', 'order'),
@@ -129,7 +133,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='queryresult',
             name='report',
-            field=models.ForeignKey(related_name='metrics', to='reports.Report'),
+            field=models.ForeignKey(related_name='query_results', to='reports.Report'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -153,13 +157,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='metric',
             name='query_result',
-            field=models.ForeignKey(to='reports.QueryResult'),
+            field=models.ForeignKey(related_name='metrics', to='reports.QueryResult'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='dimension',
             name='metric',
-            field=models.ForeignKey(to='reports.Metric'),
+            field=models.ForeignKey(related_name='dimensions', to='reports.Metric'),
             preserve_default=True,
         ),
     ]
