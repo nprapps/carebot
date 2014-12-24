@@ -6,7 +6,7 @@ from itertools import izip
 import json
 import subprocess
 
-from clan.utils import load_field_definitions
+from clan import utils as clan_utils
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver 
@@ -15,8 +15,9 @@ import requests
 import yaml
 
 import app_config
+import utils
 
-FIELD_DEFINITIONS = load_field_definitions()
+FIELD_DEFINITIONS = clan_utils.load_field_definitions()
 
 class Query(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
@@ -208,8 +209,8 @@ class Report(models.Model):
                         _value=value
                     )
 
-                    if data_type == 'INTEGER': 
-                        d.percent_of_total = value / total * 100
+                    if data_type in 'INTEGER': 
+                        d.percent_of_total = float(value) / total * 100
 
                     d.save()
 
@@ -270,12 +271,21 @@ class Dimension(models.Model):
             return int(self._value)
         elif self.metric.data_type == 'STRING':
             return self._value
-        elif self.metric.data_type == 'PERCENT':
+        elif self.metric.data_type in ['FLOAT', 'PERCENT', 'TIME', 'CURRENCY']:
             return float(self._value)
+
+        return None
+
+    @property
+    def value_formatted(self):
+        if self.metric.data_type == 'INTEGER':
+            return utils.format_comma(int(self._value))
+        elif self.metric.data_type == 'STRING':
+            return self._value
+        elif self.metric.data_type in ['FLOAT', 'PERCENT', 'CURRENCY']:
+            return '%.1f' % float(self._value)
         elif self.metric.data_type == 'TIME':
-            return float(self._value)
-        elif self.metric.data_type == 'CURRENCY':
-            raise ValueError('Currency data type is not supported.')
+            return clan_utils.format_duration(float(self._value))
 
         return None
 

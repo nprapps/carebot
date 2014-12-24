@@ -52,8 +52,8 @@
                             <tr class="{% if dimension.name == 'total' %}total{% endif %}">
                                 <td>{{ dimension.name }}</td>
 
-                                <td class="value">{{ dimension.value }}</td>
-                                <td class="percent">{{ dimension.percent_of_total }}</td>
+                                <td class="value">{{ dimension.value_formatted }}</td>
+                                <td class="percent">{% if dimension.percent_of_total %}{{ dimension.percent_of_total|floatformat:"1" }}{% else %}-{% endif %}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
