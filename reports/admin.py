@@ -60,22 +60,6 @@ class ProjectAdmin(admin.ModelAdmin):
 
         return super(ProjectAdmin, self).add_view(*args, **kwargs)
 
-    def save_model(self, request, obj, form, change):
-        """
-        Save the model, adding references to default queries if needed.
-        """
-        add_default_queries = not bool(obj.pk)
-
-        obj.save()
-
-        if add_default_queries:
-            for i, query_slug in enumerate(app_config.DEFAULT_QUERIES):
-                models.ProjectQuery.objects.create(
-                    project=obj,
-                    query=models.Query.objects.get(slug=query_slug),
-                    order=i
-                )
-
     def view_reports(self, model):
         return '<a href="%s">View</a>' % model.get_absolute_url()
 

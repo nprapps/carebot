@@ -20,6 +20,9 @@ import utils
 FIELD_DEFINITIONS = clan_utils.load_field_definitions()
 
 class Query(models.Model):
+    """
+    A clan query.
+    """
     slug = models.SlugField(max_length=128, unique=True)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=256, default='')
@@ -42,6 +45,9 @@ class Query(models.Model):
         return data 
 
 class Project(models.Model):
+    """
+    A project (app/site).
+    """
     slug = models.SlugField(max_length=128, unique=True)
     title = models.CharField(max_length=128)
     property_id = models.CharField(max_length=10, default='53470309')
@@ -78,7 +84,17 @@ class Project(models.Model):
 
 @receiver(models.signals.post_save, sender=Project)
 def on_project_post_save(sender, instance, created, *args, **kwargs):
+    """
+    Create default reports for a new project.
+    """
     if created:
+        for i, query_slug in enumerate(app_config.DEFAULT_QUERIES):
+            ProjectQuery.objects.create(
+                project=instance,
+                query=Query.objects.get(slug=query_slug),
+                order=i
+            )
+
         for ndays in app_config.DEFAULT_REPORT_NDAYS:
             Report.objects.create(
                 project=instance,
@@ -88,6 +104,9 @@ def on_project_post_save(sender, instance, created, *args, **kwargs):
         Social.objects.create(project=instance)
 
 class ProjectQuery(models.Model):
+    """
+    M2M relationship between Projects and Queries.
+    """
     project = models.ForeignKey(Project, related_name='project_queries')
     query = models.ForeignKey(Query, related_name='project_queries')
     order = models.PositiveIntegerField()
@@ -96,6 +115,9 @@ class ProjectQuery(models.Model):
         ordering = ('order',)
 
 class Report(models.Model):
+    """
+    A report for a given project over some number of days.
+    """
     project = models.ForeignKey(Project, related_name='reports')
     ndays = models.PositiveIntegerField()
     results_json = models.TextField()
@@ -225,6 +247,9 @@ class Report(models.Model):
         return True
 
 class QueryResult(models.Model):
+    """
+    The results of a query for a certain report.
+    """
     report = models.ForeignKey(Report, related_name='query_results')
     query = models.ForeignKey(Query, related_name='query_results')
     order = models.PositiveIntegerField()
@@ -238,6 +263,9 @@ class QueryResult(models.Model):
         ordering = ('report', 'order')
 
 class Metric(models.Model):
+    """
+    The results for a specific metric.
+    """
     query_result = models.ForeignKey(QueryResult, related_name='metrics')
     order = models.PositiveIntegerField()
 
@@ -255,6 +283,9 @@ class Metric(models.Model):
         return FIELD_DEFINITIONS[self.name]
 
 class Dimension(models.Model):
+    """
+    Results for one dimension of a metric.
+    """
     metric = models.ForeignKey(Metric, related_name='dimensions')
     order = models.PositiveIntegerField()
 
@@ -290,6 +321,9 @@ class Dimension(models.Model):
         return None
 
 class Social(models.Model):
+    """
+    Social count data for a project. NOT timeboxed.
+    """
     project = models.OneToOneField(Project, primary_key=True)
 
     facebook_likes = models.PositiveIntegerField(default=0)

@@ -12,7 +12,7 @@ from fabric.api import local, settings, run, sudo, task
 
 import app_config
 import servers
-from reports.models import Project, Query, ProjectQuery
+from reports.models import Project, Query
 
 SERVER_POSTGRES_CMD = 'export PGPASSWORD=$carebot_POSTGRES_PASSWORD && %s --username=$carebot_POSTGRES_USER --host=$carebot_POSTGRES_HOST --port=$carebot_POSTGRES_PORT'
 
@@ -72,7 +72,7 @@ def bootstrap_db():
 
             q.save()
 
-    best_songs = Project.objects.create(
+    Project.objects.create(
         title='Best Songs 2014',
         slug=slugify(u'Best Songs 2014'),
         property_id='53470309',
@@ -81,7 +81,7 @@ def bootstrap_db():
         start_date='2014-12-10'
     )
 
-    best_books = Project.objects.create(
+    Project.objects.create(
         title='Best Books 2014',
         slug=slugify(u'Best Books 2014'),
         property_id='53470309',
@@ -89,12 +89,4 @@ def bootstrap_db():
         prefix='/best-books-2014/',
         start_date='2014-12-03'
     )
-
-    for project in [best_songs, best_books]:
-        for i, query_slug in enumerate(app_config.DEFAULT_QUERIES):
-            ProjectQuery.objects.create(
-                project=project,
-                query=Query.objects.get(slug=query_slug),
-                order=i
-            )
 
