@@ -3,13 +3,11 @@
 from collections import OrderedDict
 import json
 
-from clan.utils import GLOBAL_ARGUMENTS, load_field_definitions
+from clan.utils import GLOBAL_ARGUMENTS
 from django.shortcuts import render
 from django.template.defaulttags import register
 
 from reports.models import Project, Report
-
-FIELD_DEFINITIONS = load_field_definitions()
 
 @register.filter
 def get(dictionary, key):
@@ -47,9 +45,8 @@ def report(request, slug, ndays):
             global_args[arg] = data[arg]
 
     context = {
-        'field_definitions': FIELD_DEFINITIONS,
         'global_args': global_args,
-        'report': data 
+        'report': obj 
     }
 
     return render(request, 'report.html', context)

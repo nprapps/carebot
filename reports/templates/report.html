@@ -23,24 +23,17 @@
                 </tbody>
             </table>
 
-            {% for query in report.queries %}
+            {% for query_result in report.query_results.all %}
             <div class="query">
-                <h3>{{ query.config.name }}</h3>
+                <h3>{{ query_result.query.name }}</h3>
 
-                {% if query.config.description %}
-                <p class="description">{{ query.config.description }}</p>
-                {% endif %}
-
-                {% for metric, data in query.data.items %}
+                {% for metric in query_result.metrics.all %}
                 <div class="metric">
-                    {% if metric in field_definitions %}
                     <h4>
-                        {{ field_definitions|get:metric|get:'uiName' }}
-                        <span class="ga-name">{{ metric }}</span>
+                        {{ metric.definition.uiName }}
+                        <span class="ga-name">{{ metric.name }}</span>
                     </h4>
-                    {% else %}
-                    <h4>{{ metric }}</h4>
-                    {% endif %}
+                    <h4>{{ metric.name }}</h4>
 
                     <table class="table table-striped table-bordered table-consdensed">
                         <thead>
@@ -51,29 +44,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for label, value in data.items %}
-                            <tr class="{% if label == 'total' %}total{% endif %}">
-                                <td>{{ label }}</td>
+                            {% for dimension in metric.dimensions.all %}
+                            <tr class="{% if dimension.name == 'total' %}total{% endif %}">
+                                <td>{{ dimension.name }}</td>
 
-                                {% with data_type=query.data_types|get:metric %}
-
-                                {% if data_type == 'INTEGER' %}
-                                <td class="value">{{ value }}</td>
-                                <td class="percent">
-                                    {% if total > 0 %}
-                                    value
-                                    {% else %}
-                                    -
-                                    {% endif %}
-                                </td>
-                                {% elif data_type == 'TIME' %}
-                                <td class="value">value</td>
-                                <td class="percent">-</td>
-                                {% else %}
-                                <td class="value">value</td>
-                                <td class="percent">-</td>
-                                {% endif %}
-                                {% endwith %}
+                                <td class="value">{{ dimension.value }}</td>
+                                <td class="percent">{{ dimension.percent_of_total }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

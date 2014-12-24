@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
 from datetime import date, datetime, timedelta
+from itertools import izip
+import json
 import subprocess
 
+from clan.utils import load_field_definitions
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver 
@@ -11,6 +14,8 @@ import requests
 import yaml
 
 import app_config
+
+FIELD_DEFINITIONS = load_field_definitions()
 
 class Query(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
@@ -67,8 +72,8 @@ def on_project_post_save(sender, instance, created, *args, **kwargs):
         Social.objects.create(project=instance)
 
 class ProjectQuery(models.Model):
-    project = models.ForeignKey(Project)
-    query = models.ForeignKey(Query)
+    project = models.ForeignKey(Project, related_name='project_queries')
+    query = models.ForeignKey(Query, related_name='project_queries')
     order = models.PositiveIntegerField()
 
     class Meta:
@@ -78,11 +83,13 @@ class Report(models.Model):
     project = models.ForeignKey(Project, related_name='reports')
     ndays = models.PositiveIntegerField()
     results_json = models.TextField()
-    results_html = models.TextField()
     last_run = models.DateTimeField(null=True)
 
     class Meta:
         ordering = ('project__start_date', 'ndays',)
+
+    def __unicode__(self):
+        return '%s (%i-day%s)' % (self.project.title, self.ndays, 's' if self.ndays > 1 else '')
 
     def get_absolute_url(self):
         return reverse('reports.views.report', args=[self.project.slug, unicode(self.ndays)])
@@ -134,14 +141,116 @@ class Report(models.Model):
             self.results_json = f.read() 
             self.last_run = timezone.now()
 
-        subprocess.call(['clan', 'report', '/tmp/clan.json', '/tmp/clan.html'])
+        # Delete existing results
+        self.metrics.all().delete()
 
-        with open('/tmp/clan.html') as f:
-            self.results_html = f.read()
+        data = json.loads(self.results_json)
+        i = 0
+
+        for project_query, result in izip(self.project.project_queries.all(), data['queries']):
+            query = project_query.query
+            metrics = result['config']['metrics']
+            data_types = result['data_types']
+
+            qr = QueryResult(
+                report=self,
+                query=query,
+                order=i
+            )
+
+            qr.save()
+
+            j = 0
+
+            for metric in metrics:
+                dimensions = result['data'][metric]
+                data_type = data_types[metric]
+                total = result['data'][metric]['total']
+
+                m = Metric(
+                    query_result=qr,
+                    order=j,
+                    name=metric,
+                    data_type=data_type
+                )
+
+                m.save()
+
+                k = 0
+
+                for dimension, value in dimensions.items():
+                    d = Dimension(
+                        metric=m,
+                        order=k,
+                        name=dimension,
+                        _value=value
+                    )
+
+                    if data_type == 'INTEGER': 
+                        d.percent_of_total = value / total * 100
+
+                    d.save()
+
+                    k += 1
+                
+                j += 1
+                
+            i += 1
 
         self.save()
 
         return True
+
+class QueryResult(models.Model):
+    report = models.ForeignKey(Report, related_name='query_results')
+    query = models.ForeignKey(Query, related_name='query_results')
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ('report', 'order')
+
+class Metric(models.Model):
+    query_result = models.ForeignKey(QueryResult, related_name='metrics')
+    order = models.PositiveIntegerField()
+
+    name = models.CharField(max_length=128)
+    data_type = models.CharField(max_length=30)
+
+    class Meta:
+        ordering = ('query_result', 'order')
+
+    def __unicode__(self):
+        return self.name
+
+    @property
+    def definition(self):
+        return FIELD_DEFINITIONS[self.name]
+
+class Dimension(models.Model):
+    metric = models.ForeignKey(Metric, related_name='dimensions')
+    order = models.PositiveIntegerField()
+
+    name = models.CharField(max_length=128)
+    _value = models.CharField(max_length=128)
+    percent_of_total = models.FloatField(null=True)
+
+    class Meta:
+        ordering = ('metric', 'order')
+
+    @property
+    def value(self):
+        if self.metric.data_type == 'INTEGER':
+            return int(self._value)
+        elif self.metric.data_type == 'STRING':
+            return self._value
+        elif self.metric.data_type == 'PERCENT':
+            return float(self._value)
+        elif self.metric.data_type == 'TIME':
+            return float(self._value)
+        elif self.metric.data_type == 'CURRENCY':
+            raise ValueError('Currency data type is not supported.')
+
+        return None
 
 class Social(models.Model):
     project = models.OneToOneField(Project, primary_key=True)
@@ -168,6 +277,10 @@ class Social(models.Model):
 
         url = 'http://%s%s' % (self.project.domain, self.project.prefix)
         response = requests.get('https://free.sharedcount.com/url?apikey=%s&url=%s' % (secrets['SHAREDCOUNT_API_KEY'], url))
+
+        if response.status_code != 200:
+            print 'Failed to refresh social data from SharedCount.'
+            return
 
         data = response.json()
 

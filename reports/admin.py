@@ -4,7 +4,7 @@ from django.contrib import admin
 from grappelli.forms import GrappelliSortableHiddenMixin
 
 import app_config
-from reports.models import Query, Project, ProjectQuery, Social, Report
+from reports import models
 
 class QueryAdmin(admin.ModelAdmin):
     """
@@ -26,7 +26,7 @@ class ProjectQueryInline(GrappelliSortableHiddenMixin, admin.TabularInline):
     """
     Admin for the ProjectQuery M2M inline.
     """
-    model = ProjectQuery
+    model = models.ProjectQuery
     extra = 3 
     sortable_field_name = 'order'
     
@@ -68,9 +68,9 @@ class ProjectAdmin(admin.ModelAdmin):
 
         if add_default_queries:
             for i, query_slug in enumerate(app_config.DEFAULT_QUERIES):
-                ProjectQuery.objects.create(
+                models.ProjectQuery.objects.create(
                     project=obj,
-                    query=Query.objects.get(slug=query_slug),
+                    query=models.Query.objects.get(slug=query_slug),
                     order=i
                 )
 
@@ -98,8 +98,11 @@ class SocialAdmin(admin.ModelAdmin):
     list_display = ('project', 'facebook_likes', 'facebook_shares', 'facebook_comments', 'twitter', 'google')
     list_display_links = ('project',)
 
-admin.site.register(Query, QueryAdmin)
-admin.site.register(Project, ProjectAdmin)
-admin.site.register(Report, ReportAdmin)
-admin.site.register(Social, SocialAdmin)
+admin.site.register(models.Query, QueryAdmin)
+admin.site.register(models.Project, ProjectAdmin)
+admin.site.register(models.Report, ReportAdmin)
+admin.site.register(models.Social, SocialAdmin)
 
+admin.site.register(models.QueryResult)
+admin.site.register(models.Metric)
+admin.site.register(models.Dimension)

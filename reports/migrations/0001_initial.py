@@ -11,6 +11,33 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Dimension',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.PositiveIntegerField()),
+                ('dimension', models.CharField(max_length=128)),
+                ('_value', models.CharField(max_length=128)),
+                ('percent_of_total', models.FloatField(null=True)),
+            ],
+            options={
+                'ordering': ('metric', 'order'),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Metric',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.PositiveIntegerField()),
+                ('name', models.CharField(max_length=128)),
+                ('data_type', models.CharField(max_length=30)),
+            ],
+            options={
+                'ordering': ('query_result', 'order'),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Project',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -22,6 +49,7 @@ class Migration(migrations.Migration):
                 ('start_date', models.DateField()),
             ],
             options={
+                'ordering': ('start_date',),
             },
             bases=(models.Model,),
         ),
@@ -29,10 +57,10 @@ class Migration(migrations.Migration):
             name='ProjectQuery',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('order', models.IntegerField()),
-                ('project', models.ForeignKey(to='reports.Project')),
+                ('order', models.PositiveIntegerField()),
             ],
             options={
+                'ordering': ('order',),
             },
             bases=(models.Model,),
         ),
@@ -48,16 +76,90 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.CreateModel(
+            name='QueryResult',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('order', models.PositiveIntegerField()),
+                ('query', models.ForeignKey(related_name='metrics', to='reports.Query')),
+            ],
+            options={
+                'ordering': ('report', 'order'),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Report',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('ndays', models.PositiveIntegerField()),
+                ('results_json', models.TextField()),
+                ('last_run', models.DateTimeField(null=True)),
+            ],
+            options={
+                'ordering': ('project__start_date', 'ndays'),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Social',
+            fields=[
+                ('project', models.OneToOneField(primary_key=True, serialize=False, to='reports.Project')),
+                ('facebook_likes', models.PositiveIntegerField(default=0)),
+                ('facebook_shares', models.PositiveIntegerField(default=0)),
+                ('facebook_comments', models.PositiveIntegerField(default=0)),
+                ('twitter', models.PositiveIntegerField(default=0)),
+                ('google', models.PositiveIntegerField(default=0)),
+                ('pinterest', models.PositiveIntegerField(default=0)),
+                ('linkedin', models.PositiveIntegerField(default=0)),
+                ('stumbleupon', models.PositiveIntegerField(default=0)),
+                ('last_update', models.DateTimeField(null=True)),
+            ],
+            options={
+                'ordering': ('project__start_date',),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='report',
+            name='project',
+            field=models.ForeignKey(related_name='reports', to='reports.Project'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='queryresult',
+            name='report',
+            field=models.ForeignKey(related_name='metrics', to='reports.Report'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='projectquery',
+            name='project',
+            field=models.ForeignKey(related_name='project_queries', to='reports.Project'),
+            preserve_default=True,
+        ),
         migrations.AddField(
             model_name='projectquery',
             name='query',
-            field=models.ForeignKey(to='reports.Query'),
+            field=models.ForeignKey(related_name='project_queries', to='reports.Query'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='project',
             name='queries',
             field=models.ManyToManyField(to='reports.Query', through='reports.ProjectQuery'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='metric',
+            name='query_result',
+            field=models.ForeignKey(to='reports.QueryResult'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='dimension',
+            name='metric',
+            field=models.ForeignKey(to='reports.Metric'),
             preserve_default=True,
         ),
     ]
