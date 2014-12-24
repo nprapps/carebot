@@ -39,7 +39,7 @@ class ProjectAdmin(admin.ModelAdmin):
     fields = ('title', 'slug', 'property_id', 'domain', 'prefix', 'start_date')
     prepopulated_fields = { 'slug': ('title',) }
 
-    list_display = ('title', 'property_id', 'domain', 'prefix', 'start_date', 'social', 'view_reports')
+    list_display = ('title', 'property_id', 'domain', 'prefix', 'start_date', 'view_reports')
     list_display_links = ('title',)
     list_filter = ('property_id', 'domain')
     search_fields = ('title',)

@@ -7,21 +7,27 @@ from clan.utils import GLOBAL_ARGUMENTS
 from django.shortcuts import render
 from django.template.defaulttags import register
 
-from reports.models import Project, Report
+from reports import models
 
 @register.filter
 def get(dictionary, key):
     return dictionary.get(key)
 
 def index(request):
+    """
+    Project index.
+    """
     context = {
-        'projects': Project.objects.all()    
+        'projects': models.Project.objects.all()    
     }
 
     return render(request, 'index.html', context)
 
 def project(request, slug):
-    obj = Project.objects.get(slug=slug)
+    """
+    Project report index.
+    """
+    obj = models.Project.objects.get(slug=slug)
 
     context = {
         'project': obj, 
@@ -31,7 +37,10 @@ def project(request, slug):
     return render(request, 'project.html', context)
 
 def report(request, slug, ndays):
-    obj = Report.objects.get(
+    """
+    Generate a project report.
+    """
+    obj = models.Report.objects.get(
         project__slug=slug,
         ndays=ndays
     )
@@ -50,3 +59,21 @@ def report(request, slug, ndays):
     }
 
     return render(request, 'report.html', context)
+
+def compare(request, slug, ndays):
+    """
+    Compare results of a query.
+    """
+    query = models.Query.objects.get(slug=slug)
+    query_results = models.QueryResult.objects.filter(
+        query=query,
+        report__ndays=ndays
+    )
+
+    context = {
+        'query': query,
+        'ndays': ndays,
+        'query_results': query_results
+    }
+
+    return render(request, 'query.html', context)

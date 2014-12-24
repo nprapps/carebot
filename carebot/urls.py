@@ -10,5 +10,6 @@ urlpatterns = patterns('',
     url(r'^carebot/grappelli/', include('grappelli.urls')),
     url(r'^carebot/admin/', include(admin.site.urls)),
     url(r'^carebot/(?P<slug>[\w-]+)/$', views.project),
+    url(r'^carebot/compare/(?P<slug>[\w-]+)/(?P<ndays>\d+)/$', views.compare),
     url(r'^carebot/(?P<slug>[\w-]+)/(?P<ndays>\d+)/$', views.report),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
