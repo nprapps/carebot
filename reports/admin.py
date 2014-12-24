@@ -3,7 +3,6 @@
 from django.contrib import admin
 from grappelli.forms import GrappelliSortableHiddenMixin
 
-import app_config
 from reports import models
 
 class QueryAdmin(admin.ModelAdmin):
@@ -36,12 +35,12 @@ class ProjectAdmin(admin.ModelAdmin):
     """
     Admin for the Project model.
     """
-    fields = ('title', 'slug', 'property_id', 'domain', 'prefix', 'start_date')
+    fields = ('title', 'project_type', 'slug', 'property_id', 'domain', 'prefix', 'start_date')
     prepopulated_fields = { 'slug': ('title',) }
 
-    list_display = ('title', 'property_id', 'domain', 'prefix', 'start_date', 'view_reports')
+    list_display = ('title', 'project_type', 'property_id', 'domain', 'prefix', 'start_date', 'view_reports')
     list_display_links = ('title',)
-    list_filter = ('property_id', 'domain')
+    list_filter = ('project_type', 'property_id', 'domain')
     search_fields = ('title',)
 
     def change_view(self, *args, **kwargs):

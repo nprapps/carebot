@@ -90,7 +90,13 @@ SERVER_BASE_URL = None
 SERVER_LOG_PATH = None
 DEBUG = True
 
-DEFAULT_QUERIES = [
+PROJECT_TYPES = [
+    ('app', 'App'),
+    ('seamus-graphic', 'Seamus Graphic'),
+    ('lookatthis-post', 'Look At This Post')
+]
+
+APP_DEFAULT_QUERIES = [
     'totals',
     'sessions-by-device-category',
     'sessions-by-browser',
@@ -103,6 +109,16 @@ DEFAULT_QUERIES = [
     'facebook-share-link-clicked',
     'email-link-clicked',
     'summary-copied'
+]
+
+GRAPHIC_DEFAULT_QUERIES = [
+    'totals',
+    'sessions-by-device-category',
+    'sessions-by-browser',
+    'sessions-by-referring-domain',
+    'sessions-by-referring-social-network',
+    'performance',
+    'time-spent-on-page-by-device-category',
 ]
 
 DEFAULT_REPORT_NDAYS = [

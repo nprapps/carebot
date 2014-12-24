@@ -3,6 +3,7 @@
 """
 Commands that update or process the application data.
 """
+import csv
 from glob import glob
 import os
 import yaml
@@ -72,21 +73,17 @@ def bootstrap_db():
 
             q.save()
 
-    Project.objects.create(
-        title='Best Songs 2014',
-        slug=slugify(u'Best Songs 2014'),
-        property_id='53470309',
-        domain='apps.npr.org',
-        prefix='/best-songs-2014/',
-        start_date='2014-12-10'
-    )
+    with open('data/projects.csv') as f:
+        rows = csv.DictReader(f)
 
-    Project.objects.create(
-        title='Best Books 2014',
-        slug=slugify(u'Best Books 2014'),
-        property_id='53470309',
-        domain='apps.npr.org',
-        prefix='/best-books-2014/',
-        start_date='2014-12-03'
-    )
+        for row in rows:
+            Project.objects.create(
+                title=row['title'],
+                project_type=row['project_type'],
+                slug=slugify(unicode(row['title'])),
+                property_id=row['property_id'],
+                domain=row['domain'],
+                prefix=row['prefix'],
+                start_date=row['start_date']
+            )
 

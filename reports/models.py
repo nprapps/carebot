@@ -50,6 +50,7 @@ class Project(models.Model):
     """
     slug = models.SlugField(max_length=128, unique=True)
     title = models.CharField(max_length=128)
+    project_type = models.CharField(max_length=32, default='App', choices=app_config.PROJECT_TYPES)
     property_id = models.CharField(max_length=10, default='53470309')
     domain = models.CharField(max_length=128, default='apps.npr.org')
     prefix = models.CharField(max_length=128)
@@ -88,7 +89,12 @@ def on_project_post_save(sender, instance, created, *args, **kwargs):
     Create default reports for a new project.
     """
     if created:
-        for i, query_slug in enumerate(app_config.DEFAULT_QUERIES):
+        if instance.project_type == 'Seamus Graphic':
+            default_queries = app_config.GRAPHIC_DEFAULT_QUERIES
+        else:
+            default_queries = app_config.APP_DEFAULT_QUERIES
+
+        for i, query_slug in enumerate(default_queries):
             ProjectQuery.objects.create(
                 project=instance,
                 query=Query.objects.get(slug=query_slug),
@@ -231,7 +237,7 @@ class Report(models.Model):
                         _value=value
                     )
 
-                    if data_type in 'INTEGER': 
+                    if data_type in 'INTEGER' and total != 0: 
                         d.percent_of_total = float(value) / total * 100
 
                     d.save()
@@ -357,14 +363,14 @@ class Social(models.Model):
 
         data = response.json()
 
-        self.facebook_likes = data['Facebook']['like_count']
-        self.facebook_shares = data['Facebook']['share_count']
-        self.facebook_comments = data['Facebook']['comment_count']
-        self.twitter = data['Twitter']
-        self.google = data['GooglePlusOne']
-        self.pinterest = data['Pinterest']
-        self.linkedin = data['LinkedIn']
-        self.stumbleupon = data['StumbleUpon']
+        self.facebook_likes = data['Facebook']['like_count'] or 0
+        self.facebook_shares = data['Facebook']['share_count'] or 0
+        self.facebook_comments = data['Facebook']['comment_count'] or 0
+        self.twitter = data['Twitter'] or 0
+        self.google = data['GooglePlusOne'] or 0
+        self.pinterest = data['Pinterest'] or 0
+        self.linkedin = data['LinkedIn'] or 0
+        self.stumbleupon = data['StumbleUpon'] or 0
 
         self.last_update = timezone.now()
 
