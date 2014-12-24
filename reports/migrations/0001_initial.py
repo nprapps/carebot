@@ -70,6 +70,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('slug', models.SlugField(unique=True, max_length=128)),
                 ('name', models.CharField(max_length=128)),
+                ('description', models.CharField(default=b'', max_length=256)),
                 ('clan_yaml', models.TextField()),
             ],
             options={
@@ -81,7 +82,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('order', models.PositiveIntegerField()),
-                ('sampled', models.BooleanField()),
+                ('sampled', models.BooleanField(default=False)),
                 ('sample_size', models.PositiveIntegerField(default=0)),
                 ('sample_space', models.PositiveIntegerField(default=0)),
                 ('sample_percent', models.FloatField(default=100)),

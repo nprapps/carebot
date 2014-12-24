@@ -10,6 +10,8 @@ class QueryAdmin(admin.ModelAdmin):
     """
     Admin for the Query model.
     """
+    list_display = ('name', 'description') 
+
     fieldsets = (
         (None, {
             'fields': ('name', 'slug')
@@ -95,14 +97,10 @@ class ReportAdmin(admin.ModelAdmin):
     view_report.short_description = 'View'
 
 class SocialAdmin(admin.ModelAdmin):
-    list_display = ('project', 'facebook_likes', 'facebook_shares', 'facebook_comments', 'twitter', 'google')
+    list_display = ('project', 'facebook_likes', 'facebook_shares', 'facebook_comments', 'twitter', 'google', 'pinterest', 'linkedin', 'stumbleupon')
     list_display_links = ('project',)
 
 admin.site.register(models.Query, QueryAdmin)
 admin.site.register(models.Project, ProjectAdmin)
 admin.site.register(models.Report, ReportAdmin)
 admin.site.register(models.Social, SocialAdmin)
-
-admin.site.register(models.QueryResult)
-admin.site.register(models.Metric)
-admin.site.register(models.Dimension)

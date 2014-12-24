@@ -56,11 +56,21 @@ def bootstrap_db():
         with open(yaml_path, 'r') as f:
             data = yaml.load(f)
 
-            Query.objects.create(
+            q = Query(
                 name=data['name'],
+                description=data.get('description', ''),
                 slug=slug,
-                clan_yaml=yaml.dump(data, indent=4)
             )
+
+            del data['name']
+
+            if 'description' in data:
+                q.description = data['description']
+                del data['description']
+                
+            q.clan_yaml = yaml.dump(data, indent=4)
+
+            q.save()
 
     project = Project.objects.create(
         title='Best Songs 2014',

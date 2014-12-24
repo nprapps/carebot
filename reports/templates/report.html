@@ -31,6 +31,8 @@
             <div class="query">
                 <h3>{{ query_result.query.name }}</h3>
 
+                <p class="description">{{ query_result.query.description }}</p>
+
                 {% for metric in query_result.metrics.all %}
                 <div class="metric">
                     <h4>

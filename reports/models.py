@@ -21,10 +21,24 @@ FIELD_DEFINITIONS = load_field_definitions()
 class Query(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
     name = models.CharField(max_length=128)
+    description = models.CharField(max_length=256, default='')
     clan_yaml = models.TextField()
 
+    class Meta:
+        ordering = ('name',)
+        verbose_name_plural = 'queries'
+
     def __unicode__(self):
-       return self.name 
+        return self.name 
+
+    @property
+    def config(self):
+        data = yaml.load(self.clan_yaml)
+
+        data['name'] = self.name
+        data['description'] = self.description
+
+        return data 
 
 class Project(models.Model):
     slug = models.SlugField(max_length=128, unique=True)
@@ -116,9 +130,7 @@ class Report(models.Model):
         data['queries'] = []
 
         for project_query in ProjectQuery.objects.filter(project=self.project):
-            y = yaml.load(project_query.query.clan_yaml)
-
-            data['queries'].append(y)
+            data['queries'].append(project_query.query.config)
 
         return yaml.safe_dump(data, encoding='utf-8', allow_unicode=True)
 
@@ -239,7 +251,6 @@ class Metric(models.Model):
 
     @property
     def definition(self):
-        print FIELD_DEFINITIONS[self.name]
         return FIELD_DEFINITIONS[self.name]
 
 class Dimension(models.Model):
@@ -284,6 +295,8 @@ class Social(models.Model):
 
     class Meta:
         ordering = ('project__start_date',)
+        verbose_name = 'social count'
+        verbose_name_plural = 'social counts'
 
     def __unicode__(self):
         return 'Social counts for %s' % self.project.title
