@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from collections import OrderedDict
 from datetime import date, datetime, timedelta
 from itertools import izip
 import json
@@ -144,9 +145,10 @@ class Report(models.Model):
         # Delete existing results
         self.query_results.all().delete()
 
-        data = json.loads(self.results_json)
+        data = json.loads(self.results_json, object_pairs_hook=OrderedDict)
         i = 0
 
+        # Query results
         for project_query, result in izip(self.project.project_queries.all(), data['queries']):
             query = project_query.query
             metrics = result['config']['metrics']
@@ -168,6 +170,7 @@ class Report(models.Model):
 
             j = 0
 
+            # Metrics
             for metric in metrics:
                 dimensions = result['data'][metric]
                 data_type = data_types[metric]
@@ -184,6 +187,7 @@ class Report(models.Model):
 
                 k = 0
 
+                # Dimensions
                 for dimension, value in dimensions.items():
                     d = Dimension(
                         metric=m,
@@ -235,6 +239,7 @@ class Metric(models.Model):
 
     @property
     def definition(self):
+        print FIELD_DEFINITIONS[self.name]
         return FIELD_DEFINITIONS[self.name]
 
 class Dimension(models.Model):
