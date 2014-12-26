@@ -111,6 +111,10 @@ class Migration(migrations.Migration):
                 ('ndays', models.PositiveIntegerField()),
                 ('results_json', models.TextField()),
                 ('last_run', models.DateTimeField(null=True)),
+                ('pageviews', models.PositiveIntegerField(null=True)),
+                ('unique_pageviews', models.PositiveIntegerField(null=True)),
+                ('users', models.PositiveIntegerField(null=True)),
+                ('sessions', models.PositiveIntegerField(null=True)),
             ],
             options={
                 'ordering': ('project__start_date', 'ndays'),
@@ -192,7 +196,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='metricresult',
             name='total',
-            field=models.OneToOneField(to='reports.DimensionResult'),
+            field=models.OneToOneField(related_name='total_of', to='reports.DimensionResult'),
             preserve_default=True,
         ),
         migrations.AddField(
