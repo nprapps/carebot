@@ -1,4 +1,5 @@
 {% extends "_base.html" %}
+{% load humanize %}
 
 {% block title %}{{ project.title }} :: carebot{% endblock %}
 
@@ -41,48 +42,48 @@
         <thead>
             <tr>
                 <th>Interaction</th>
-                <th>Count</th>
+                <th class="value">Count</th>
             <tr>
         </thead>
         <tbody>
             <tr>
                 <td>Facebook likes</td>
-                <td>{{ project.social.facebook_likes }}</td>
+                <td class="value">{{ project.social.facebook_likes|intcomma }}</td>
             </tr>
 
             <tr>
                 <td>Facebook shares</td>
-                <td>{{ project.social.facebook_shares }}</td>
+                <td class="value">{{ project.social.facebook_shares|intcomma }}</td>
             </tr>
 
             <tr>
                 <td>Facebook comments</td>
-                <td>{{ project.social.facebook_comments }}</td>
+                <td class="value">{{ project.social.facebook_comments|intcomma }}</td>
             </tr>
 
             <tr>
                 <td>Twitter</td>
-                <td>{{ project.social.twitter }}</td>
+                <td class="value">{{ project.social.twitter|intcomma }}</td>
             </tr>
 
             <tr>
                 <td>Google+</td>
-                <td>{{ project.social.google }}</td>
+                <td class="value">{{ project.social.google|intcomma }}</td>
             </tr>
             
             <tr>
                 <td>Pinterest</td>
-                <td>{{ project.social.pinterest }}</td>
+                <td class="value">{{ project.social.pinterest|intcomma }}</td>
             </tr>
             
             <tr>
                 <td>LinkedIn</td>
-                <td>{{ project.social.linkedin }}</td>
+                <td class="value">{{ project.social.linkedin|intcomma }}</td>
             </tr>
             
             <tr>
                 <td>StumbleUpon</td>
-                <td>{{ project.social.stumbleupon }}</td>
+                <td class="value">{{ project.social.stumbleupon|intcomma }}</td>
             </tr>
         <tbody>
     </table>
@@ -96,7 +97,7 @@
             <tr>
                 <th>Report timespan</th>
                 <th>Run date</th>
-                <th>Sessions</th>
+                <th class="value">Sessions</th>
             </tr>
         </thead>
         <tbody>
@@ -104,7 +105,7 @@
             <tr>
                 <td><a href="{{ report.get_absolute_url }}">{{ report.timespan }}</a></td>
                 <td>{{ report.last_run }}</td>
-                <td>{{ report.sessions }}</td>
+                <td class="value">{{ report.sessions|intcomma }}</td>
             </tr>
             {% endfor %}
         </tbody>
