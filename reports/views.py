@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from collections import OrderedDict
-import json
 
 from django.shortcuts import render
 
@@ -83,16 +82,18 @@ def compare_query(request):
             projects.append(qr.report.project)
 
             for metric in qr.metrics.all():
-                if metric.name not in results:
-                    results[metric.name] = OrderedDict([('total', [])])
+                m = (metric.name, metric.display_name)
+
+                if m not in results:
+                    results[m] = OrderedDict([('total', [])])
 
                 for dimension in metric.dimensions.all():
-                    if dimension.name not in results[metric.name]:
-                        results[metric.name][dimension.name] = []
+                    if dimension.name not in results[m]:
+                        results[m][dimension.name] = []
 
-                    results[metric.name][dimension.name].append(dimension)
+                    results[m][dimension.name].append(dimension)
 
-                results[metric.name]['total'].append(metric.total) 
+                results[m]['total'].append(metric.total) 
 
         context.update({
             'projects': projects,

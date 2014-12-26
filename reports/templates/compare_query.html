@@ -51,9 +51,10 @@
         
     <p class="description">{{ query.description }}</p>
 
-    {% for metric_name, data in results.items %}
+    {% for metric_names, data in results.items %}
     <h4>
-        {{ metric_name }}
+        {{ metric_names.1 }}
+        <span class="ga-name">{{ metric_names.0 }}</span>
     </h4>
 
     <table class="table table-striped table-bordered table-consdensed">
