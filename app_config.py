@@ -99,16 +99,16 @@ PROJECT_TYPES = [
 APP_DEFAULT_QUERIES = [
     'totals',
     'sessions-by-device-category',
-    #'sessions-by-browser',
-    #'sessions-by-referring-domain',
-    #'sessions-by-referring-social-network',
-    #'performance',
-    #'time-spent-on-page-by-device-category',
-    #'share-discuss-panel-opened',
-    #'tweet-link-clicked',
-    #'facebook-share-link-clicked',
-    #'email-link-clicked',
-    #'summary-copied'
+    'sessions-by-browser',
+    'sessions-by-referring-domain',
+    'sessions-by-referring-social-network',
+    'performance',
+    'time-spent-on-page-by-device-category',
+    'share-discuss-panel-opened',
+    'tweet-link-clicked',
+    'facebook-share-link-clicked',
+    'email-link-clicked',
+    'summary-copied'
 ]
 
 GRAPHIC_DEFAULT_QUERIES = [
