@@ -136,6 +136,11 @@ class Report(models.Model):
     results_json = models.TextField()
     last_run = models.DateTimeField(null=True)
 
+    pageviews = models.PositiveIntegerField(null=True)
+    unique_pageviews = models.PositiveIntegerField(null=True)
+    users = models.PositiveIntegerField(null=True)
+    sessions = models.PositiveIntegerField(null=True)
+
     class Meta:
         ordering = ('project__start_date', 'ndays',)
 
@@ -236,6 +241,18 @@ class Report(models.Model):
                 j += 1
                 
             i += 1
+
+        qr = self.query_results.get(query__slug='totals')
+        
+        for metric in qr.metrics.all():
+            if metric.name == 'ga:pageviews':
+                self.pageviews = metric.total.value
+            elif metric.name == 'ga:uniquePageviews':
+                self.unique_pageviews = metric.total.value
+            elif metric.name == 'ga:users':
+                self.users = metric.total.value
+            elif metric.name == 'ga:sessions':
+                self.sessions = metric.total.value
 
         self.save()
 
@@ -347,7 +364,7 @@ class MetricResult(models.Model):
     project_title = models.CharField(max_length=128)
     report_ndays = models.PositiveIntegerField()
     query_name = models.CharField(max_length=128)
-    total = models.OneToOneField('DimensionResult')
+    total = models.OneToOneField('DimensionResult', related_name='total_of')
 
     class Meta:
         ordering = ('query_result', 'order')
@@ -403,6 +420,18 @@ class DimensionResult(models.Model):
             return clan_utils.format_duration(float(self._value))
 
         return None
+
+    @property
+    def per_session(self):
+        if self.metric_data_type != 'INTEGER':
+            return None
+
+        if self.name == 'total':
+            metric = self.total_of
+        else:
+            metric = self.metric
+
+        return float(self.value) / metric.query_result.report.sessions
 
 class Social(models.Model):
     """

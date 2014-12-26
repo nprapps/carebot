@@ -35,7 +35,6 @@
         </tbody>
     </table>
 
-
     <h3>Lifetime social activity</h3>
     
     <table class="table table-condensed">
@@ -96,7 +95,8 @@
         <thead>
             <tr>
                 <th>Report timespan</th>
-                <th>Run on</th>
+                <th>Run date</th>
+                <th>Sessions</th>
             </tr>
         </thead>
         <tbody>
@@ -104,6 +104,7 @@
             <tr>
                 <td><a href="{{ report.get_absolute_url }}">{{ report.ndays }}-day{{ report.ndays|pluralize }}</a></td>
                 <td>{{ report.last_run }}</td>
+                <td>{{ report.sessions }}</td>
             </tr>
             {% endfor %}
         </tbody>
