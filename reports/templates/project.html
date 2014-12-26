@@ -28,6 +28,10 @@
                 <td>Launch date</td>
                 <td>{{ project.start_date }}</td>
             </tr>
+            <tr>
+                <td>Tags</td>
+                <td>{{ project.tag_list }}</td>
+            </tr>
         </tbody>
     </table>
 
@@ -83,14 +87,23 @@
             </tr>
         <tbody>
     </table>
+ 
+    <span class="last-update">Last updated: {{ project.social.last_update }}</span>
 
     <h3>Reports</h3>
 
     <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Report timespan</th>
+                <th>Run on</th>
+            </tr>
+        </thead>
         <tbody>
             {% for report in reports %}
             <tr>
                 <td><a href="{{ report.get_absolute_url }}">{{ report.ndays }}-day{{ report.ndays|pluralize }}</a></td>
+                <td>{{ report.last_run }}</td>
             </tr>
             {% endfor %}
         </tbody>
