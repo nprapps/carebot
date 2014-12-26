@@ -40,8 +40,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Project',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('slug', models.SlugField(unique=True, max_length=128)),
+                ('slug', models.SlugField(max_length=128, serialize=False, primary_key=True)),
                 ('title', models.CharField(max_length=128)),
                 ('property_id', models.CharField(default=b'53470309', max_length=10)),
                 ('domain', models.CharField(default=b'apps.npr.org', max_length=128)),
@@ -67,13 +66,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Query',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('slug', models.SlugField(unique=True, max_length=128)),
+                ('slug', models.SlugField(max_length=128, serialize=False, primary_key=True)),
                 ('name', models.CharField(max_length=128)),
                 ('description', models.CharField(default=b'', max_length=256)),
                 ('clan_yaml', models.TextField()),
             ],
             options={
+                'ordering': ('name',),
+                'verbose_name_plural': 'queries',
             },
             bases=(models.Model,),
         ),
@@ -122,6 +122,17 @@ class Migration(migrations.Migration):
             ],
             options={
                 'ordering': ('project__start_date',),
+                'verbose_name': 'social count',
+                'verbose_name_plural': 'social counts',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Tag',
+            fields=[
+                ('slug', models.CharField(max_length=32, serialize=False, primary_key=True)),
+            ],
+            options={
             },
             bases=(models.Model,),
         ),
@@ -153,6 +164,12 @@ class Migration(migrations.Migration):
             model_name='project',
             name='queries',
             field=models.ManyToManyField(to='reports.Query', through='reports.ProjectQuery'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='project',
+            name='tags',
+            field=models.ManyToManyField(to='reports.Tag'),
             preserve_default=True,
         ),
         migrations.AddField(

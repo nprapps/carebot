@@ -1,8 +1,16 @@
-title,project_type,property_id,domain,prefix,start_date
-Best Songs 2014,app,53470309,apps.npr.org,/best-songs-2014/,2014-12-10
-Best Books 2014,app,53470309,apps.npr.org,/best-books-2014/,2014-12-03
-Election Party 2014,app,53470309,elections.npr.org,/,2014-11-04
-What Do Homeless Veteran's Look Like?,lookatthis-post,53470309,apps.npr.org,/lookatthis/posts/veterans/,2014-9-17
+title,tags,property_id,domain,prefix,start_date
+Best Songs 2014,"app,music",53470309,apps.npr.org,/best-songs-2014/,2014-12-10
+Best Books 2014,"app,books",53470309,apps.npr.org,/best-books-2014/,2014-12-03
+Election Party 2014,"app,politics",53470309,elections.npr.org,/,2014-11-04
+What Do Homeless Veteran's Look Like?,"lookatthis,slides",53470309,apps.npr.org,/lookatthis/posts/veterans/,2014-9-17
 Behind the Civil Rights Act,app,53470309,apps.npr.org,/behind-the-civil-rights-act/,2014-07-02
 "The Best Commencement Speeches, Ever",app,53470309,apps.npr.org,/commencement/,2014-05-19
-12 Weeks To A 6-Figure Job,seamus-graphic,53470309,www.npr.org,/blogs/ed/2014/12/20/370954988/twelve-weeks-to-a-six-figure-job,2014-12-20
+12 Weeks To A 6-Figure Job,seamus,53470309,www.npr.org,/blogs/ed/2014/12/20/370954988/twelve-weeks-to-a-six-figure-job,2014-12-20
+Buzkashi,"app,scroll",53470309,apps.npr.org,/buzkashi/,2014-05-04
+Borderland,"app,slides",53470309,apps.npr.org,/borderland/,2014-04-03
+Grave Science,"app,scroll",53470309,apps.npr.org,/grave-science/,2014-03-05
+Wolves At The Door,"app,scroll",53470309,apps.npr.org,/wolves/,2014-02-03
+In Memoriam 2013,"app,music",53470309,apps.npr.org,/music-memoriam-2013/,2013-12-19
+Planet Money Makes A T-Shirt,app,53470309,apps.npr.org,/tshirt/,2013-11-25
+Playgrounds For Everyone,"app,evergreen",53470309,apps.npr.org,/playgrounds/,2013-08-27
+Zoom In On Oklahoma Tornado Damage,"app,breaking",53470309,apps.npr.org,/moore-oklahoma-tornado-damage/,2013-05-23

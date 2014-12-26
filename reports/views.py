@@ -60,7 +60,7 @@ def report(request, slug, ndays):
 
     return render(request, 'report.html', context)
 
-def compare(request, slug, ndays):
+def compare_query(request, slug, ndays):
     """
     Compare results of a query.
     """

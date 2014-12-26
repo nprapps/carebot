@@ -23,7 +23,7 @@ class Query(models.Model):
     """
     A clan query.
     """
-    slug = models.SlugField(max_length=128, unique=True)
+    slug = models.SlugField(max_length=128, primary_key=True)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=256, default='')
     clan_yaml = models.TextField()
@@ -44,18 +44,27 @@ class Query(models.Model):
 
         return data 
 
+class Tag(models.Model):
+    """
+    A tag describing a project.
+    """
+    slug = models.CharField(max_length=32, primary_key=True)
+
+    def __unicode__(self):
+        return self.slug
+
 class Project(models.Model):
     """
     A project (app/site).
     """
-    slug = models.SlugField(max_length=128, unique=True)
+    slug = models.SlugField(max_length=128, primary_key=True)
     title = models.CharField(max_length=128)
-    project_type = models.CharField(max_length=32, default='App', choices=app_config.PROJECT_TYPES)
     property_id = models.CharField(max_length=10, default='53470309')
     domain = models.CharField(max_length=128, default='apps.npr.org')
     prefix = models.CharField(max_length=128)
     start_date = models.DateField()
     queries = models.ManyToManyField(Query, through='ProjectQuery')
+    tags = models.ManyToManyField(Tag)
 
     class Meta:
         ordering = ('start_date',)
@@ -89,12 +98,7 @@ def on_project_post_save(sender, instance, created, *args, **kwargs):
     Create default reports for a new project.
     """
     if created:
-        if instance.project_type == 'Seamus Graphic':
-            default_queries = app_config.GRAPHIC_DEFAULT_QUERIES
-        else:
-            default_queries = app_config.APP_DEFAULT_QUERIES
-
-        for i, query_slug in enumerate(default_queries):
+        for i, query_slug in enumerate(app_config.APP_DEFAULT_QUERIES):
             ProjectQuery.objects.create(
                 project=instance,
                 query=Query.objects.get(slug=query_slug),

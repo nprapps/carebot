@@ -13,7 +13,7 @@ from fabric.api import local, settings, run, sudo, task
 
 import app_config
 import servers
-from reports.models import Project, Query
+from reports.models import Project, Query, Tag
 
 SERVER_POSTGRES_CMD = 'export PGPASSWORD=$carebot_POSTGRES_PASSWORD && %s --username=$carebot_POSTGRES_USER --host=$carebot_POSTGRES_HOST --port=$carebot_POSTGRES_PORT'
 
@@ -77,13 +77,16 @@ def bootstrap_db():
         rows = csv.DictReader(f)
 
         for row in rows:
-            Project.objects.create(
+            p = Project.objects.create(
                 title=row['title'],
-                project_type=row['project_type'],
                 slug=slugify(unicode(row['title'])),
                 property_id=row['property_id'],
                 domain=row['domain'],
                 prefix=row['prefix'],
                 start_date=row['start_date']
             )
+
+            for tag in row['tags'].split(','):
+                obj, created = Tag.objects.get_or_create(slug=tag)
+                p.tags.add(obj)
 

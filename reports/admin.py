@@ -23,6 +23,10 @@ class QueryAdmin(admin.ModelAdmin):
 
     prepopulated_fields = { 'slug': ('name',) }
 
+class TagInline(admin.TabularInline):
+    model = models.Project.tags.through
+    extra = 2
+
 class ProjectQueryInline(GrappelliSortableHiddenMixin, admin.TabularInline):
     """
     Admin for the ProjectQuery M2M inline.
@@ -35,19 +39,19 @@ class ProjectAdmin(admin.ModelAdmin):
     """
     Admin for the Project model.
     """
-    fields = ('title', 'project_type', 'slug', 'property_id', 'domain', 'prefix', 'start_date')
+    fields = ('title', 'slug', 'property_id', 'domain', 'prefix', 'start_date')
     prepopulated_fields = { 'slug': ('title',) }
 
-    list_display = ('title', 'project_type', 'property_id', 'domain', 'prefix', 'start_date', 'view_reports')
+    list_display = ('title', 'tag_list', 'property_id', 'domain', 'prefix', 'start_date', 'view_reports')
     list_display_links = ('title',)
-    list_filter = ('project_type', 'property_id', 'domain')
+    list_filter = ('property_id', 'domain')
     search_fields = ('title',)
 
     def change_view(self, *args, **kwargs):
         """
         Change view, with inlines.
         """
-        self.inlines = (ProjectQueryInline,)
+        self.inlines = (TagInline, ProjectQueryInline,)
 
         return super(ProjectAdmin, self).change_view(*args, **kwargs)
 
@@ -55,9 +59,14 @@ class ProjectAdmin(admin.ModelAdmin):
         """
         Add view, without inlines.
         """
-        self.inlines = ()
+        self.inlines = (TagInline)
 
         return super(ProjectAdmin, self).add_view(*args, **kwargs)
+
+    def tag_list(self, model):
+        return ','.join([tag.slug for tag in model.tags.all()])
+
+    tag_list.short_description = 'Tags'
 
     def view_reports(self, model):
         return '<a href="%s">View</a>' % model.get_absolute_url()
