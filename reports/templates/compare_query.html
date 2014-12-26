@@ -27,6 +27,12 @@
                 </div>
 
                 <div class="form-group">
+                    <select name="unit" class="form-control">
+                        <option value="count">Count</option>
+                        <option value="percent" {% if unit == "percent" %}selected="selected"{% endif %}>Percent</option>
+                    </select>
+
+                <div class="form-group">
                     <button type="submit" class="btn btn-default">Compare</button>
                 </div>
             </form>
@@ -57,7 +63,11 @@
                     <tr class="{% if dimension_name == 'total' %}total{% endif %}">
                         <td>{{ dimension_name }}</td>
                         {% for dimension in dimensions %}
+                        {% if unit == "percent" %}
+                        <td class="percent">{% if dimension.percent_of_total %}{{ dimension.percent_of_total|floatformat:"1" }}{% else %}-{% endif %}</td>
+                        {% else %}
                         <td>{{ dimension.value_formatted }}</td>
+                        {% endif %}
                         {% endfor %}
                     </tr>
                     {% endfor %}

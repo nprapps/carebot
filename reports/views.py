@@ -67,6 +67,7 @@ def compare_query(request):
 
     query_slug = request.GET.get('query', None)
     ndays = request.GET.get('ndays', None)
+    unit = request.GET.get('unit', 'count')
 
     if query_slug and ndays:
         query = models.Query.objects.get(slug=query_slug)
@@ -96,6 +97,7 @@ def compare_query(request):
         context.update({
             'query': query,
             'ndays': int(ndays),
+            'unit': unit,
             'projects': projects,
             'results': results
         })
