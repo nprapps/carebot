@@ -36,6 +36,10 @@ def server_reset_db():
             sudo('service %s start' % service_name)
 
 @task
+def migrate_db():
+    local('python manage.py migrate')
+
+@task
 def local_reset_db():
     secrets = app_config.get_secrets()
 
