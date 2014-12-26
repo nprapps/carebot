@@ -67,21 +67,21 @@ def compare_query(request):
     }
 
     query_slug = request.GET.get('query', None)
-    ndays = request.GET.get('ndays', None)
-    unit = request.GET.get('unit', 'count')
+    context['ndays'] = int(request.GET.get('ndays', app_config.DEFAULT_REPORT_NDAYS[0]))
+    context['unit'] = request.GET.get('unit', 'count')
     tag_slug = request.GET.get('tag', None)
 
-    if query_slug and ndays:
-        query = models.Query.objects.get(slug=query_slug)
+    if query_slug and context['ndays']:
+        context['query'] = models.Query.objects.get(slug=query_slug)
         query_results = models.QueryResult.objects.filter(
-            query=query,
-            report_ndays=ndays
+            query=context['query'],
+            report_ndays=context['ndays']
         )
 
         if tag_slug:
-            tag = models.Tag.objects.get(slug=tag_slug)
+            context['tag'] = models.Tag.objects.get(slug=tag_slug)
             query_results = query_results.filter(
-                report__project__tags=tag
+                report__project__tags=context['tag']
             )
 
         projects = []
@@ -103,10 +103,6 @@ def compare_query(request):
                     results[metric.name][dimension.name].append(dimension)
 
         context.update({
-            'query': query,
-            'ndays': int(ndays),
-            'unit': unit,
-            'tag': tag,
             'projects': projects,
             'results': results
         })

@@ -64,7 +64,7 @@ class ProjectAdmin(admin.ModelAdmin):
         return super(ProjectAdmin, self).add_view(*args, **kwargs)
 
     def tag_list(self, model):
-        return ','.join([tag.slug for tag in model.tags.all()])
+        return model.tag_list() 
 
     tag_list.short_description = 'Tags'
 
@@ -108,6 +108,6 @@ admin.site.register(models.Query, QueryAdmin)
 admin.site.register(models.Project, ProjectAdmin)
 admin.site.register(models.Report, ReportAdmin)
 admin.site.register(models.Social, SocialAdmin)
-admin.site.register(models.QueryResult, QueryResultAdmin)
-admin.site.register(models.MetricResult, MetricResultAdmin)
-admin.site.register(models.DimensionResult, DimensionResultAdmin)
+#admin.site.register(models.QueryResult, QueryResultAdmin)
+#admin.site.register(models.MetricResult, MetricResultAdmin)
+#admin.site.register(models.DimensionResult, DimensionResultAdmin)

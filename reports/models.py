@@ -67,13 +67,16 @@ class Project(models.Model):
     tags = models.ManyToManyField(Tag)
 
     class Meta:
-        ordering = ('start_date',)
+        ordering = ('-start_date',)
 
     def __unicode__(self):
         return self.title
 
     def get_absolute_url(self):
         return reverse('reports.views.project', args=[self.slug])
+
+    def tag_list(self):
+        return ','.join([tag.slug for tag in self.tags.all()])
 
     def run_reports(self, overwrite=False):
         """
@@ -382,6 +385,18 @@ class Social(models.Model):
 
     def __unicode__(self):
         return 'Social counts for %s' % self.project.title
+
+    def total(self):
+        return sum([
+            self.facebook_likes,
+            self.facebook_shares,
+            self.facebook_comments,
+            self.twitter,
+            self.google,
+            self.pinterest,
+            self.linkedin,
+            self.stumbleupon
+        ])
 
     def refresh(self):
         secrets = app_config.get_secrets()
