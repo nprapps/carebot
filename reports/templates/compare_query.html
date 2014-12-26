@@ -11,15 +11,7 @@
         <div class="container-fluid">
             <form class="form-inline">
                 <div class="form-group">
-                    <select name="tag" class="form-control">
-                        <option value="">-</option>
-                        {% for tag_option in tags %}
-                        <option value="{{ tag_option.slug }}" {% if tag_option.slug == tag.slug %}selected="selected"{% endif %}>{{ tag_option.slug }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group">
+                    <label for="query">Compare</label>
                     <select name="query" class="form-control">
                         {% for query_option in queries %}
                         <option value="{{ query_option.slug }}" {% if query_option == query %}selected="selected"{% endif %}>{{ query_option.name }}</option>
@@ -30,15 +22,25 @@
                 <div class="form-group">
                     <select name="ndays" class="form-control">
                         {% for ndays_option in report_ndays %}
-                        <option value="{{ ndays_option }}" {% if ndays_option == ndays %}selected="selected"{% endif %}>{{ ndays_option }}-day{{ ndays_option|pluralize }}</option>
+                        <option value="{{ ndays_option }}" {% if ndays_option == ndays %}selected="selected"{% endif %}>{{ ndays_option }}-day{{ ndays_option|pluralize }} reports</option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <div class="form-group">
                     <select name="unit" class="form-control">
-                        <option value="count">Count</option>
-                        <option value="percent" {% if unit == "percent" %}selected="selected"{% endif %}>Percent</option>
+                        <option value="count">by count</option>
+                        <option value="percent" {% if unit == "percent" %}selected="selected"{% endif %}>by percent</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tag">in projects tagged</label>
+                    <select name="tag" class="form-control">
+                        <option value="">(any)</option>
+                        {% for tag_option in tags %}
+                        <option value="{{ tag_option.slug }}" {% if tag_option.slug == tag.slug %}selected="selected"{% endif %}>{{ tag_option.slug }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -50,7 +52,7 @@
             {% if query %}
             <h1>Comparing: {{ query.name }} ({{ ndays }}-day{{ ndays|pluralize:"s"}})</h1>
 
-            <p><a href="{% url 'reports.views.index' %}">&laquo; Select a different project</a></p>
+            <p><a href="{% url 'reports.views.index' %}">&laquo; Back to project index</a></p>
                 
             <p class="description">{{ query.description }}</p>
 
