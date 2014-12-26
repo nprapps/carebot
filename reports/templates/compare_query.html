@@ -73,7 +73,7 @@
                 {% if unit == "percent" %}
                 <td class="percent">{% if dimension.percent_of_total %}{{ dimension.percent_of_total|floatformat:"1" }}{% else %}-{% endif %}</td>
                 {% else %}
-                <td>{{ dimension.value_formatted }}</td>
+                <td class="value">{{ dimension.value_formatted }}</td>
                 {% endif %}
                 {% endfor %}
             </tr>

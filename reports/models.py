@@ -379,7 +379,7 @@ class Social(models.Model):
     last_update = models.DateTimeField(null=True)
 
     class Meta:
-        ordering = ('project__start_date',)
+        ordering = ('-project__start_date',)
         verbose_name = 'social count'
         verbose_name_plural = 'social counts'
 
