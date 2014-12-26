@@ -1,0 +1,15 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="{% static 'reports/bootstrap.min.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'reports/report.css' %}" />
+    </head>
+    <body>
+    {% block body %}{% endblock %}
+    </body>
+</html>
+

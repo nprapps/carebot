@@ -1,36 +1,30 @@
-{% load staticfiles %}
+{% extends "_base.html" %}
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Projects :: carebot</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'reports/bootstrap.min.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'reports/report.css' %}" />
-    </head>
-    <body>
-        <div class="container-fluid">
-            <h1>Projects</h1>
+{% block title %}carebot{% endblock %}
 
-            <table class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th>Project</th>
-                        <th>Launch date</th>
-                        <th>Social interactions</th>
-                        <th>Tags</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for project in projects %}
-                    <tr>
-                        <td><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></td>
-                        <td>{{ project.start_date }}</td>
-                        <td>{{ project.social.total }}</td>
-                        <td>{{ project.tag_list }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </body>
-</html>
+{% block body %}
+<div class="container-fluid">
+    <h1>Projects</h1>
+
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Launch date</th>
+                <th>Social interactions</th>
+                <th>Tags</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+            <tr>
+                <td><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></td>
+                <td>{{ project.start_date }}</td>
+                <td>{{ project.social.total }}</td>
+                <td>{{ project.tag_list }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

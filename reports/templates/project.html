@@ -1,77 +1,71 @@
-{% load staticfiles %}
+{% extends "_base.html" %}
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>{{ project.title }} :: carebot</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'reports/bootstrap.min.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'reports/report.css' %}" />
-    </head>
-    <body>
-        <div class="container-fluid">
-            <h1>{{ project.title }}</h1>
+{% block title %}{{ project.title }} :: carebot{% endblock %}
 
-            <p><a href="{% url 'reports.views.index' %}">&laquo; Select a different project</a></p>
+{% block body %}
+<div class="container-fluid">
+    <h1>{{ project.title }}</h1>
 
-            <h3>Lifetime social activity</h3>
+    <p><a href="{% url 'reports.views.index' %}">&laquo; Select a different project</a></p>
+
+    <h3>Lifetime social activity</h3>
+    
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Interaction</th>
+                <th>Count</th>
+            <tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Facebook likes</td>
+                <td>{{ project.social.facebook_likes }}</td>
+            </tr>
+
+            <tr>
+                <td>Facebook shares</td>
+                <td>{{ project.social.facebook_shares }}</td>
+            </tr>
+
+            <tr>
+                <td>Facebook comments</td>
+                <td>{{ project.social.facebook_comments }}</td>
+            </tr>
+
+            <tr>
+                <td>Twitter</td>
+                <td>{{ project.social.twitter }}</td>
+            </tr>
+
+            <tr>
+                <td>Google+</td>
+                <td>{{ project.social.google }}</td>
+            </tr>
             
-            <table class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th>Interaction</th>
-                        <th>Count</th>
-                    <tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Facebook likes</td>
-                        <td>{{ project.social.facebook_likes }}</td>
-                    </tr>
+            <tr>
+                <td>Pinterest</td>
+                <td>{{ project.social.pinterest }}</td>
+            </tr>
+            
+            <tr>
+                <td>LinkedIn</td>
+                <td>{{ project.social.linkedin }}</td>
+            </tr>
+            
+            <tr>
+                <td>StumbleUpon</td>
+                <td>{{ project.social.stumbleupon }}</td>
+            </tr>
+        <tbody>
+    </table>
 
-                    <tr>
-                        <td>Facebook shares</td>
-                        <td>{{ project.social.facebook_shares }}</td>
-                    </tr>
+    <h3>Reports</h3>
 
-                    <tr>
-                        <td>Facebook comments</td>
-                        <td>{{ project.social.facebook_comments }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>Twitter</td>
-                        <td>{{ project.social.twitter }}</td>
-                    </tr>
-
-                    <tr>
-                        <td>Google+</td>
-                        <td>{{ project.social.google }}</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>Pinterest</td>
-                        <td>{{ project.social.pinterest }}</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>LinkedIn</td>
-                        <td>{{ project.social.linkedin }}</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>StumbleUpon</td>
-                        <td>{{ project.social.stumbleupon }}</td>
-                    </tr>
-                <tbody>
-            </table>
-
-            <h3>Reports</h3>
-
-            <ul>
-                {% for report in reports %}
-                <li><a href="{{ report.get_absolute_url }}">{{ report.ndays }}-day{{ report.ndays|pluralize }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </body>
-</html>
+    <ul>
+        {% for report in reports %}
+        <li><a href="{{ report.get_absolute_url }}">{{ report.ndays }}-day{{ report.ndays|pluralize }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
