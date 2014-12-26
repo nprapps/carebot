@@ -3,7 +3,6 @@
 from collections import OrderedDict
 import json
 
-from clan.utils import GLOBAL_ARGUMENTS
 from django.shortcuts import render
 
 import app_config
@@ -41,16 +40,7 @@ def report(request, slug, ndays):
         ndays=ndays
     )
 
-    data = json.loads(obj.results_json)
-
-    global_args = OrderedDict()
-
-    for arg in GLOBAL_ARGUMENTS:
-        if data[arg] is not None:
-            global_args[arg] = data[arg]
-
     context = {
-        'global_args': global_args,
         'report': obj 
     }
 
