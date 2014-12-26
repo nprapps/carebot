@@ -4,6 +4,10 @@
 
 {% block body %}
 <div class="container-fluid">
+    <h1>Query Comparison</h1>
+
+    <p><a href="{% url 'reports.views.index' %}">&laquo; Back to project index</a></p>
+
     <form class="form-inline">
         <div class="form-group">
             <label for="query">Compare</label>
@@ -45,9 +49,28 @@
     </form>
 
     {% if query %}
-    <h1>Comparing: {{ query.name }} ({{ ndays }}-day{{ ndays|pluralize:"s"}})</h1>
+    <h3>Configuration</h3>
 
-    <p><a href="{% url 'reports.views.index' %}">&laquo; Back to project index</a></p>
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td>Query</td>
+                <td>{{ query.name }}</td>
+            </tr>
+            <tr>
+                <td>Unit</td>
+                <td>{{ unit }}</td>
+            </tr>
+            <tr>
+                <td>Timespan</td>
+                <td>{{ ndays }}-day{{ ndays|pluralize:"s"}}</td>
+            </tr>
+            <tr>
+                <td>Tagged</td>
+                <td>{% if tag %}{{ tag.slug }}{% else %}(any){% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
         
     <p class="description">{{ query.description }}</p>
 

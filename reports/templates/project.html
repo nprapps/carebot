@@ -6,7 +6,31 @@
 <div class="container-fluid">
     <h1>{{ project.title }}</h1>
 
-    <p><a href="{% url 'reports.views.index' %}">&laquo; Select a different project</a></p>
+    <p><a href="{% url 'reports.views.index' %}">&laquo; Back to project list</a></p>
+
+    <h3>Configuration</h3>
+
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td>Google Analytics Property ID</td>
+                <td>{{ project.property_id }}</td>
+            </tr>
+            <tr>
+                <td>Domain</td>
+                <td>{{ project.domain }}</td>
+            </tr>
+            <tr>
+                <td>Prefix</td>
+                <td><a href="http://{{ project.domain }}{{ project.prefix }}">{{ project.prefix }}</a></td>
+            </tr>
+            <tr>
+                <td>Launch date</td>
+                <td>{{ project.start_date }}</td>
+            </tr>
+        </tbody>
+    </table>
+
 
     <h3>Lifetime social activity</h3>
     
@@ -62,10 +86,14 @@
 
     <h3>Reports</h3>
 
-    <ul>
-        {% for report in reports %}
-        <li><a href="{{ report.get_absolute_url }}">{{ report.ndays }}-day{{ report.ndays|pluralize }}</a></li>
-        {% endfor %}
-    </ul>
+    <table class="table table-condensed">
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td><a href="{{ report.get_absolute_url }}">{{ report.ndays }}-day{{ report.ndays|pluralize }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

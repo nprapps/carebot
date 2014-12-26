@@ -6,38 +6,9 @@
 <div class="container-fluid">
     <h1>{{ report.project.title }}</h1>
 
-    <p><a href="{{ report.project.get_absolute_url }}">&laquo; Select a different report</a></p>
+    <h2>{{ report.ndays }} day{{ report.ndays|pluralize }} report</h2>
 
-    <table class="table table-condensed">
-        <thead>
-            <tr>
-                <th>Configuration</th>
-                <th>Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Google Analytics Property ID</td>
-                <td>{{ report.project.property_id }}</td>
-            </tr>
-            <tr>
-                <td>Domain</td>
-                <td>{{ report.project.domain }}</td>
-            </tr>
-            <tr>
-                <td>Prefix</td>
-                <td><a href="http://{{ report.project.domain }}{{ report.project.prefix }}">{{ report.project.prefix }}</a></td>
-            </tr>
-            <tr>
-                <td>Launch date</td>
-                <td>{{ report.project.start_date }}</td>
-            </tr>
-            <tr>
-                <td>Report timespan</td>
-                <td>{{ report.ndays }} day{{ report.ndays|pluralize }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <p><a href="{{ report.project.get_absolute_url }}">&laquo; Back to project</a></p>
 
     {% for query_result in report.query_results.all %}
     <div class="query">
