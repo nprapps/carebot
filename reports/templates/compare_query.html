@@ -1,0 +1,70 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="{% static 'reports/bootstrap.min.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'reports/report.css' %}" />
+    </head>
+    <body>
+        <div class="container-fluid">
+            <form class="form-inline">
+                <div class="form-group">
+                    <select name="query" class="form-control">
+                        {% for query_option in queries %}
+                        <option value="{{ query_option.slug }}" {% if query_option == query %}selected="selected"{% endif %}>{{ query_option.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <select name="ndays" class="form-control">
+                        {% for ndays_option in report_ndays %}
+                        <option value="{{ ndays_option }}" {% if ndays_option == ndays %}selected="selected"{% endif %}>{{ ndays_option }}-day{{ ndays_option|pluralize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default">Compare</button>
+                </div>
+            </form>
+
+            {% if query %}
+            <h1>Comparing: {{ query.name }} ({{ ndays }}-day{{ ndays|pluralize:"s"}})</h1>
+
+            <p><a href="{% url 'reports.views.index' %}">&laquo; Select a different project</a></p>
+                
+            <p class="description">{{ query.description }}</p>
+
+            {% for metric_name, data in results.items %}
+            <h4>
+                {{ metric_name }}
+            </h4>
+
+            <table class="table table-striped table-bordered table-consdensed">
+                <thead>
+                    <tr>
+                        <th>Dimension</th>
+                        {% for project in projects %}
+                        <th>{{ project.title }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dimension_name, dimensions in data.items %}
+                    <tr class="{% if dimension_name == 'total' %}total{% endif %}">
+                        <td>{{ dimension_name }}</td>
+                        {% for dimension in dimensions %}
+                        <td>{{ dimension.value_formatted }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </body>
+<html>

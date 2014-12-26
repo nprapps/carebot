@@ -88,6 +88,18 @@ class ReportAdmin(admin.ModelAdmin):
     view_report.allow_tags = True
     view_report.short_description = 'View'
 
+class QueryResultAdmin(admin.ModelAdmin):
+    list_display = ('project_title', 'report_ndays', 'query_name')
+    list_display_links = ('query_name',)
+
+class MetricResultAdmin(admin.ModelAdmin):
+    list_display = ('project_title', 'report_ndays', 'query_name', 'name')
+    list_display_links = ('name',)
+
+class DimensionResultAdmin(admin.ModelAdmin):
+    list_display = ('project_title', 'report_ndays', 'query_name', 'metric_name', 'name', 'value', 'percent_of_total')
+    list_display_links = ('name',)
+
 class SocialAdmin(admin.ModelAdmin):
     list_display = ('project', 'facebook_likes', 'facebook_shares', 'facebook_comments', 'twitter', 'google', 'pinterest', 'linkedin', 'stumbleupon')
     list_display_links = ('project',)
@@ -96,3 +108,6 @@ admin.site.register(models.Query, QueryAdmin)
 admin.site.register(models.Project, ProjectAdmin)
 admin.site.register(models.Report, ReportAdmin)
 admin.site.register(models.Social, SocialAdmin)
+admin.site.register(models.QueryResult, QueryResultAdmin)
+admin.site.register(models.MetricResult, MetricResultAdmin)
+admin.site.register(models.DimensionResult, DimensionResultAdmin)

@@ -5,13 +5,9 @@ import json
 
 from clan.utils import GLOBAL_ARGUMENTS
 from django.shortcuts import render
-from django.template.defaulttags import register
 
+import app_config
 from reports import models
-
-@register.filter
-def get(dictionary, key):
-    return dictionary.get(key)
 
 def index(request):
     """
@@ -60,39 +56,48 @@ def report(request, slug, ndays):
 
     return render(request, 'report.html', context)
 
-def compare_query(request, slug, ndays):
+def compare_query(request):
     """
     Compare results of a query.
     """
-    query = models.Query.objects.get(slug=slug)
-    query_results = models.QueryResult.objects.filter(
-        query=query,
-        report__ndays=ndays
-    )
-
-    projects = []
-    results = OrderedDict()
-
-    # Build comparison table
-    for qr in query_results:
-        project = qr.report.project
-        projects.append(project)
-
-        for metric in qr.metrics.all():
-            if metric.name not in results:
-                results[metric.name] = OrderedDict()
-
-            for dimension in metric.dimensions.all():
-                if dimension.name not in results[metric.name]:
-                    results[metric.name][dimension.name] = []
-
-                results[metric.name][dimension.name].append(dimension)
-
-    context = {
-        'query': query,
-        'ndays': ndays,
-        'projects': projects,
-        'results': results
+    context= {
+        'queries': models.Query.objects.all(),
+        'report_ndays': app_config.DEFAULT_REPORT_NDAYS,
     }
 
-    return render(request, 'compare.html', context)
+    query_slug = request.GET.get('query', None)
+    ndays = request.GET.get('ndays', None)
+
+    if query_slug and ndays:
+        query = models.Query.objects.get(slug=query_slug)
+        query_results = models.QueryResult.objects.filter(
+            query=query,
+            report_ndays=ndays
+        )
+
+        projects = []
+        results = OrderedDict()
+
+        # Build comparison table
+        for qr in query_results:
+            project = qr.report.project
+            projects.append(project)
+
+            for metric in qr.metrics.all():
+                if metric.name not in results:
+                    results[metric.name] = OrderedDict()
+
+                for dimension in metric.dimensions.all():
+                    if dimension.name not in results[metric.name]:
+                        results[metric.name][dimension.name] = []
+
+                    results[metric.name][dimension.name].append(dimension)
+
+        context.update({
+            'query': query,
+            'ndays': int(ndays),
+            'projects': projects,
+            'results': results
+        })
+
+    return render(request, 'compare_query.html', context)

@@ -32,7 +32,7 @@
 
             {% for query_result in report.query_results.all %}
             <div class="query">
-                <h3>{{ query_result.query.name }} (<a href="{% url 'reports.views.compare_query' query_result.query.slug report.ndays %}">compare</a>)</h3>
+                <h3>{{ query_result.query_name }} (<a href="{% url 'reports.views.compare_query' %}?query={{ query_result.query.slug }}&ndays={{ report.ndays }}">compare</a>)</h3>
 
                 <p class="description">{{ query_result.query.description }}</p>
 

@@ -195,7 +195,9 @@ class Report(models.Model):
 
         # Query results
         for project_query, result in izip(self.project.project_queries.all(), data['queries']):
+            project_title = self.project.title
             query = project_query.query
+            query_name = query.name
             metrics = result['config']['metrics']
             data_types = result['data_types']
 
@@ -203,7 +205,10 @@ class Report(models.Model):
                 report=self,
                 query=query,
                 order=i,
-                sampled=result['sampled']
+                sampled=result['sampled'],
+                project_title=project_title,
+                report_ndays=self.ndays,
+                query_name=query_name
             )
 
             if result['sampled']:
@@ -216,35 +221,42 @@ class Report(models.Model):
             j = 0
 
             # Metrics
-            for metric in metrics:
-                dimensions = result['data'][metric]
-                data_type = data_types[metric]
-                total = result['data'][metric]['total']
+            for metric_name in metrics:
+                dimensions = result['data'][metric_name]
+                data_type = data_types[metric_name]
+                total = result['data'][metric_name]['total']
 
-                m = Metric(
+                metric = MetricResult(
                     query_result=qr,
                     order=j,
-                    name=metric,
-                    data_type=data_type
+                    name=metric_name,
+                    data_type=data_type,
+                    project_title=project_title,
+                    report_ndays=self.ndays,
+                    query_name=query_name
                 )
 
-                m.save()
+                metric.save()
 
                 k = 0
 
                 # Dimensions
-                for dimension, value in dimensions.items():
-                    d = Dimension(
-                        metric=m,
+                for dimension_name, value in dimensions.items():
+                    dimension = DimensionResult(
+                        metric=metric,
                         order=k,
-                        name=dimension,
-                        _value=value
+                        name=dimension_name,
+                        _value=value,
+                        project_title=project_title,
+                        report_ndays=self.ndays,
+                        query_name=query_name,
+                        metric_name=metric_name
                     )
 
                     if data_type in 'INTEGER' and total != 0: 
-                        d.percent_of_total = float(value) / total * 100
+                        dimension.percent_of_total = float(value) / total * 100
 
-                    d.save()
+                    dimension.save()
 
                     k += 1
                 
@@ -269,10 +281,15 @@ class QueryResult(models.Model):
     sample_space = models.PositiveIntegerField(default=0)
     sample_percent = models.FloatField(default=100)
 
+    # Denormalized fields
+    project_title = models.CharField(max_length=128)
+    report_ndays = models.PositiveIntegerField()
+    query_name = models.CharField(max_length=128)
+
     class Meta:
         ordering = ('report', 'order')
 
-class Metric(models.Model):
+class MetricResult(models.Model):
     """
     The results for a specific metric.
     """
@@ -281,6 +298,11 @@ class Metric(models.Model):
 
     name = models.CharField(max_length=128)
     data_type = models.CharField(max_length=30)
+
+    # Denormalized fields
+    project_title = models.CharField(max_length=128)
+    report_ndays = models.PositiveIntegerField()
+    query_name = models.CharField(max_length=128)
 
     class Meta:
         ordering = ('query_result', 'order')
@@ -292,16 +314,22 @@ class Metric(models.Model):
     def display_name(self):
         return FIELD_DEFINITIONS[self.name]['uiName']
 
-class Dimension(models.Model):
+class DimensionResult(models.Model):
     """
     Results for one dimension of a metric.
     """
-    metric = models.ForeignKey(Metric, related_name='dimensions')
+    metric = models.ForeignKey(MetricResult, related_name='dimensions')
     order = models.PositiveIntegerField()
 
     name = models.CharField(max_length=128)
     _value = models.CharField(max_length=128)
     percent_of_total = models.FloatField(null=True)
+
+    # Denormalized fields
+    project_title = models.CharField(max_length=128)
+    report_ndays = models.PositiveIntegerField()
+    query_name = models.CharField(max_length=128)
+    metric_name = models.CharField(max_length=128)
 
     class Meta:
         ordering = ('metric', 'order')

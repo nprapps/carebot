@@ -7,9 +7,9 @@ from reports import views
 
 urlpatterns = patterns('',
     url(r'^carebot/$', views.index),
+    url(r'^carebot/compare-query/$', views.compare_query),
+    url(r'^carebot/project/(?P<slug>[\w-]+)/$', views.project),
+    url(r'^carebot/report/(?P<slug>[\w-]+)/(?P<ndays>\d+)/$', views.report),
     url(r'^carebot/grappelli/', include('grappelli.urls')),
     url(r'^carebot/admin/', include(admin.site.urls)),
-    url(r'^carebot/(?P<slug>[\w-]+)/$', views.project),
-    url(r'^carebot/compare-query/(?P<slug>[\w-]+)/(?P<ndays>\d+)/$', views.compare_query),
-    url(r'^carebot/(?P<slug>[\w-]+)/(?P<ndays>\d+)/$', views.report),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

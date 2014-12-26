@@ -11,13 +11,17 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Dimension',
+            name='DimensionResult',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('order', models.PositiveIntegerField()),
                 ('name', models.CharField(max_length=128)),
                 ('_value', models.CharField(max_length=128)),
                 ('percent_of_total', models.FloatField(null=True)),
+                ('project_title', models.CharField(max_length=128)),
+                ('report_ndays', models.PositiveIntegerField()),
+                ('query_name', models.CharField(max_length=128)),
+                ('metric_name', models.CharField(max_length=128)),
             ],
             options={
                 'ordering': ('metric', 'order'),
@@ -25,12 +29,15 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Metric',
+            name='MetricResult',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('order', models.PositiveIntegerField()),
                 ('name', models.CharField(max_length=128)),
                 ('data_type', models.CharField(max_length=30)),
+                ('project_title', models.CharField(max_length=128)),
+                ('report_ndays', models.PositiveIntegerField()),
+                ('query_name', models.CharField(max_length=128)),
             ],
             options={
                 'ordering': ('query_result', 'order'),
@@ -86,6 +93,9 @@ class Migration(migrations.Migration):
                 ('sample_size', models.PositiveIntegerField(default=0)),
                 ('sample_space', models.PositiveIntegerField(default=0)),
                 ('sample_percent', models.FloatField(default=100)),
+                ('project_title', models.CharField(max_length=128)),
+                ('report_ndays', models.PositiveIntegerField()),
+                ('query_name', models.CharField(max_length=128)),
                 ('query', models.ForeignKey(related_name='query_results', to='reports.Query')),
             ],
             options={
@@ -173,15 +183,15 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='metric',
+            model_name='metricresult',
             name='query_result',
             field=models.ForeignKey(related_name='metrics', to='reports.QueryResult'),
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='dimension',
+            model_name='dimensionresult',
             name='metric',
-            field=models.ForeignKey(related_name='dimensions', to='reports.Metric'),
+            field=models.ForeignKey(related_name='dimensions', to='reports.MetricResult'),
             preserve_default=True,
         ),
     ]
