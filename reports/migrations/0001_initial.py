@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                 ('report_ndays', models.PositiveIntegerField()),
                 ('query_name', models.CharField(max_length=128)),
                 ('metric_name', models.CharField(max_length=128)),
+                ('metric_data_type', models.CharField(max_length=30)),
             ],
             options={
                 'ordering': ('metric', 'order'),
@@ -55,7 +56,7 @@ class Migration(migrations.Migration):
                 ('start_date', models.DateField()),
             ],
             options={
-                'ordering': ('start_date',),
+                'ordering': ('-start_date',),
             },
             bases=(models.Model,),
         ),
@@ -131,7 +132,7 @@ class Migration(migrations.Migration):
                 ('last_update', models.DateTimeField(null=True)),
             ],
             options={
-                'ordering': ('project__start_date',),
+                'ordering': ('-project__start_date',),
                 'verbose_name': 'social count',
                 'verbose_name_plural': 'social counts',
             },
@@ -189,9 +190,15 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
+            model_name='metricresult',
+            name='total',
+            field=models.OneToOneField(to='reports.DimensionResult'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='dimensionresult',
             name='metric',
-            field=models.ForeignKey(related_name='dimensions', to='reports.MetricResult'),
+            field=models.ForeignKey(related_name='dimensions', to='reports.MetricResult', null=True),
             preserve_default=True,
         ),
     ]

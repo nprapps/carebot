@@ -225,44 +225,14 @@ class Report(models.Model):
 
             # Metrics
             for metric_name in metrics:
-                dimensions = result['data'][metric_name]
-                data_type = data_types[metric_name]
-                total = result['data'][metric_name]['total']
-
-                metric = MetricResult(
-                    query_result=qr,
-                    order=j,
-                    name=metric_name,
-                    data_type=data_type,
-                    project_title=project_title,
-                    report_ndays=self.ndays,
-                    query_name=query_name
+                self._make_metric(
+                    qr,
+                    metric_name,
+                    j,
+                    data_types[metric_name],
+                    result['data'][metric_name]
                 )
 
-                metric.save()
-
-                k = 0
-
-                # Dimensions
-                for dimension_name, value in dimensions.items():
-                    dimension = DimensionResult(
-                        metric=metric,
-                        order=k,
-                        name=dimension_name,
-                        _value=value,
-                        project_title=project_title,
-                        report_ndays=self.ndays,
-                        query_name=query_name,
-                        metric_name=metric_name
-                    )
-
-                    if data_type in 'INTEGER' and total != 0: 
-                        dimension.percent_of_total = float(value) / total * 100
-
-                    dimension.save()
-
-                    k += 1
-                
                 j += 1
                 
             i += 1
@@ -270,6 +240,77 @@ class Report(models.Model):
         self.save()
 
         return True
+
+    def _make_metric(self, query_result, metric_name, order, data_type, dimensions):
+        """
+        Create a Metric and related Dimensions.
+        """
+        total_value = dimensions['total']
+
+        metric = MetricResult(
+            query_result=query_result,
+            order=order,
+            name=metric_name,
+            data_type=data_type,
+            project_title=query_result.project_title,
+            report_ndays=query_result.report_ndays,
+            query_name=query_result.query_name
+        )
+
+        total = self._make_dimension(
+            metric,
+            'total',
+            0,
+            data_type,
+            total_value,
+            total_value
+        )
+
+        metric.total = total
+        metric.save()
+
+        i = 0
+
+        # Dimensions
+        for dimension_name, value in dimensions.items():
+            if dimension_name == 'total':
+                continue
+
+            self._make_dimension(
+                metric,
+                dimension_name,
+                i,
+                data_type,
+                value,
+                total
+            )
+
+            i += 1
+
+    def _make_dimension(self, metric, dimension_name, order, data_type, value, total):
+        """
+        Create a new Dimension.
+        """
+        dimension = DimensionResult(
+            order=order,
+            name=dimension_name,
+            _value=value,
+            project_title=metric.project_title,
+            report_ndays=metric.report_ndays,
+            query_name=metric.query_name,
+            metric_name=metric.name,
+            metric_data_type=metric.data_type
+        )
+
+        if dimension_name != 'total':
+            if data_type in 'INTEGER' and metric.total.value != 0: 
+                dimension.percent_of_total = float(value) / metric.total.value * 100
+
+            dimension.metric = metric
+                    
+        dimension.save()
+
+        return dimension
 
 class QueryResult(models.Model):
     """
@@ -306,6 +347,7 @@ class MetricResult(models.Model):
     project_title = models.CharField(max_length=128)
     report_ndays = models.PositiveIntegerField()
     query_name = models.CharField(max_length=128)
+    total = models.OneToOneField('DimensionResult')
 
     class Meta:
         ordering = ('query_result', 'order')
@@ -321,7 +363,7 @@ class DimensionResult(models.Model):
     """
     Results for one dimension of a metric.
     """
-    metric = models.ForeignKey(MetricResult, related_name='dimensions')
+    metric = models.ForeignKey(MetricResult, related_name='dimensions', null=True)
     order = models.PositiveIntegerField()
 
     name = models.CharField(max_length=128)
@@ -333,30 +375,31 @@ class DimensionResult(models.Model):
     report_ndays = models.PositiveIntegerField()
     query_name = models.CharField(max_length=128)
     metric_name = models.CharField(max_length=128)
+    metric_data_type = models.CharField(max_length=30)
 
     class Meta:
         ordering = ('metric', 'order')
 
     @property
     def value(self):
-        if self.metric.data_type == 'INTEGER':
+        if self.metric_data_type == 'INTEGER':
             return int(self._value)
-        elif self.metric.data_type == 'STRING':
+        elif self.metric_data_type == 'STRING':
             return self._value
-        elif self.metric.data_type in ['FLOAT', 'PERCENT', 'TIME', 'CURRENCY']:
+        elif self.metric_data_type in ['FLOAT', 'PERCENT', 'TIME', 'CURRENCY']:
             return float(self._value)
 
         return None
 
     @property
     def value_formatted(self):
-        if self.metric.data_type == 'INTEGER':
+        if self.metric_data_type == 'INTEGER':
             return utils.format_comma(int(self._value))
-        elif self.metric.data_type == 'STRING':
+        elif self.metric_data_type == 'STRING':
             return self._value
-        elif self.metric.data_type in ['FLOAT', 'PERCENT', 'CURRENCY']:
+        elif self.metric_data_type in ['FLOAT', 'PERCENT', 'CURRENCY']:
             return '%.1f' % float(self._value)
-        elif self.metric.data_type == 'TIME':
+        elif self.metric_data_type == 'TIME':
             return clan_utils.format_duration(float(self._value))
 
         return None

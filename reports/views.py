@@ -73,6 +73,7 @@ def compare_query(request):
 
     if query_slug and context['ndays']:
         context['query'] = models.Query.objects.get(slug=query_slug)
+
         query_results = models.QueryResult.objects.filter(
             query=context['query'],
             report_ndays=context['ndays']
@@ -89,18 +90,19 @@ def compare_query(request):
 
         # Build comparison table
         for qr in query_results:
-            project = qr.report.project
-            projects.append(project)
+            projects.append(qr.report.project)
 
             for metric in qr.metrics.all():
                 if metric.name not in results:
-                    results[metric.name] = OrderedDict()
+                    results[metric.name] = OrderedDict([('total', [])])
 
                 for dimension in metric.dimensions.all():
                     if dimension.name not in results[metric.name]:
                         results[metric.name][dimension.name] = []
 
                     results[metric.name][dimension.name].append(dimension)
+
+                results[metric.name]['total'].append(metric.total) 
 
         context.update({
             'projects': projects,
