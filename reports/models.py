@@ -88,12 +88,21 @@ class Project(models.Model):
             if overwrite or not report.last_run:
                 updated = report.run()
 
-                if updated:
+                if updated and report.ndays:
                     updated_reports.append(report)
             else:
-                print 'Skipping %i-day report for %s (already run).' % (report.ndays, self.title)
+                print 'Skipping %s report for %s (already run).' % (report.timespan, self.title)
 
         return updated_reports
+
+    def get_clan_config(self):
+        return {
+            'title': self.title,
+            'property-id': self.property_id,
+            'domain': self.domain,
+            'prefix': self.prefix,
+            'start-date': datetime.strftime(self.start_date, '%Y-%m-%d')
+        }
 
 @receiver(models.signals.post_save, sender=Project)
 def on_project_post_save(sender, instance, created, *args, **kwargs):
@@ -107,6 +116,11 @@ def on_project_post_save(sender, instance, created, *args, **kwargs):
                 query=Query.objects.get(slug=query_slug),
                 order=i
             )
+
+        Report.objects.create(
+            project=instance,
+            ndays=None
+        )
 
         for ndays in app_config.DEFAULT_REPORT_NDAYS:
             Report.objects.create(
@@ -132,7 +146,7 @@ class Report(models.Model):
     A report for a given project over some number of days.
     """
     project = models.ForeignKey(Project, related_name='reports')
-    ndays = models.PositiveIntegerField()
+    ndays = models.PositiveIntegerField(null=True)
     results_json = models.TextField()
     last_run = models.DateTimeField(null=True)
 
@@ -145,29 +159,42 @@ class Report(models.Model):
         ordering = ('project__start_date', 'ndays',)
 
     def __unicode__(self):
-        return '%s (%i-day%s)' % (self.project.title, self.ndays, 's' if self.ndays > 1 else '')
+        return '%s (%s)' % (self.project.title, self.timespan)
 
     def get_absolute_url(self):
-        return reverse('reports.views.report', args=[self.project.slug, unicode(self.ndays)])
+        return reverse(
+            'reports.views.report',
+            args=[
+                self.project.slug,
+                self.ndays or 'all-time'
+            ]
+        )
+
+    @property
+    def timespan(self):
+        if self.ndays:
+            return '%i-day%s' % (self.ndays, 's' if self.ndays > 1 else '')
+
+        return 'all-time'
 
     def is_timely(self):
         """
         Checks if it has been long enough to have data for this report.
         """
+        if not self.ndays:
+            return True
+
         return date.today() >= self.project.start_date + timedelta(days=self.ndays)
 
     def build_clan_yaml(self):
         """
         Build YAML configuration for this report.
         """
-        data = {}
+        data = self.project.get_clan_config() 
 
-        data['title'] = self.project.title
-        data['property-id'] = self.project.property_id
-        data['domain'] = self.project.domain
-        data['prefix'] = self.project.prefix
-        data['start-date'] = datetime.strftime(self.project.start_date, '%Y-%m-%d')
-        data['ndays'] = self.ndays
+        if self.ndays:
+            data['ndays'] = self.ndays
+
         data['queries'] = []
 
         for project_query in ProjectQuery.objects.filter(project=self.project):
@@ -180,10 +207,10 @@ class Report(models.Model):
         Run this report, stash it's results and render it out to S3.
         """
         if not self.is_timely():
-            print 'Skipping %i-day report for %s (not timely).' % (self.ndays, self.project.title)
+            print 'Skipping %s report for %s (not timely).' % (self.timespan, self.project.title)
             return False
             
-        print 'Running %i-day report for %s' % (self.ndays, self.project.title)
+        print 'Running %s report for %s' % (self.timespan, self.project.title)
 
         with open('/tmp/clan.yaml', 'w') as f:
             y = self.build_clan_yaml()
@@ -344,7 +371,7 @@ class QueryResult(models.Model):
 
     # Denormalized fields
     project_title = models.CharField(max_length=128)
-    report_ndays = models.PositiveIntegerField()
+    report_ndays = models.PositiveIntegerField(null=True)
     query_name = models.CharField(max_length=128)
 
     class Meta:
@@ -362,7 +389,7 @@ class MetricResult(models.Model):
 
     # Denormalized fields
     project_title = models.CharField(max_length=128)
-    report_ndays = models.PositiveIntegerField()
+    report_ndays = models.PositiveIntegerField(null=True)
     query_name = models.CharField(max_length=128)
     total = models.OneToOneField('DimensionResult', related_name='total_of')
 
@@ -389,7 +416,7 @@ class DimensionResult(models.Model):
 
     # Denormalized fields
     project_title = models.CharField(max_length=128)
-    report_ndays = models.PositiveIntegerField()
+    report_ndays = models.PositiveIntegerField(null=True)
     query_name = models.CharField(max_length=128)
     metric_name = models.CharField(max_length=128)
     metric_data_type = models.CharField(max_length=30)

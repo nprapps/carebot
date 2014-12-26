@@ -30,10 +30,13 @@ def project(request, slug):
 
     return render(request, 'project.html', context)
 
-def report(request, slug, ndays):
+def report(request, slug, ndays=None):
     """
     Generate a project report.
     """
+    if ndays == 'all-time':
+        ndays = None
+
     obj = models.Report.objects.get(
         project__slug=slug,
         ndays=ndays
@@ -56,17 +59,23 @@ def compare_query(request):
     }
 
     query_slug = request.GET.get('query', None)
-    context['ndays'] = int(request.GET.get('ndays', app_config.DEFAULT_REPORT_NDAYS[0]))
+    ndays = request.GET.get('ndays', None)
     context['unit'] = request.GET.get('unit', 'count')
     tag_slug = request.GET.get('tag', None)
 
-    if query_slug and context['ndays']:
+    if query_slug:
         context['query'] = models.Query.objects.get(slug=query_slug)
 
         query_results = models.QueryResult.objects.filter(
             query=context['query'],
-            report_ndays=context['ndays']
         )
+
+        if ndays:
+            context['ndays'] = int(ndays)
+            query_results = query_results.filter(report_ndays=context['ndays'])
+        else:
+            context['ndays'] = ndays
+            query_results = query_results.filter(report_ndays__isnull=True)
 
         if tag_slug:
             context['tag'] = models.Tag.objects.get(slug=tag_slug)

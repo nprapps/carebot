@@ -20,6 +20,7 @@
 
         <div class="form-group">
             <select name="ndays" class="form-control">
+                <option value="">all-time</option>
                 {% for ndays_option in report_ndays %}
                 <option value="{{ ndays_option }}" {% if ndays_option == ndays %}selected="selected"{% endif %}>{{ ndays_option }}-day{{ ndays_option|pluralize }} reports</option>
                 {% endfor %}
@@ -64,7 +65,7 @@
             </tr>
             <tr>
                 <td>Timespan</td>
-                <td>{{ ndays }}-day{{ ndays|pluralize:"s"}}</td>
+                <td>{% if ndays %}{{ ndays }}-day{{ ndays|pluralize:"s"}}{% else %}all-time{% endif %}</td>
             </tr>
             <tr>
                 <td>Tagged</td>

@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <h1>{{ report.project.title }}</h1>
 
-    <h2>{{ report.ndays }} day{{ report.ndays|pluralize }} report</h2>
+    <h2>{{ report.timespan }} report</h2>
 
     <p><a href="{{ report.project.get_absolute_url }}">&laquo; Back to project</a></p>
 

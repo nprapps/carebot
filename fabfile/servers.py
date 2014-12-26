@@ -240,7 +240,7 @@ Django
 def collectstatic():
     require('settings', provided_by=['production', 'staging'])
 
-    run('%(SERVER_VIRTUALENV_PATH)s/bin/python %(SERVER_REPOSITORY_PATH)s/manage.py collectstatic --noinput' % app_config.__dict__)
+    run('cd %(SERVER_REPOSITORY_PATH)s; %(SERVER_VIRTUALENV_PATH)s/bin/python %(SERVER_REPOSITORY_PATH)s/manage.py collectstatic --noinput' % app_config.__dict__)
 
 """
 Fabcasting

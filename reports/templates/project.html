@@ -102,7 +102,7 @@
         <tbody>
             {% for report in reports %}
             <tr>
-                <td><a href="{{ report.get_absolute_url }}">{{ report.ndays }}-day{{ report.ndays|pluralize }}</a></td>
+                <td><a href="{{ report.get_absolute_url }}">{{ report.timespan }}</a></td>
                 <td>{{ report.last_run }}</td>
                 <td>{{ report.sessions }}</td>
             </tr>
