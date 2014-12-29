@@ -96,15 +96,13 @@ def compare_query(request):
                 m = (metric.name, metric.display_name)
 
                 if m not in results:
-                    results[m] = OrderedDict([('total', [])])
+                    results[m] = OrderedDict()
 
                 for dimension in metric.dimensions.all():
                     if dimension.name not in results[m]:
                         results[m][dimension.name] = []
 
                     results[m][dimension.name].append(dimension)
-
-                results[m]['total'].append(metric.total) 
 
         context.update({
             'projects': projects,

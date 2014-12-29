@@ -34,7 +34,6 @@
                     {% for dimension in metric.dimensions.all %}
                     {% include '_report_dimension.html' with dimension=dimension %}
                     {% endfor %}
-                    {% include '_report_dimension.html' with dimension=metric.total %}
                 </tbody>
             </table>
         </div>

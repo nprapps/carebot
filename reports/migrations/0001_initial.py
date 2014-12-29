@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('_value', models.CharField(max_length=128)),
                 ('percent_of_total', models.FloatField(null=True)),
                 ('project_title', models.CharField(max_length=128)),
-                ('report_ndays', models.PositiveIntegerField()),
+                ('report_ndays', models.PositiveIntegerField(null=True)),
                 ('query_name', models.CharField(max_length=128)),
                 ('metric_name', models.CharField(max_length=128)),
                 ('metric_data_type', models.CharField(max_length=30)),
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=128)),
                 ('data_type', models.CharField(max_length=30)),
                 ('project_title', models.CharField(max_length=128)),
-                ('report_ndays', models.PositiveIntegerField()),
+                ('report_ndays', models.PositiveIntegerField(null=True)),
                 ('query_name', models.CharField(max_length=128)),
             ],
             options={
@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
                 ('sample_space', models.PositiveIntegerField(default=0)),
                 ('sample_percent', models.FloatField(default=100)),
                 ('project_title', models.CharField(max_length=128)),
-                ('report_ndays', models.PositiveIntegerField()),
+                ('report_ndays', models.PositiveIntegerField(null=True)),
                 ('query_name', models.CharField(max_length=128)),
                 ('query', models.ForeignKey(related_name='query_results', to='reports.Query')),
             ],
@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
             name='Report',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ndays', models.PositiveIntegerField()),
+                ('ndays', models.PositiveIntegerField(null=True)),
                 ('results_json', models.TextField()),
                 ('last_run', models.DateTimeField(null=True)),
                 ('pageviews', models.PositiveIntegerField(null=True)),
@@ -191,12 +191,6 @@ class Migration(migrations.Migration):
             model_name='metricresult',
             name='query_result',
             field=models.ForeignKey(related_name='metrics', to='reports.QueryResult'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='metricresult',
-            name='total',
-            field=models.OneToOneField(related_name='total_of', to='reports.DimensionResult'),
             preserve_default=True,
         ),
         migrations.AddField(
