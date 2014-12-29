@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 {% load humanize %}
 {% load tz %}
+{% load social %}
 
 {% block title %}{{ project.title }} :: carebot{% endblock %}
 
@@ -39,52 +40,67 @@
 
     <h3>Lifetime social activity</h3>
     
-    <table class="table table-condensed">
+    <table class="table table-condensed table-striped">
         <thead>
             <tr>
                 <th>Interaction</th>
                 <th class="value">Count</th>
+                <th class="value">Per Session</th>
             <tr>
         </thead>
         <tbody>
             <tr>
                 <td>Facebook likes</td>
                 <td class="value">{{ project.social.facebook_likes|intcomma }}</td>
+                <td class="value">{% social_per_session project "facebook_likes" %}</td>
             </tr>
 
             <tr>
                 <td>Facebook shares</td>
                 <td class="value">{{ project.social.facebook_shares|intcomma }}</td>
+                <td class="value">{% social_per_session project "facebook_shares" %}</td>
             </tr>
 
             <tr>
                 <td>Facebook comments</td>
                 <td class="value">{{ project.social.facebook_comments|intcomma }}</td>
+                <td class="value">{% social_per_session project "facebook_comments" %}</td>
             </tr>
 
             <tr>
                 <td>Twitter</td>
                 <td class="value">{{ project.social.twitter|intcomma }}</td>
+                <td class="value">{% social_per_session project "twitter" %}</td>
             </tr>
 
             <tr>
                 <td>Google+</td>
                 <td class="value">{{ project.social.google|intcomma }}</td>
+                <td class="value">{% social_per_session project "google" %}</td>
             </tr>
             
             <tr>
                 <td>Pinterest</td>
                 <td class="value">{{ project.social.pinterest|intcomma }}</td>
+                <td class="value">{% social_per_session project "pinterest" %}</td>
             </tr>
             
             <tr>
                 <td>LinkedIn</td>
                 <td class="value">{{ project.social.linkedin|intcomma }}</td>
+                <td class="value">{% social_per_session project "linkedin" %}</td>
             </tr>
             
             <tr>
                 <td>StumbleUpon</td>
                 <td class="value">{{ project.social.stumbleupon|intcomma }}</td>
+                <td class="value">{% social_per_session project "stumbleupon" %}</td>
+            </tr>
+
+            <tr class="total">
+                <td>Total</td>
+                <td class="value">{{ project.social.total|intcomma }}</td>
+                <td class="value">{% social_per_session project "total" %}</td>
             </tr>
         <tbody>
     </table>

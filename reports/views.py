@@ -11,8 +11,10 @@ def index(request):
     """
     Project index.
     """
+    projects = models.Project.objects.all()
+
     context = {
-        'projects': models.Project.objects.all()    
+        'projects': projects  
     }
 
     return render(request, 'index.html', context)

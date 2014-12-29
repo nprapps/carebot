@@ -77,6 +77,10 @@ class Project(models.Model):
 
     def tag_list(self):
         return ','.join([tag.slug for tag in self.tags.all()])
+    
+    @property
+    def all_time_report(self):
+        return self.reports.get(ndays__isnull=True)
 
     def run_reports(self, overwrite=False):
         """
@@ -525,3 +529,4 @@ class Social(models.Model):
         self.last_update = timezone.now()
 
         self.save()
+

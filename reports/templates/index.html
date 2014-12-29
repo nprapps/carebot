@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load humanize %}
+{% load social %}
 
 {% block title %}carebot{% endblock %}
 
@@ -12,8 +13,9 @@
             <tr>
                 <th>Project</th>
                 <th>Launch date</th>
-                <th class="value">Social interactions</th>
                 <th>Tags</th>
+                <th class="value">Social Interactions</th>
+                <th class="value">Per Session</th>
             </tr>
         </thead>
         <tbody>
@@ -21,8 +23,9 @@
             <tr>
                 <td><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></td>
                 <td>{{ project.start_date }}</td>
-                <td class="value">{{ project.social.total|intcomma }}</td>
                 <td>{{ project.tag_list }}</td>
+                <td class="value">{{ project.social.total|intcomma }}</td>
+                <td class="value">{% social_per_session project "total" %}</td>
             </tr>
             {% endfor %}
         </tbody>
