@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from collections import OrderedDict
+from copy import copy
 from datetime import date, datetime, timedelta
 from itertools import izip
 import json
@@ -116,7 +117,12 @@ def on_project_post_save(sender, instance, created, *args, **kwargs):
     Create default reports for a new project.
     """
     if created:
-        for i, query_slug in enumerate(app_config.APP_DEFAULT_QUERIES):
+        default_queries = copy(app_config.DEFAULT_QUERIES)
+
+        if instance.start_date > date(2014, 6, 1):
+            default_queries.extend(app_config.DEFAULT_EVENT_QUERIES)
+
+        for i, query_slug in enumerate(default_queries):
             ProjectQuery.objects.create(
                 project=instance,
                 query=Query.objects.get(slug=query_slug),

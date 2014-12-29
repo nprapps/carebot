@@ -4,6 +4,7 @@
 Commands that update or process the application data.
 """
 import csv
+from datetime import datetime
 from glob import glob
 import os
 import yaml
@@ -87,7 +88,7 @@ def bootstrap_db():
                 property_id=row['property_id'],
                 domain=row['domain'],
                 prefix=row['prefix'],
-                start_date=row['start_date']
+                start_date=datetime.strptime(row['start_date'], '%Y-%m-%d').date()
             )
 
             for tag in row['tags'].split(','):

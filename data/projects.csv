@@ -1,46 +1,46 @@
-title,tags,property_id,domain,prefix,start_date
-Demolished: The End of Chicago's Public Housing,"lookatthis,slides",53470309,apps.npr.org,/lookatthis/posts/publichousing/,2014-12-23
-Naughty or Nice,"app,audio",53470309,apps.npr.org,/naughty-or-nice/,2014-12-21
-Songs We Love 2014,"app,music,audio",53470309,apps.npr.org,/best-songs-2014/,2014-12-10
-Book Concierge 2014,"app,books",53470309,apps.npr.org,/best-books-2014/,2014-12-03
-A Photo I Love: Erin Mystkowski,"lookatthis,audio",53470309,apps.npr.org,/lookatthis/posts/mystkowski-loves/,2014-11-18
-Election Party 2014,"app,politics,live,tv",53470309,elections.npr.org,/,2014-11-04
-Talking While Female,"seamus,video",53470309,www.npr.org,/blogs/health/2014/10/24/357584372/video-what-women-get-flak-for-when-they-talk,2014-10-24
-This Is Color,"lookatthis,slides",53470309,apps.npr.org,/lookatthis/posts/colors/,2014-10-23
-Plastic Rebirth,"lookatthis,slides",53470309,apps.npr.org,/lookatthis/posts/plastic/,2014-10-09
-What Do Homeless Veteran's Look Like?,"lookatthis,slides",53470309,apps.npr.org,/lookatthis/posts/veterans/,2014-09-17
-The End of Neighborhood Schools,"app,scroll",53470309,apps.npr.org,/the-end-of-neighborhood-schools/,2014-09-02
-Behind the Civil Rights Act,app,53470309,apps.npr.org,/behind-the-civil-rights-act/,2014-07-02
-"The Best Commencement Speeches, Ever",app,53470309,apps.npr.org,/commencement/,2014-05-19
-12 Weeks To A 6-Figure Job,"seamus,graphic",53470309,www.npr.org,/blogs/ed/2014/12/20/370954988/twelve-weeks-to-a-six-figure-job,2014-12-20
-Buzkashi,"app,scroll",53470309,apps.npr.org,/buzkashi/,2014-05-04
-Borderland,"app,slides",53470309,apps.npr.org,/borderland/,2014-04-03
-Grave Science,"app,scroll",53470309,apps.npr.org,/grave-science/,2014-03-05
-Wolves At The Door,"app,scroll",53470309,apps.npr.org,/wolves/,2014-02-03
-Oil Boom,"seamus,gif",53470309,www.npr.org,/2014/01/29/266757131/welcome-to-oil-country-a-modern-day-gold-rush-in-north-dakota,2014-01-29
-In Memoriam 2013,"app,music",53470309,apps.npr.org,/music-memoriam-2013/,2013-12-19
-Your Questions About the Affordable Care Act,"app,faq",53470309,apps.npr.org,/affordable-care-act-questions/,2013-12-18
-Book Concierge 2013,"app,books",53470309,apps.npr.org,/best-books-2013/,2013-12-04
-Planet Money Makes A T-Shirt,"app,video,ugc",53470309,apps.npr.org,/tshirt/,2013-11-25
-Lobbying Missuori,"app,station,politics,evergreen",53470309,www.lobbyingmissouri.org,/,2013-11-04
-Playgrounds For Everyone,"app,evergreen",53470309,apps.npr.org,/playgrounds/,2013-08-27
-Okkervil River,"app,music,audio",53470309,apps.npr.org,/okkervil-river/,2013-07-15
-Zoom In On Oklahoma Tornado Damage,"app,breaking",53470309,apps.npr.org,/moore-oklahoma-tornado-damage/,2013-05-23
-Deals For Developers,"app,politics,station",53470309,apps.npr.org,/deals-for-developers-wamu/,2013-05-20
-Previously On Arrested Development,app,53470309,apps.npr.org,/arrested-development/,2013-05-17
-Teenage Diaries,app,53470309,apps.npr.org,/teenage-diaries/,2013-05-10
-She Works,"app,tumblr,ugc",53470309,she-works.tumblr.com,/,2013-05-06
-Cook Your Cupboard,"app,tumblr,ugc",53470309,cookyourcupboard.tumblr.com,/,2013-04-02
-Buried In Grain,"app,scroll",53470309,apps.npr.org,/buried-in-grain/,2013-03-24
-Unfit For Work,"app,scroll",53470309,apps.npr.org,/unfit-for-work/,2013-03-22
-Dinnertime Confessional,"app,tumblr",53470309,dinnertimeconfessional.tumblr.com,/,2013-02-26
-Oscar Night Live Coverage,"app,live",53470309,apps.npr.org,/oscars-2013/,2013-02-22
-Inauguration Live,"app,live",53470309,apps.npr.org,/inauguration/,2013-01-18
-Sotomayor: From The Bronx to The Bench,"app,audio,slides",53470309,apps.npr.org,/sotomayor-family-photos/,2013-01-12
-Dear Mr. President,"app,tumblr,ugc",53470309,inauguration2013.tumblr.com,/,2013-01-09
-Bob Boilen's Wristbands,"app,music",53470309,apps.npr.org,/bob-boilens-wristbands-2012/,2012-12-31
-In Memoriam 2012,"app,audio,slides",53470309,apps.npr.org,/music-memoriam-2012/,2012-12-24
-Election Night 2012,"app,politics,live",53470309,elections2012.npr.org,/,2012-11-06
-Election 2012: Early Voting,"app,politics",53470309,apps.npr.org,/early-voting-2012/,2012-09-25
-Democratic National Convention,"app,live",53470309,apps.npr.org,/2012-democratic-national-convention/,2012-09-02
-Fire Forecast,"app,evergreen",53470309,apps.npr.org,/fire-forecast/,2012-08-23
+title,tags,property_id,domain,prefix,start_date,default_queries
+Demolished: The End of Chicago's Public Housing,"lookatthis,slides",53470309,apps.npr.org,/lookatthis/posts/publichousing/,2014-12-23,complex
+Naughty or Nice,"app,audio",53470309,apps.npr.org,/naughty-or-nice/,2014-12-21,complex
+Songs We Love 2014,"app,music,audio",53470309,apps.npr.org,/best-songs-2014/,2014-12-10,complex
+Book Concierge 2014,"app,books",53470309,apps.npr.org,/best-books-2014/,2014-12-03,complex
+A Photo I Love: Erin Mystkowski,"lookatthis,audio",53470309,apps.npr.org,/lookatthis/posts/mystkowski-loves/,2014-11-18,complex
+Election Party 2014,"app,politics,live,tv",53470309,elections.npr.org,/,2014-11-04,complex
+Talking While Female,"seamus,video",53470309,www.npr.org,/blogs/health/2014/10/24/357584372/video-what-women-get-flak-for-when-they-talk,2014-10-24,complex
+This Is Color,"lookatthis,slides",53470309,apps.npr.org,/lookatthis/posts/colors/,2014-10-23,complex
+Plastic Rebirth,"lookatthis,slides",53470309,apps.npr.org,/lookatthis/posts/plastic/,2014-10-09,complex
+What Do Homeless Veteran's Look Like?,"lookatthis,slides",53470309,apps.npr.org,/lookatthis/posts/veterans/,2014-09-17,complex
+The End of Neighborhood Schools,"app,scroll",53470309,apps.npr.org,/the-end-of-neighborhood-schools/,2014-09-02,complex
+Behind the Civil Rights Act,app,53470309,apps.npr.org,/behind-the-civil-rights-act/,2014-07-02,complex
+"The Best Commencement Speeches, Ever",app,53470309,apps.npr.org,/commencement/,2014-05-19,simple
+12 Weeks To A 6-Figure Job,"seamus,graphic",53470309,www.npr.org,/blogs/ed/2014/12/20/370954988/twelve-weeks-to-a-six-figure-job,2014-12-20,simple
+Buzkashi,"app,scroll",53470309,apps.npr.org,/buzkashi/,2014-05-04,simple
+Borderland,"app,slides",53470309,apps.npr.org,/borderland/,2014-04-03,simple
+Grave Science,"app,scroll",53470309,apps.npr.org,/grave-science/,2014-03-05,simple
+Wolves At The Door,"app,scroll",53470309,apps.npr.org,/wolves/,2014-02-03,simple
+Oil Boom,"seamus,gif",53470309,www.npr.org,/2014/01/29/266757131/welcome-to-oil-country-a-modern-day-gold-rush-in-north-dakota,2014-01-29,simple
+In Memoriam 2013,"app,music",53470309,apps.npr.org,/music-memoriam-2013/,2013-12-19,simple
+Your Questions About the Affordable Care Act,"app,faq",53470309,apps.npr.org,/affordable-care-act-questions/,2013-12-18,simple
+Book Concierge 2013,"app,books",53470309,apps.npr.org,/best-books-2013/,2013-12-04,simple
+Planet Money Makes A T-Shirt,"app,video,ugc",53470309,apps.npr.org,/tshirt/,2013-11-25,simple
+Lobbying Missuori,"app,station,politics,evergreen",53470309,www.lobbyingmissouri.org,/,2013-11-04,simple
+Playgrounds For Everyone,"app,evergreen",53470309,apps.npr.org,/playgrounds/,2013-08-27,simple
+Okkervil River,"app,music,audio",53470309,apps.npr.org,/okkervil-river/,2013-07-15,simple
+Zoom In On Oklahoma Tornado Damage,"app,breaking",53470309,apps.npr.org,/moore-oklahoma-tornado-damage/,2013-05-23,simple
+Deals For Developers,"app,politics,station",53470309,apps.npr.org,/deals-for-developers-wamu/,2013-05-20,simple
+Previously On Arrested Development,app,53470309,apps.npr.org,/arrested-development/,2013-05-17,simple
+Teenage Diaries,app,53470309,apps.npr.org,/teenage-diaries/,2013-05-10,simple
+She Works,"app,tumblr,ugc",53470309,she-works.tumblr.com,/,2013-05-06,simple
+Cook Your Cupboard,"app,tumblr,ugc",53470309,cookyourcupboard.tumblr.com,/,2013-04-02,simple
+Buried In Grain,"app,scroll",53470309,apps.npr.org,/buried-in-grain/,2013-03-24,simple
+Unfit For Work,"app,scroll",53470309,apps.npr.org,/unfit-for-work/,2013-03-22,simple
+Dinnertime Confessional,"app,tumblr",53470309,dinnertimeconfessional.tumblr.com,/,2013-02-26,simple
+Oscar Night Live Coverage,"app,live",53470309,apps.npr.org,/oscars-2013/,2013-02-22,simple
+Inauguration Live,"app,live",53470309,apps.npr.org,/inauguration/,2013-01-18,simple
+Sotomayor: From The Bronx to The Bench,"app,audio,slides",53470309,apps.npr.org,/sotomayor-family-photos/,2013-01-12,simple
+Dear Mr. President,"app,tumblr,ugc",53470309,inauguration2013.tumblr.com,/,2013-01-09,simple
+Bob Boilen's Wristbands,"app,music",53470309,apps.npr.org,/bob-boilens-wristbands-2012/,2012-12-31,simple
+In Memoriam 2012,"app,audio,slides",53470309,apps.npr.org,/music-memoriam-2012/,2012-12-24,simple
+Election Night 2012,"app,politics,live",53470309,elections2012.npr.org,/,2012-11-06,simple
+Election 2012: Early Voting,"app,politics",53470309,apps.npr.org,/early-voting-2012/,2012-09-25,simple
+Democratic National Convention,"app,live",53470309,apps.npr.org,/2012-democratic-national-convention/,2012-09-02,simple
+Fire Forecast,"app,evergreen",53470309,apps.npr.org,/fire-forecast/,2012-08-23,simple

@@ -96,29 +96,22 @@ PROJECT_TYPES = [
     ('lookatthis-post', 'Look At This Post')
 ]
 
-APP_DEFAULT_QUERIES = [
+DEFAULT_QUERIES = [
     'totals',
     'sessions-by-device-category',
     'sessions-by-browser',
     'sessions-by-referring-domain',
     'sessions-by-referring-social-network',
     'performance',
-    'time-spent-on-page-by-device-category',
+    'time-spent-on-page-by-device-category'
+]
+
+DEFAULT_EVENT_QUERIES = [
     'share-discuss-panel-opened',
     'tweet-link-clicked',
     'facebook-share-link-clicked',
     'email-link-clicked',
     'summary-copied'
-]
-
-GRAPHIC_DEFAULT_QUERIES = [
-    'totals',
-    'sessions-by-device-category',
-    'sessions-by-browser',
-    'sessions-by-referring-domain',
-    'sessions-by-referring-social-network',
-    'performance',
-    'time-spent-on-page-by-device-category',
 ]
 
 DEFAULT_REPORT_NDAYS = [
