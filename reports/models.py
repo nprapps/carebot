@@ -82,6 +82,8 @@ class Project(models.Model):
         """
         Runs all reports, optionally overwriting existing results.
         """
+        print 'Running reports for %s' % self.title
+        
         updated_reports = []
 
         for report in self.reports.all():
@@ -504,8 +506,10 @@ class Social(models.Model):
         response = requests.get('https://free.sharedcount.com/url?apikey=%s&url=%s' % (secrets['SHAREDCOUNT_API_KEY'], url))
 
         if response.status_code != 200:
-            print 'Failed to refresh social data from SharedCount.'
+            print 'Failed to refresh social data from SharedCount: %i.' % response.status_code
             return
+
+        print 'Updating social counts from SharedCount'
 
         data = response.json()
 

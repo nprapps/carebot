@@ -5,6 +5,7 @@ Cron jobs
 """
 import boto
 import boto.ses
+from django.utils import timezone
 from fabric.api import local, require, task
 
 import app_config
@@ -28,12 +29,12 @@ def run_reports(overwrite='false'):
     """
     overwrite = (overwrite == 'true') 
 
+    print 'Starting at %s' % timezone.now()
+
     updated_reports = []
 
     for project in Project.objects.all():
-        print 'Running reports for %s' % project.title
         updated_reports.extend(project.run_reports(overwrite=overwrite))
-        print 'Updating social counts'
         project.social.refresh()
 
     if updated_reports:
