@@ -1,0 +1,1 @@
+{% for tag in project.tags.all %}<a href="{% url 'reports.views.compare_query' %}?tag={{ tag }}">{{ tag }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}

@@ -24,7 +24,7 @@
             <tr>
                 <td><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></td>
                 <td>{{ project.start_date }}</td>
-                <td>{{ project.tag_list }}</td>
+                <td>{% include "_tags.html" %}</td>
                 <td class="value">{{ project.all_time_report.sessions|intcomma }}</td>
                 <td class="value">{{ project.social.total|intcomma }}</td>
                 <td class="value">{% social_per_session project "total" %}</td>

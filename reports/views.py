@@ -60,49 +60,51 @@ def compare_query(request):
         'tags': models.Tag.objects.all()
     }
 
-    query_slug = request.GET.get('query', None)
+    query_slug = request.GET.get('query', 'totals')
     ndays = request.GET.get('ndays', None)
     context['unit'] = request.GET.get('unit', 'count')
     tag_slug = request.GET.get('tag', None)
 
-    if query_slug:
-        context['query'] = models.Query.objects.get(slug=query_slug)
+    if ndays == 'None':
+        ndays = None
 
-        query_results = models.QueryResult.objects.filter(
-            query=context['query'],
+    context['query'] = models.Query.objects.get(slug=query_slug)
+
+    query_results = models.QueryResult.objects.filter(
+        query=context['query'],
+    )
+
+    if ndays:
+        context['ndays'] = int(ndays)
+        query_results = query_results.filter(report_ndays=context['ndays'])
+    else:
+        context['ndays'] = ndays
+        query_results = query_results.filter(report_ndays__isnull=True)
+
+    if tag_slug:
+        context['tag'] = models.Tag.objects.get(slug=tag_slug)
+        query_results = query_results.filter(
+            report__project__tags=context['tag']
         )
 
-        if ndays:
-            context['ndays'] = int(ndays)
-            query_results = query_results.filter(report_ndays=context['ndays'])
-        else:
-            context['ndays'] = ndays
-            query_results = query_results.filter(report_ndays__isnull=True)
+    projects = []
+    results = OrderedDict()
 
-        if tag_slug:
-            context['tag'] = models.Tag.objects.get(slug=tag_slug)
-            query_results = query_results.filter(
-                report__project__tags=context['tag']
-            )
+    # Build comparison table
+    for qr in query_results:
+        projects.append(qr.report.project)
 
-        projects = []
-        results = OrderedDict()
+        for metric in qr.metrics.all():
+            m = (metric.name, metric.display_name)
 
-        # Build comparison table
-        for qr in query_results:
-            projects.append(qr.report.project)
+            if m not in results:
+                results[m] = OrderedDict()
 
-            for metric in qr.metrics.all():
-                m = (metric.name, metric.display_name)
+            for dimension in metric.dimensions.all():
+                if dimension.name not in results[m]:
+                    results[m][dimension.name] = []
 
-                if m not in results:
-                    results[m] = OrderedDict()
-
-                for dimension in metric.dimensions.all():
-                    if dimension.name not in results[m]:
-                        results[m][dimension.name] = []
-
-                    results[m][dimension.name].append(dimension)
+                results[m][dimension.name].append(dimension)
 
         context.update({
             'projects': projects,
