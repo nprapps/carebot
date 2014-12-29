@@ -1,6 +1,7 @@
 {% extends "_base.html" %}
 {% load humanize %}
 {% load tz %}
+{% load admin_urls %}
 {% load social %}
 
 {% block title %}{{ project.title }} :: carebot{% endblock %}
@@ -11,7 +12,7 @@
 
     <p><a href="{% url 'reports.views.index' %}">&laquo; Back to project list</a></p>
 
-    <h3>Configuration</h3>
+    <h3>Configuration <span class="small">(<a href="{% url 'admin:reports_project_change' project.pk %}">edit</a>)</span></h3>
 
     <table class="table table-condensed">
         <tbody>

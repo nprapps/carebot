@@ -40,8 +40,8 @@
         </div>
         {% endfor %}
 
-        {% if query.sampled %}
-        <span class="sample-size">Based on a sample of {{ query_result.sample_percent }}% of sessions.</span>
+        {% if query_result.sampled %}
+        <span class="sample-size">Query results based on a sample of {{ query_result.sample_percent|floatformat:"1" }}% of sessions.</span>
         {% endif %}
     </div>
 

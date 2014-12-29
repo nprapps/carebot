@@ -255,7 +255,7 @@ class Report(models.Model):
             if result['sampled']:
                 qr.sample_size = result['sampleSize']
                 qr.sample_space = result['sampleSpace']
-                qr.sample_percent = result['sampleSize'] / result['sampleSpace'] * 100
+                qr.sample_percent = float(result['sampleSize']) / result['sampleSpace'] * 100
 
             qr.save()
 
