@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load humanize %}
+{% load tz %}
 
 {% block title %}{{ project.title }} :: carebot{% endblock %}
 
@@ -88,7 +89,7 @@
         <tbody>
     </table>
  
-    <span class="last-update">Last updated: {{ project.social.last_update }}</span>
+    <span class="last-update">Last updated: {{ project.social.last_update|localtime }}</span>
 
     <h3>Reports</h3>
 
@@ -104,7 +105,7 @@
             {% for report in reports %}
             <tr>
                 <td><a href="{{ report.get_absolute_url }}">{{ report.timespan }}</a></td>
-                <td>{{ report.last_run }}</td>
+                <td>{{ report.last_run|localtime }}</td>
                 <td class="value">{{ report.sessions|intcomma }}</td>
             </tr>
             {% endfor %}
