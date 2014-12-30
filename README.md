@@ -8,24 +8,11 @@ carebot
 
 * [What is this?](#what-is-this)
 * [Assumptions](#assumptions)
-* [What's in here?](#whats-in-here)
 * [Bootstrap the project](#bootstrap-the-project)
 * [Hide project secrets](#hide-project-secrets)
-* [Save media assets](#save-media-assets)
-* [Add a page to the site](#add-a-page-to-the-site)
 * [Run the project](#run-the-project)
-* [COPY editing](#copy-editing)
-* [Arbitrary Google Docs](#arbitrary-google-docs)
-* [Run Python tests](#run-python-tests)
-* [Run Javascript tests](#run-javascript-tests)
-* [Compile static assets](#compile-static-assets)
-* [Test the rendered app](#test-the-rendered-app)
-* [Deploy to S3](#deploy-to-s3)
 * [Deploy to EC2](#deploy-to-ec2)
-* [Install cron jobs](#install-cron-jobs)
-* [Install web services](#install-web-services)
 * [Run a remote fab command](#run-a-remote-fab-command)
-* [Report analytics](#report-analytics)
 
 What is this?
 -------------
@@ -94,7 +81,7 @@ Run a  remote fab command
 Sometimes it makes sense to run a fabric command on the server, for instance, when you need to render using a production database. You can do this with the `fabcast` fabric command. For example:
 
 ```
-fab staging master servers.fabcast:deploy
+fab staging master servers.fabcast:cron_jobs.run_reports
 ```
 
 If any of the commands you run themselves require executing on the server, the server will SSH into itself to run them.
