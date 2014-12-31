@@ -59,7 +59,7 @@ class ProjectAdmin(admin.ModelAdmin):
         """
         Add view, without inlines.
         """
-        self.inlines = (TagInline)
+        self.inlines = (TagInline,)
 
         return super(ProjectAdmin, self).add_view(*args, **kwargs)
 

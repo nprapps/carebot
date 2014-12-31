@@ -84,25 +84,11 @@ def branch(branch_name):
 Running the app
 """
 @task
-def app(port='8000'):
-    """
-    Serve app.py.
-    """
-    local('gunicorn -b 0.0.0.0:%s --debug --reload --error-logfile - app:wsgi_app' % port)
-
-@task
 def public_app(port='8000'):
     """
     Serve public_app.py.
     """
     local('gunicorn -b 0.0.0.0:%s --debug --reload --error-logfile - carebot.wsgi:application' % port)
-
-@task
-def tests():
-    """
-    Run Python unit tests.
-    """
-    local('nosetests')
 
 """
 Deployment
