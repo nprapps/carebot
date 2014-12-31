@@ -104,13 +104,15 @@ def update_geckoboard():
             )
         )
 
+        days_ago = (date.today() - project.start_date).days
+
         _geckoboard_text(
             widgets['date'],
             '<a href="http://%s%s">%s<br />(%s)</a>' % (
                 project.domain,
                 project.prefix,
                 project.start_date.strftime('%b. %d'),
-                '%i days ago' % (date.today() - project.start_date).days
+                '%i day%s ago' % (days_ago, '' if days_ago == 1 else 's')
             )
         )
 
