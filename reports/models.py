@@ -26,7 +26,7 @@ class Query(models.Model):
     """
     slug = models.SlugField(max_length=128, primary_key=True)
     name = models.CharField(max_length=128)
-    description = models.CharField(max_length=256, default='')
+    description = models.CharField(max_length=256, default='', blank=True)
     clan_yaml = models.TextField()
 
     class Meta:
