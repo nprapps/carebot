@@ -87,7 +87,7 @@
             <tr>
                 <th>Dimension</th>
                 {% for project in projects %}
-                <th>{{ project.title }}</th>
+                <th><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></th>
                 {% endfor %}
             </tr>
         </thead>
