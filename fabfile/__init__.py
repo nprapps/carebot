@@ -35,8 +35,6 @@ env.settings = None
 Environments
 
 Changing environment requires a full-stack test.
-An environment points to both a server and an S3
-bucket.
 """
 @task
 def production():
@@ -109,14 +107,12 @@ def tests():
 """
 Deployment
 
-Changes to deployment requires a full-stack test. Deployment
-has two primary functions: Pushing flat files to S3 and deploying
-code to a remote server if required.
+Changes to deployment requires a full-stack test.
 """
 @task
 def deploy(remote='origin'):
     """
-    Deploy the latest app to S3 and, if configured, to our servers.
+    Deploy the latest app to our servers.
     """
     require('settings', provided_by=[production, staging])
 
@@ -140,14 +136,11 @@ def deploy(remote='origin'):
 Destruction
 
 Changes to destruction require setup/deploy to a test host in order to test.
-Destruction should remove all files related to the project from both a remote
-host and S3.
 """
-
 @task
 def shiva_the_destroyer():
     """
-    Deletes the app from s3
+    Deletes the app.
     """
     require('settings', provided_by=[production, staging])
 

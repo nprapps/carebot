@@ -93,7 +93,11 @@ def update_geckoboard():
 
         _geckoboard_text(
             widgets['title'],
-            project.title
+            '<a href="http://%s%s">%s</a>' % (
+                app_config.STAGING_SERVERS[0],
+                project.get_absolute_url(),
+                project.title
+            )
         )
 
         _geckoboard_number(

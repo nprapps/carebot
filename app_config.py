@@ -33,23 +33,6 @@ ASSETS_SLUG = 'carebot'
 """
 DEPLOYMENT
 """
-PRODUCTION_S3_BUCKET = {
-    'bucket_name': 'apps.npr.org',
-    'region': 'us-east-1'
-}
-
-STAGING_S3_BUCKET = {
-    'bucket_name': 'stage-apps.npr.org',
-    'region': 'us-east-1'
-}
-
-ASSETS_S3_BUCKET = {
-    'bucket_name': 'assets.apps.npr.org',
-    'region': 'us-east-1'
-}
-
-DEFAULT_MAX_AGE = 20
-
 PRODUCTION_SERVERS = ['cron.nprapps.org']
 STAGING_SERVERS = ['cron-staging.nprapps.org']
 
@@ -82,9 +65,6 @@ SERVER_SERVICES = [
 ]
 
 # These variables will be set at runtime. See configure_targets() below
-S3_BUCKET = None
-S3_BASE_URL = None
-S3_DEPLOY_URL = None
 SERVERS = []
 SERVER_BASE_URL = None
 SERVER_LOG_PATH = None
@@ -152,9 +132,6 @@ def configure_targets(deployment_target):
     Configure deployment targets. Abstracted so this can be
     overriden for rendering before deployment.
     """
-    global S3_BUCKET
-    global S3_BASE_URL
-    global S3_DEPLOY_URL
     global SERVERS
     global SERVER_BASE_URL
     global SERVER_LOG_PATH
@@ -163,25 +140,16 @@ def configure_targets(deployment_target):
     global DISQUS_SHORTNAME
 
     if deployment_target == 'production':
-        S3_BUCKET = PRODUCTION_S3_BUCKET
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
-        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DEBUG = False
     elif deployment_target == 'staging':
-        S3_BUCKET = STAGING_S3_BUCKET
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
-        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DEBUG = True
     else:
-        S3_BUCKET = None
-        S3_BASE_URL = 'http://127.0.0.1:8000'
-        S3_DEPLOY_URL = None
         SERVERS = []
         SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
         SERVER_LOG_PATH = '/tmp'
