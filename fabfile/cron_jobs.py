@@ -3,6 +3,7 @@
 """
 Cron jobs
 """
+from datetime import date
 import json
 
 import boto
@@ -66,16 +67,19 @@ def run_reports(overwrite='false'):
 GECKOBOARD_WIDGETS = {
     'projects': [{
         'title': '123621-8996005e-6ad7-4c99-8d71-326e14377926',
+        'date': '77517-ffadabe0-7363-0132-9f06-22000b490a2f',
         'sessions': '123621-96934a20-e4d1-4241-b4f2-eb194397b799',
         'social': '77517-6d790ab0-7333-0132-9ead-22000b490a2f',
         'devices': '123621-7004cb03-40fc-4391-8792-d84a5c020043'
     }, {
         'title': '77517-9da9ad80-7332-0132-9eab-22000b490a2f',
+        'date': '77517-3e2547e0-7364-0132-ef2d-22000b5e86d6',
         'sessions': '77517-d0351800-7332-0132-9eac-22000b490a2f',
         'social': '77517-a547fda0-7333-0132-df92-22000b51936c',
         'devices': '77517-457cf730-7338-0132-eefa-22000b5e86d6'
     }, {
         'title': '77517-1c6c2d80-7336-0132-9ec6-22000b490a2f',
+        'date': '77517-41d93a50-7364-0132-dfd5-22000b51936c',
         'sessions': '77517-1e591bc0-7336-0132-eef8-22000b5e86d6',
         'social': '77517-2020a130-7336-0132-7329-22000b5391df',
         'devices': '77517-4862e280-7338-0132-df9d-22000b51936c'
@@ -97,6 +101,16 @@ def update_geckoboard():
                 app_config.STAGING_SERVERS[0],
                 project.get_absolute_url(),
                 project.title
+            )
+        )
+
+        _geckoboard_text(
+            widgets['date'],
+            '<a href="http://%s%s">%s<br />(%s)</a>' % (
+                project.domain,
+                project.prefix,
+                project.start_date.strftime('%b. %d'),
+                '%i days ago' % (date.today() - project.start_date).days
             )
         )
 
