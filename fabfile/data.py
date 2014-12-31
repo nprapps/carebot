@@ -95,3 +95,12 @@ def bootstrap_db():
                 obj, created = Tag.objects.get_or_create(slug=tag)
                 p.tags.add(obj)
 
+@task
+def rerun(slug):
+    """
+    Force a project to rerun all its reports.
+    """
+    project = Project.objects.get(slug=slug)
+    
+    project.run_reports(overwrite=True)
+    project.social.refresh()
