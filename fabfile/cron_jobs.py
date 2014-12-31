@@ -78,17 +78,17 @@ def update_geckoboard():
         _geckoboard_number(
             widgets['sessions'],
             project.all_time_report.sessions,
-            ''
+            'sessions'
         )
 
         _geckoboard_number(
             widgets['social'],
             float(project.social.total()) / project.all_time_report.sessions,
-            'Social interactions per session'
+            'social interactions per session'
         )
 
     top_sessions = []
-    all_time_reports = Report.objects.filter(ndays__isnull=True).order_by('-sessions')[:10]
+    all_time_reports = Report.objects.filter(ndays__isnull=True).order_by('-sessions')[:12]
 
     for report in all_time_reports:
         top_sessions.append((report.project.title, report.sessions))
