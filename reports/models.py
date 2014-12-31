@@ -51,6 +51,9 @@ class Tag(models.Model):
     """
     slug = models.CharField(max_length=32, primary_key=True)
 
+    class Meta:
+        ordering = ('slug',)
+
     def __unicode__(self):
         return self.slug
 

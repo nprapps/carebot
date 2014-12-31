@@ -53,7 +53,7 @@ def run_reports(overwrite='false'):
 
         if app_config.DEPLOYMENT_TARGET:
             ses = boto.ses.connect_to_region(
-                app_config.S3_BUCKET['region']
+                app_config.SES_REGION
             )
 
             ses.send_email(

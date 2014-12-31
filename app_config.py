@@ -70,6 +70,8 @@ SERVER_BASE_URL = None
 SERVER_LOG_PATH = None
 DEBUG = True
 
+SES_REGION = 'us-east-1'
+
 PROJECT_TYPES = [
     ('app', 'App'),
     ('seamus-graphic', 'Seamus Graphic'),
