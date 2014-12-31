@@ -135,7 +135,8 @@ def get_secrets():
         'POSTGRES_PASSWORD',
         'POSTGRES_HOST',
         'POSTGRES_PORT',
-        'SHAREDCOUNT_API_KEY'
+        'SHAREDCOUNT_API_KEY',
+        'GECKOBOARD_API_KEY'
     ]
 
     secrets_dict = {}
