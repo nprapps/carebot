@@ -1,6 +1,6 @@
-Carebot cares SO much she created these new reports for you:
+Carebot has created new reports for you!
 
 {% for report in reports %}* {{ report.project.title }} ({{ report.ndays }}-day{{ report.ndays|pluralize }}): http://{{ app_config.SERVERS.0 }}{{ report.get_absolute_url }} 
 {% endfor %}
 
-Carebot index: {{ app_config.SERVER_BASE_URL }}/
+Index of all reports: {{ app_config.SERVER_BASE_URL }}/
