@@ -95,7 +95,7 @@ class Project(models.Model):
         updated_reports = []
 
         for report in self.reports.all():
-            if overwrite or not report.last_run:
+            if overwrite or not report.last_run or not report.ndays:
                 updated = report.run()
 
                 if updated and report.ndays:
