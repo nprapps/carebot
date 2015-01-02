@@ -103,7 +103,7 @@ DEFAULT_REPORT_NDAYS = [
 ]
 
 EMAIL_SEND_ADDRESS = 'nprapps@npr.org'
-EMAIL_NOTIFY_ADDRESS = 'visuals@npr.org'
+EMAIL_NOTIFY_ADDRESS = 'nprapps@npr.org'
 
 """
 Utilities
