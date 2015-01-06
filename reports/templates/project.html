@@ -39,8 +39,8 @@
         </tbody>
     </table>
 
-    <h3>Lifetime social activity</h3>
-    
+    <h3>All-time sharing</h3>
+
     <table class="table table-condensed table-striped">
         <thead>
             <tr>
@@ -51,21 +51,9 @@
         </thead>
         <tbody>
             <tr>
-                <td>Facebook likes</td>
-                <td class="value">{{ project.social.facebook_likes|intcomma }}</td>
-                <td class="value">{% social_per_session project "facebook_likes" %}</td>
-            </tr>
-
-            <tr>
                 <td>Facebook shares</td>
                 <td class="value">{{ project.social.facebook_shares|intcomma }}</td>
                 <td class="value">{% social_per_session project "facebook_shares" %}</td>
-            </tr>
-
-            <tr>
-                <td>Facebook comments</td>
-                <td class="value">{{ project.social.facebook_comments|intcomma }}</td>
-                <td class="value">{% social_per_session project "facebook_comments" %}</td>
             </tr>
 
             <tr>
@@ -79,19 +67,19 @@
                 <td class="value">{{ project.social.google|intcomma }}</td>
                 <td class="value">{% social_per_session project "google" %}</td>
             </tr>
-            
+
             <tr>
                 <td>Pinterest</td>
                 <td class="value">{{ project.social.pinterest|intcomma }}</td>
                 <td class="value">{% social_per_session project "pinterest" %}</td>
             </tr>
-            
+
             <tr>
                 <td>LinkedIn</td>
                 <td class="value">{{ project.social.linkedin|intcomma }}</td>
                 <td class="value">{% social_per_session project "linkedin" %}</td>
             </tr>
-            
+
             <tr>
                 <td>StumbleUpon</td>
                 <td class="value">{{ project.social.stumbleupon|intcomma }}</td>
@@ -105,7 +93,30 @@
             </tr>
         <tbody>
     </table>
- 
+
+    <h3>All-time Facebook activity</h3>
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th>Interaction</th>
+                <th class="value">Count</th>
+                <th class="value">Per Facebook Share</th>
+            <tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Facebook likes</td>
+                <td class="value">{{ project.social.facebook_likes|intcomma }}</td>
+                <td class="value">{% social_per_session project "facebook_likes" %}</td>
+            </tr>
+            <tr>
+                <td>Facebook comments</td>
+                <td class="value">{{ project.social.facebook_comments|intcomma }}</td>
+                <td class="value">{% social_per_session project "facebook_comments" %}</td>
+            </tr>
+        </tbody>
+    </table>
+
     <span class="last-update">Last updated: {{ project.social.last_update|localtime }}</span>
 
     <h3>Reports</h3>
