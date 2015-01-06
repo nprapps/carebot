@@ -10,7 +10,7 @@ import subprocess
 from clan import utils as clan_utils
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.dispatch import receiver 
+from django.dispatch import receiver
 from django.utils import timezone
 import requests
 import yaml
@@ -34,7 +34,7 @@ class Query(models.Model):
         verbose_name_plural = 'queries'
 
     def __unicode__(self):
-        return self.name 
+        return self.name
 
     @property
     def config(self):
@@ -43,7 +43,7 @@ class Query(models.Model):
         data['name'] = self.name
         data['description'] = self.description
 
-        return data 
+        return data
 
 class Tag(models.Model):
     """
@@ -81,7 +81,7 @@ class Project(models.Model):
 
     def tag_list(self):
         return ','.join([tag.slug for tag in self.tags.all()])
-    
+
     @property
     def all_time_report(self):
         return self.reports.get(ndays__isnull=True)
@@ -91,7 +91,7 @@ class Project(models.Model):
         Runs all reports, optionally overwriting existing results.
         """
         print 'Running reports for %s' % self.title
-        
+
         updated_reports = []
 
         for report in self.reports.all():
@@ -205,7 +205,7 @@ class Report(models.Model):
         """
         Build YAML configuration for this report.
         """
-        data = self.project.get_clan_config() 
+        data = self.project.get_clan_config()
 
         if self.ndays:
             data['ndays'] = self.ndays
@@ -224,7 +224,7 @@ class Report(models.Model):
         if not self.is_timely():
             print 'Skipping %s report for %s (not timely).' % (self.timespan, self.project.title)
             return False
-            
+
         print 'Running %s report for %s' % (self.timespan, self.project.title)
 
         with open('/tmp/clan.yaml', 'w') as f:
@@ -234,7 +234,7 @@ class Report(models.Model):
         subprocess.call(['clan', 'report', '/tmp/clan.yaml', '/tmp/clan.json'])
 
         with open('/tmp/clan.json') as f:
-            self.results_json = f.read() 
+            self.results_json = f.read()
             self.last_run = timezone.now()
 
         # Delete existing results
@@ -281,11 +281,11 @@ class Report(models.Model):
                 )
 
                 j += 1
-                
+
             i += 1
 
         qr = self.query_results.get(query__slug='totals')
-        
+
         for metric in qr.metrics.all():
             if metric.name == 'ga:pageviews':
                 self.pageviews = metric.total_dimension.value
@@ -349,7 +349,7 @@ class Report(models.Model):
         )
 
         if dimension_name != 'total':
-            if data_type in 'INTEGER' and total_value != 0: 
+            if data_type in 'INTEGER' and total_value != 0:
                 dimension.percent_of_total = float(value) / int(total_value) * 100
 
         dimension.metric = metric
@@ -486,9 +486,7 @@ class Social(models.Model):
 
     def total(self):
         return sum([
-            self.facebook_likes,
             self.facebook_shares,
-            self.facebook_comments,
             self.twitter,
             self.google,
             self.pinterest,
