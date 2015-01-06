@@ -13,7 +13,7 @@ class QueryAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'slug', 'description')
+            'fields': ('name', 'slug', 'description', 'is_comparable')
         }),
         (None, {
             'fields': ('clan_yaml',),

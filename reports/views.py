@@ -55,7 +55,7 @@ def compare_query(request):
     Compare results of a query.
     """
     context= {
-        'queries': models.Query.objects.all(),
+        'queries': models.Query.objects.filter(is_comparable=True),
         'report_ndays': app_config.DEFAULT_REPORT_NDAYS,
         'tags': models.Tag.objects.all()
     }
