@@ -11,7 +11,7 @@
     <p><a href="{{ report.project.get_absolute_url }}">&laquo; Back to project</a></p>
 
     {% for query_result in report.query_results.all %}
-    <div class="query">
+    <div id="{{ query_result.query.slug}}" class="query">
         <h3>{{ query_result.query_name }}{% if query_result.query.is_comparable %} (<a href="{% url 'reports.views.compare_query' %}?query={{ query_result.query.slug }}&ndays={{ report.ndays }}">compare</a>){% endif %}</h3>
 
         <p class="description">{{ query_result.query.description }}</p>
