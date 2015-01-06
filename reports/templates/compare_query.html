@@ -31,7 +31,7 @@
             <select name="unit" class="form-control">
                 <option value="count">by count</option>
                 <option value="percent" {% if unit == "percent" %}selected="selected"{% endif %}>by percent</option>
-                <option value="per-session" {% if unit == "per-session" %}selected="selected"{% endif %}>per session</option>
+                <option value="per-1000-sessions" {% if unit == "per-1000-sessions" %}selected="selected"{% endif %}>per 1000 sessions</option>
             </select>
         </div>
 
@@ -73,7 +73,7 @@
             </tr>
         </tbody>
     </table>
-        
+
     <p class="description">{{ query.description }}</p>
 
     {% for metric_names, data in results.items %}
@@ -98,9 +98,9 @@
                 {% for dimension in dimensions %}
                 {% if unit == "percent" %}
                 <td class="percent">{% if dimension.percent_of_total %}{{ dimension.percent_of_total|floatformat:"1" }}{% else %}-{% endif %}</td>
-                {% elif unit == "per-session" %}
-                {% with per_session=dimension.per_session %}
-                <td class="percent">{% if per_session %}{{ per_session|floatformat:"1" }}{% else %}-{% endif %}</td> 
+                {% elif unit == "per-1000-sessions" %}
+                {% with per_1000_sessions=dimension.per_1000_sessions %}
+                <td class="percent">{% if per_1000_sessions %}{{ per_1000_sessions|floatformat:"1" }}{% else %}-{% endif %}</td>
                 {% endwith %}
                 {% else %}
                 <td class="value">{{ dimension.value_formatted }}</td>

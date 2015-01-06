@@ -31,7 +31,7 @@ def run_reports(overwrite='false'):
     """
     Run project reports.
     """
-    overwrite = (overwrite == 'true') 
+    overwrite = (overwrite == 'true')
 
     print 'Starting at %s' % timezone.now()
 
@@ -47,7 +47,7 @@ def run_reports(overwrite='false'):
         email_body = render_to_string(
             'email.txt',
             {
-                'reports': updated_reports 
+                'reports': updated_reports
             },
             '/tmp/email.txt'
         )
@@ -89,7 +89,7 @@ GECKOBOARD_WIDGETS = {
 
 @task
 def update_geckoboard():
-    top = Project.objects.all()[:3] 
+    top = Project.objects.all()[:3]
 
     for i, project in enumerate(top):
         widgets = GECKOBOARD_WIDGETS['projects'][i]
@@ -124,8 +124,8 @@ def update_geckoboard():
 
         _geckoboard_number(
             widgets['social'],
-            float(project.social.total()) / all_time_report.sessions,
-            'social interactions per session'
+            float(project.social.total()) / (all_time_report.sessions / 1000),
+            'social interactions per 1,000 sessions'
         )
 
         query_result = all_time_report.query_results.get(query__slug='sessions-by-device-category')

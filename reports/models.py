@@ -455,11 +455,11 @@ class DimensionResult(models.Model):
         return None
 
     @property
-    def per_session(self):
+    def per_1000_sessions(self):
         if self.metric_data_type != 'INTEGER':
             return None
 
-        return float(self.value) / self.metric.query_result.report.sessions
+        return float(self.value) / (self.metric.query_result.report.sessions / 1000)
 
 class Social(models.Model):
     """

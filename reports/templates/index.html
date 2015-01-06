@@ -17,7 +17,7 @@
                 <th>Tags</th>
                 <th class="value">Sessions</th>
                 <th class="value">Social Interactions</th>
-                <th class="value">Per Session</th>
+                <th class="value">Per 1,000 Sessions</th>
             </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@
                 <td>{% include "_tags.html" %}</td>
                 <td class="value">{{ project.all_time_report.sessions|intcomma }}</td>
                 <td class="value">{{ project.social.total|intcomma }}</td>
-                <td class="value">{% social_per_session project "total" %}</td>
+                <td class="value">{% social_per_1000_sessions project "total" %}</td>
             </tr>
             {% endfor %}
         </tbody>

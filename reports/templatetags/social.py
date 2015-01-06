@@ -5,7 +5,7 @@ from django import template
 register = template.Library()
 
 @register.simple_tag
-def social_per_session(project, metric):
+def social_per_1000_sessions(project, metric):
     if metric == 'total':
         value = project.social.total()
     else:
@@ -20,6 +20,6 @@ def social_per_session(project, metric):
     if metric == 'facebook_likes' or metric == 'facebook_comments':
         return '%.2f' % (float(value) / fb_shares)
     else:
-        return '%.2f' % (float(value) / sessions)
+        return '%.2f' % (float(value) / (sessions / 1000))
 
 

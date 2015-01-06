@@ -46,50 +46,50 @@
             <tr>
                 <th>Interaction</th>
                 <th class="value">Count</th>
-                <th class="value">Per Session</th>
+                <th class="value">Per 1,000 Sessions</th>
             <tr>
         </thead>
         <tbody>
             <tr>
                 <td>Facebook shares</td>
                 <td class="value">{{ project.social.facebook_shares|intcomma }}</td>
-                <td class="value">{% social_per_session project "facebook_shares" %}</td>
+                <td class="value">{% social_per_1000_sessions project "facebook_shares" %}</td>
             </tr>
 
             <tr>
                 <td>Twitter</td>
                 <td class="value">{{ project.social.twitter|intcomma }}</td>
-                <td class="value">{% social_per_session project "twitter" %}</td>
+                <td class="value">{% social_per_1000_sessions project "twitter" %}</td>
             </tr>
 
             <tr>
                 <td>Google+</td>
                 <td class="value">{{ project.social.google|intcomma }}</td>
-                <td class="value">{% social_per_session project "google" %}</td>
+                <td class="value">{% social_per_1000_sessions project "google" %}</td>
             </tr>
 
             <tr>
                 <td>Pinterest</td>
                 <td class="value">{{ project.social.pinterest|intcomma }}</td>
-                <td class="value">{% social_per_session project "pinterest" %}</td>
+                <td class="value">{% social_per_1000_sessions project "pinterest" %}</td>
             </tr>
 
             <tr>
                 <td>LinkedIn</td>
                 <td class="value">{{ project.social.linkedin|intcomma }}</td>
-                <td class="value">{% social_per_session project "linkedin" %}</td>
+                <td class="value">{% social_per_1000_sessions project "linkedin" %}</td>
             </tr>
 
             <tr>
                 <td>StumbleUpon</td>
                 <td class="value">{{ project.social.stumbleupon|intcomma }}</td>
-                <td class="value">{% social_per_session project "stumbleupon" %}</td>
+                <td class="value">{% social_per_1000_sessions project "stumbleupon" %}</td>
             </tr>
 
             <tr class="total">
                 <td>Total</td>
                 <td class="value">{{ project.social.total|intcomma }}</td>
-                <td class="value">{% social_per_session project "total" %}</td>
+                <td class="value">{% social_per_1000_sessions project "total" %}</td>
             </tr>
         <tbody>
     </table>
@@ -107,12 +107,12 @@
             <tr>
                 <td>Facebook likes</td>
                 <td class="value">{{ project.social.facebook_likes|intcomma }}</td>
-                <td class="value">{% social_per_session project "facebook_likes" %}</td>
+                <td class="value">{% social_per_1000_sessions project "facebook_likes" %}</td>
             </tr>
             <tr>
                 <td>Facebook comments</td>
                 <td class="value">{{ project.social.facebook_comments|intcomma }}</td>
-                <td class="value">{% social_per_session project "facebook_comments" %}</td>
+                <td class="value">{% social_per_1000_sessions project "facebook_comments" %}</td>
             </tr>
         </tbody>
     </table>
