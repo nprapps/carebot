@@ -13,7 +13,6 @@ def social_per_session(project, metric):
 
     sessions = project.all_time_report.sessions
     fb_shares = project.social.facebook_shares
-    print fb_shares
 
     if not sessions:
         return 0
