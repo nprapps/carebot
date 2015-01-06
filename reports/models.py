@@ -66,8 +66,8 @@ class Project(models.Model):
     slug = models.SlugField(max_length=128, primary_key=True)
     title = models.CharField(max_length=128)
     property_id = models.CharField(max_length=10, default='53470309')
-    domain = models.CharField(max_length=128, default='apps.npr.org')
-    prefix = models.CharField(max_length=128)
+    domain = models.CharField(max_length=128, default='apps.npr.org', blank=True)
+    prefix = models.CharField(max_length=128, blank=True)
     start_date = models.DateField()
     queries = models.ManyToManyField(Query, through='ProjectQuery')
     tags = models.ManyToManyField(Tag)
@@ -111,8 +111,8 @@ class Project(models.Model):
         return {
             'title': self.title,
             'property-id': self.property_id,
-            'domain': self.domain,
-            'prefix': self.prefix,
+            'domain': self.domain or None,
+            'prefix': self.prefix or None,
             'start-date': datetime.strftime(self.start_date, '%Y-%m-%d')
         }
 
