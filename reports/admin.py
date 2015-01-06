@@ -9,7 +9,7 @@ class QueryAdmin(admin.ModelAdmin):
     """
     Admin for the Query model.
     """
-    list_display = ('name', 'description') 
+    list_display = ('name', 'is_comparable', 'description') 
 
     fieldsets = (
         (None, {
