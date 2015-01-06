@@ -500,7 +500,7 @@ class Social(models.Model):
         secrets = app_config.get_secrets()
 
         if not self.project.domain:
-            continue
+            return
 
         url = 'http://%s%s' % (self.project.domain, self.project.prefix)
         response = requests.get('https://free.sharedcount.com/url?apikey=%s&url=%s' % (secrets['SHAREDCOUNT_API_KEY'], url))
