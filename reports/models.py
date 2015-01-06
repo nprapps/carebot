@@ -27,6 +27,8 @@ class Query(models.Model):
     slug = models.SlugField(max_length=128, primary_key=True)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=256, default='', blank=True)
+    is_comparable = models.BooleanField(default=True,
+        help_text='Should this query be available for cross-project comparison.')
     clan_yaml = models.TextField()
 
     class Meta:
