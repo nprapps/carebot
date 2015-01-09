@@ -3,9 +3,14 @@
 from collections import OrderedDict
 
 from django.shortcuts import render
+from django.template.defaulttags import register
 
 import app_config
 from reports import models
+
+@register.filter
+def keyvalue(dict, key):    
+    return dict[key]
 
 def index(request):
     """
@@ -87,12 +92,12 @@ def compare_query(request):
             report__project__tags=context['tag']
         )
 
-    projects = []
+    metric_dimensions = OrderedDict()
     results = OrderedDict()
 
     # Build comparison table
     for qr in query_results:
-        projects.append(qr.report.project)
+        project_title = qr.project_title
 
         for metric in qr.metrics.all():
             m = (metric.name, metric.display_name)
@@ -100,15 +105,27 @@ def compare_query(request):
             if m not in results:
                 results[m] = OrderedDict()
 
+            if metric.name not in metric_dimensions:
+                if metric.name != 'total':
+                    metric_dimensions[metric.name] = []
+
+            if project_title not in results[m]:
+                results[m][project_title] = {}
+
             for dimension in metric.dimensions.all():
-                if dimension.name not in results[m]:
-                    results[m][dimension.name] = []
+                if dimension.name not in metric_dimensions[metric.name]:
+                    if dimension.name != 'total':
+                        metric_dimensions[metric.name].append(dimension.name)
 
-                results[m][dimension.name].append(dimension)
+                if dimension.name not in results[m][project_title]:
+                    results[m][project_title][dimension.name] = dimension 
 
-        context.update({
-            'projects': projects,
-            'results': results
-        })
+    for metric_name in metric_dimensions:
+        metric_dimensions[metric_name].append('total')
+
+    context.update({
+        'metric_dimensions': metric_dimensions,
+        'results': results
+    })
 
     return render(request, 'compare_query.html', context)

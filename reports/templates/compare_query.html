@@ -76,7 +76,7 @@
 
     <p class="description">{{ query.description }}</p>
 
-    {% for metric_names, data in results.items %}
+    {% for metric_names, projects in results.items %}
     <h4>
         {{ metric_names.1 }}
         <span class="ga-name">{{ metric_names.0 }}</span>
@@ -85,26 +85,18 @@
     <table class="table table-striped table-bordered table-consdensed">
         <thead>
             <tr>
-                <th>Dimension</th>
-                {% for project in projects %}
-                <th><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></th>
+                <th>Project</th>
+                {% for dimension_name in metric_dimensions|keyvalue:metric_names.0 %}
+                <th class="value {% if dimension_name == "total" %}total{% endif %}">{{ dimension_name }}</a></th>
                 {% endfor %}
             </tr>
         </thead>
         <tbody>
-            {% for dimension_name, dimensions in data.items %}
-            <tr class="{% if dimension_name == 'total' %}total{% endif %}">
-                <td>{{ dimension_name }}</td>
-                {% for dimension in dimensions %}
-                {% if unit == "percent" %}
-                <td class="percent">{% if dimension.percent_of_total %}{{ dimension.percent_of_total|floatformat:"1" }}{% else %}-{% endif %}</td>
-                {% elif unit == "per-1000-sessions" %}
-                {% with per_1000_sessions=dimension.per_1000_sessions %}
-                <td class="percent">{% if per_1000_sessions %}{{ per_1000_sessions|floatformat:"1" }}{% else %}-{% endif %}</td>
-                {% endwith %}
-                {% else %}
-                <td class="value">{{ dimension.value_formatted }}</td>
-                {% endif %}
+            {% for project_name, project_dimensions in projects.items %}
+            <tr>
+                <td>{{ project_name }}</td>
+                {% for dimension_name in metric_dimensions|keyvalue:metric_names.0 %}
+                {% include '_compare_dimension.html' %}
                 {% endfor %}
             </tr>
             {% endfor %}

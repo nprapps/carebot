@@ -45,8 +45,13 @@ th {
     color: #666;
 }
 
-.table-striped>tbody>tr.total {
+.table-striped tbody tr.total {
     background-color: rgba(91, 192, 222, 0.15);
+}
+
+.table-striped tbody tr td.total,
+.table-striped thead tr th.total {
+    font-weight: bold;
 }
 
 .ga-name {
