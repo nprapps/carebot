@@ -17,7 +17,9 @@ carebot
 What is this?
 -------------
 
-Carebot cares about us so much she automatically reports out, summarizes and sends us our analytics.
+Carebot cares about us so much it automatically reports out, summarizes and sends us our analytics.
+
+For documentation of the metrics and queries used see the [reports](https://github.com/nprapps/reports#google-metrics-we-care-about) repo.
 
 Assumptions
 -----------
