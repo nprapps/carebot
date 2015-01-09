@@ -9,7 +9,7 @@
 <div class="container-fluid">
     <h1>Carebot</h1>
 
-    <table class="table table-condensed">
+    <table id="projects" class="table table-condensed">
         <thead>
             <tr>
                 <th>Project</th>
@@ -26,12 +26,16 @@
                 <td><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></td>
                 <td>{{ project.start_date }}</td>
                 <td>{% include "_tags.html" %}</td>
-                <td class="value">{{ project.all_time_report.sessions|intcomma }}</td>
-                <td class="value">{{ project.social.total|intcomma }}</td>
+                <td class="value" data-sort="{{ project.all_time_report.sessions }}">{{ project.all_time_report.sessions|intcomma }}</td>
+                <td class="value" data-sort="{{ project.social.total }}">{{ project.social.total|intcomma }}</td>
                 <td class="value">{% social_per_1000_sessions project "total" %}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <script type="text/javascript">
+        new Tablesort(document.getElementById('projects'));
+    </script>
 </div>
 {% endblock %}
