@@ -416,7 +416,7 @@ class DimensionResult(models.Model):
     metric = models.ForeignKey(MetricResult, related_name='dimensions', null=True)
     order = models.PositiveIntegerField()
 
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=256)
     _value = models.CharField(max_length=128)
     percent_of_total = models.FloatField(null=True)
 
