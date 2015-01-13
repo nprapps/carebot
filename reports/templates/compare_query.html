@@ -82,7 +82,7 @@
         <span class="ga-name">{{ metric_names.0 }}</span>
     </h4>
 
-    <table class="table table-striped table-bordered table-consdensed">
+    <table id="compare" class="table table-striped table-bordered table-consdensed">
         <thead>
             <tr>
                 <th>Project</th>
@@ -105,4 +105,8 @@
     {% endfor %}
     {% endif %}
 </div>
+
+<script type="text/javascript">
+    new Tablesort(document.getElementById('compare'));
+</script>
 {% endblock %}

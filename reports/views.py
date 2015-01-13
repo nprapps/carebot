@@ -9,7 +9,7 @@ import app_config
 from reports import models
 
 @register.filter
-def keyvalue(dict, key):    
+def keyvalue(dict, key):
     return dict[key]
 
 def index(request):
@@ -19,7 +19,7 @@ def index(request):
     projects = models.Project.objects.all()
 
     context = {
-        'projects': projects  
+        'projects': projects
     }
 
     return render(request, 'index.html', context)
@@ -28,11 +28,20 @@ def project(request, slug):
     """
     Project report index.
     """
+    projects = models.Project.objects.all()
+
+    all_facebook_shares = []
+
+    for project in projects:
+        if project.social.facebook_shares != 0:
+            all_facebook_shares.append(project.social.facebook_shares)
+
     obj = models.Project.objects.get(slug=slug)
 
     context = {
-        'project': obj, 
-        'reports': obj.reports.exclude(last_run__isnull=True)
+        'project': obj,
+        'reports': obj.reports.exclude(last_run__isnull=True),
+        'all_facebook_shares': all_facebook_shares
     }
 
     return render(request, 'project.html', context)
@@ -50,7 +59,7 @@ def report(request, slug, ndays=None):
     )
 
     context = {
-        'report': obj 
+        'report': obj
     }
 
     return render(request, 'report.html', context)
@@ -118,7 +127,7 @@ def compare_query(request):
                         metric_dimensions[metric.name].append(dimension.name)
 
                 if dimension.name not in results[m][project_title]:
-                    results[m][project_title][dimension.name] = dimension 
+                    results[m][project_title][dimension.name] = dimension
 
     for metric_name in metric_dimensions:
         metric_dimensions[metric_name].append('total')
