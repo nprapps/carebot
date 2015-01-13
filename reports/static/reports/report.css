@@ -76,8 +76,24 @@ footer p {
     color: #666;
 }
 
+/* Bar charts */
+.bar rect {
+  fill: steelblue;
+  shape-rendering: crispEdges;
+}
 
-/* Diff only */
-.positive { color: hsl(120, 39%, 40%); }
-.positive::before { content: "+"; }
-.negative { color: #d9534f; }
+.bar.highlight rect {
+    fill: red;
+}
+
+.bar text {
+  font: 10px sans-serif;
+  fill: #fff;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+

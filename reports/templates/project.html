@@ -7,23 +7,6 @@
 {% block title %}{{ project.title }} :: carebot{% endblock %}
 
 {% block body %}
-<style>
-    .bar rect {
-      fill: steelblue;
-      shape-rendering: crispEdges;
-    }
-
-    .bar text {
-      font: 10px sans-serif;
-      fill: #fff;
-    }
-
-    .axis path, .axis line {
-      fill: none;
-      stroke: #000;
-      shape-rendering: crispEdges;
-    }
-</style>
 <div class="container-fluid">
     <h1>{{ project.title }}</h1>
 
@@ -165,7 +148,8 @@
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
-    var values = {{ all_facebook_shares }}
+    var values = {{ all_facebook_shares }};
+    var thisValue = {{ project.social.facebook_shares }};
     var formatCount = d3.format(",.0f");
 
     var margin = {top: 10, right: 30, bottom: 30, left: 30},
@@ -173,7 +157,7 @@
         height = 500 - margin.top - margin.bottom;
 
     var x = d3.scale.linear()
-        .domain([0, Math.max.apply(null, values)])
+        .domain([0, d3.max(values) + 2500])
         .range([0, width]);
 
     // Generate a histogram using twenty uniformly-spaced bins.
@@ -198,7 +182,17 @@
     var bar = svg.selectAll(".bar")
         .data(data)
       .enter().append("g")
-        .attr("class", "bar")
+        .attr("class", function(d, i) {
+            var cls = 'bar';
+            var is_this_one = thisValue >= d.x && thisValue < d.x + d.dx;
+            console.log(thisValue, d.x, d.x + d.dx, is_this_one);
+
+            if (is_this_one) {
+                cls += ' highlight';
+            }
+
+            return cls;
+        })
         .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
 
     bar.append("rect")
