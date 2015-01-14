@@ -28,13 +28,7 @@ def project(request, slug):
     """
     Project report index.
     """
-    projects = models.Project.objects.all()
-
-    all_facebook_shares = []
-
-    for project in projects:
-        if project.social.facebook_shares != 0:
-            all_facebook_shares.append(project.social.facebook_shares)
+    all_facebook_shares = models.Social.objects.filter(facebook_shares__gt=0).values_list('facebook_shares', flat=True)
 
     obj = models.Project.objects.get(slug=slug)
 
