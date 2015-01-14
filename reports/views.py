@@ -28,14 +28,27 @@ def project(request, slug):
     """
     Project report index.
     """
-    all_facebook_shares = models.Social.objects.filter(facebook_shares__gt=0).values_list('facebook_shares', flat=True)
-
     obj = models.Project.objects.get(slug=slug)
+
+    all_shares = []
+    all_shares_per_session = []
+    socials = models.Social.objects.all()
+    
+    for social in socials:
+        total = social.total()
+
+        if total:
+            all_shares.append(total)
+            all_shares_per_session.append(float(total) / (float(social.project.all_time_report.sessions) / 1000))
+    
+    shares_per_session = float(obj.social.total()) / (float(obj.all_time_report.sessions) / 1000) 
 
     context = {
         'project': obj,
         'reports': obj.reports.exclude(last_run__isnull=True),
-        'all_facebook_shares': all_facebook_shares
+        'all_shares': all_shares,
+        'all_shares_per_session': all_shares_per_session,
+        'shares_per_session': shares_per_session
     }
 
     return render(request, 'project.html', context)
