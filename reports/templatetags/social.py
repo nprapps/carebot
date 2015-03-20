@@ -14,15 +14,10 @@ def social_per_1000_sessions(project, metric):
     sessions = project.all_time_report.sessions
     fb_shares = project.social.facebook_shares
 
-    if not sessions:
+    try:
+        if metric == 'facebook_likes' or metric == 'facebook_comments':
+            return '%.2f' % (float(value) / fb_shares)
+        else:
+            return '%.2f' % (float(value) / (sessions / 1000))
+    except ZeroDivisionError:
         return 0
-
-    if metric == 'facebook_likes' or metric == 'facebook_comments':
-        if not fb_shares:
-            return 0
-
-        return '%.2f' % (float(value) / fb_shares)
-    else:
-        return '%.2f' % (float(value) / (sessions / 1000))
-
-

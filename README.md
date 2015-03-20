@@ -40,7 +40,8 @@ Bootstrap the project
 cd carebot
 mkvirtualenv carebot
 pip install -r requirements.txt
-python manage.py local_reset_db bootstrap_db collectstatic
+fab data.local_reset_db data.bootstrap_db
+python manage.py collectstatic
 ```
 
 **Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
@@ -71,7 +72,7 @@ fab staging master data.server_reset_db
 fab staging master servers.fabcast:data.bootstrap_db
 ```
 
-Routine deployment: 
+Routine deployment:
 
 ```
 fab staging master deploy
@@ -87,4 +88,3 @@ fab staging master servers.fabcast:cron_jobs.run_reports
 ```
 
 If any of the commands you run themselves require executing on the server, the server will SSH into itself to run them.
-
