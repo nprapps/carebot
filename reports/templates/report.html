@@ -1,4 +1,5 @@
 {% extends "_base.html" %}
+{% load tz %}
 
 {% block title %}{{ report.project.title }} :: carebot{% endblock %}
 
@@ -7,6 +8,8 @@
     <h1>{{ report.project.title }}</h1>
 
     <h2>{{ report.timespan }} report</h2>
+
+    <p class="text-muted">This report was last run on {{ report.last_run|localtime }}</p>
 
     <p><a href="{{ report.project.get_absolute_url }}">&laquo; Back to project</a></p>
 
