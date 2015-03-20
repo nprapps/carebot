@@ -9,7 +9,7 @@ class QueryAdmin(admin.ModelAdmin):
     """
     Admin for the Query model.
     """
-    list_display = ('name', 'is_comparable', 'description') 
+    list_display = ('name', 'is_comparable', 'description')
 
     fieldsets = (
         (None, {
@@ -32,9 +32,9 @@ class ProjectQueryInline(GrappelliSortableHiddenMixin, admin.TabularInline):
     Admin for the ProjectQuery M2M inline.
     """
     model = models.ProjectQuery
-    extra = 3 
+    extra = 3
     sortable_field_name = 'order'
-    
+
 class ProjectAdmin(admin.ModelAdmin):
     """
     Admin for the Project model.
@@ -64,7 +64,7 @@ class ProjectAdmin(admin.ModelAdmin):
         return super(ProjectAdmin, self).add_view(*args, **kwargs)
 
     def tag_list(self, model):
-        return model.tag_list() 
+        return model.tag_list()
 
     tag_list.short_description = 'Tags'
 
@@ -83,7 +83,7 @@ class ReportAdmin(admin.ModelAdmin):
         if not model.last_run:
             return None
         else:
-            return '<a href="%s">View</a>' % model.get_absolute_url() 
+            return '<a href="%s">View</a>' % model.get_absolute_url()
 
     view_report.allow_tags = True
     view_report.short_description = 'View'
@@ -104,10 +104,15 @@ class SocialAdmin(admin.ModelAdmin):
     list_display = ('project', 'facebook_likes', 'facebook_shares', 'facebook_comments', 'twitter', 'google', 'pinterest', 'linkedin', 'stumbleupon')
     list_display_links = ('project',)
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('slug',)
+    list_display_links = ('slug',)
+
 admin.site.register(models.Query, QueryAdmin)
 admin.site.register(models.Project, ProjectAdmin)
 admin.site.register(models.Report, ReportAdmin)
 admin.site.register(models.Social, SocialAdmin)
+admin.site.register(models.Tag, TagAdmin)
 #admin.site.register(models.QueryResult, QueryResultAdmin)
 #admin.site.register(models.MetricResult, MetricResultAdmin)
 #admin.site.register(models.DimensionResult, DimensionResultAdmin)
