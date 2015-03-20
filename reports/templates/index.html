@@ -24,7 +24,7 @@
             {% for project in projects %}
             <tr>
                 <td><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></td>
-                <td><span class="hidden">{{ project.start_date|date:"%Y-%m-%d" }}</span>{{ project.start_date }}</td>
+                <td data-sort="{{ project.start_date|date:'%Y-%m-%d' }}">{{ project.start_date }}</td>
                 <td>{% include "_tags.html" %}</td>
                 <td class="value" data-sort="{{ project.all_time_report.sessions }}">{{ project.all_time_report.sessions|intcomma }}</td>
                 <td class="value" data-sort="{{ project.social.total }}">{{ project.social.total|intcomma }}</td>
