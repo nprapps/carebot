@@ -25,5 +25,5 @@ def social_per_1000_sessions(project, metric):
                 return 0
 
             return '%.2f' % (float(value) / (sessions / 1000))
-    except TypeError, ZeroDivisionError:
+    except (TypeError, ZeroDivisionError):
         return 0
