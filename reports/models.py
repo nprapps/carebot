@@ -459,7 +459,10 @@ class DimensionResult(models.Model):
         if self.metric_data_type != 'INTEGER':
             return None
 
-        return float(self.value) / (self.metric.query_result.report.sessions / 1000)
+        try:
+            return float(self.value) / (self.metric.query_result.report.sessions / 1000)
+        except ZeroDivisionError:
+            return 'undefined'
 
 class Social(models.Model):
     """
