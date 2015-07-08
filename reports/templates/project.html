@@ -219,12 +219,22 @@
     var values = {{ all_shares }};
     var highlightValue = {{ project.social.total }};
 
-    histogram('#shares-histogram', values, highlightValue, 40, 2500);
+    if (values.length) {
+        histogram('#shares-histogram', values, highlightValue, 40, 2500);
+    } else {
+        var $alert = $('<div class="alert alert-warning" role="alert">No shares data available.</div>');
+        $('#shares-histogram').append($alert);
+    }
 
     var values = {{ all_shares_per_session }};
     var highlightValue = {{ shares_per_session }};
 
-    histogram('#shares-per-session-histogram', values, highlightValue, 40, 50);
+    if (values.length) {
+        histogram('#shares-per-session-histogram', values, highlightValue, 40, 50);
+    } else {
+        var $alert = $('<div class="alert alert-warning" role="alert">No shares-per-session data available.</div>');
+        $('#shares-per-session-histogram').append($alert);
+    }
 
 </script>
 {% endblock %}

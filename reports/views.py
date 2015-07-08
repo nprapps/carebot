@@ -39,9 +39,15 @@ def project(request, slug):
 
         if total:
             all_shares.append(total)
-            all_shares_per_session.append(float(total) / (float(social.project.all_time_report.sessions) / 1000))
-    
-    shares_per_session = float(obj.social.total()) / (float(obj.all_time_report.sessions) / 1000) 
+            try:
+                all_shares_per_session.append(float(total) / (float(social.project.all_time_report.sessions) / 1000))
+            except TypeError:
+                all_shares_per_session.append('undefined')
+
+    try:
+        shares_per_session = float(obj.social.total()) / (float(obj.all_time_report.sessions) / 1000) 
+    except TypeError:
+        shares_per_session = 'undefined'
 
     context = {
         'project': obj,
