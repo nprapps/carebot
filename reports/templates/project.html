@@ -216,7 +216,7 @@
             .call(xAxis);
     }
 
-    var values = {{ all_shares }};
+    var values = {{ all_shares|safe }};
     var highlightValue = {{ project.social.total }};
 
     if (values.length) {
@@ -226,7 +226,7 @@
         $('#shares-histogram').append($alert);
     }
 
-    var values = {{ all_shares_per_session }};
+    var values = {{ all_shares_per_session|safe }};
     var highlightValue = {{ shares_per_session }};
 
     if (values.length) {
