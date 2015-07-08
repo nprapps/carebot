@@ -88,7 +88,7 @@ def public_app(port='8000'):
     """
     Serve public_app.py.
     """
-    local('gunicorn -b 0.0.0.0:%s --debug --reload --error-logfile - carebot.wsgi:application' % port)
+    local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload --error-logfile - carebot.wsgi:application' % port)
 
 """
 Deployment
