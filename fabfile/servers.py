@@ -210,6 +210,21 @@ def deploy_confs():
                 print '%s has not changed' % rendered_path
 
 @task
+def reload_service(service):
+    require('settings', provided_by=['production', 'staging'])
+
+    if service == 'nginx':
+        sudo('service nginx reload')
+    elif service == 'uwsgi':
+        service_name = _get_installed_service_name(service)
+        sudo('initctl reload-configuration')
+        sudo('service %s restart' % service_name)
+    elif service == 'app':
+        run('touch %s' % app_config.UWSGI_SOCKET_PATH)
+        sudo('chmod 644 %s' % app_config.UWSGI_SOCKET_PATH)
+        sudo('chown www-data:www-data %s' % app_config.UWSGI_SOCKET_PATH)
+
+@task
 def nuke_confs():
     """
     DESTROYS rendered server configurations from the specified server.
