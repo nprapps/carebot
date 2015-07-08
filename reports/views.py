@@ -41,12 +41,16 @@ def project(request, slug):
             all_shares.append(total)
             try:
                 all_shares_per_session.append(float(total) / (float(social.project.all_time_report.sessions) / 1000))
-            except (ZeroDivisionError, TypeError) as e:
+            except ZeroDivisionError:
+                all_shares_per_session.append('undefined')
+            except TypeError:
                 all_shares_per_session.append('undefined')
 
     try:
         shares_per_session = float(obj.social.total()) / (float(obj.all_time_report.sessions) / 1000) 
-    except (ZeroDivisionError, TypeError) as e:
+    except ZeroDivisionError:
+        shares_per_session = 'undefined'
+    except TypeError:
         shares_per_session = 'undefined'
 
     context = {
